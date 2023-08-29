@@ -170,8 +170,28 @@ export const imageGeneration = {
   v3: v3ImageGen,
 };
 
+/**
+ * The `moderation` object contains functions for moderating both content and images.
+ * It has access to the following functions:
+ * - content: Function for moderating content. It checks the content for any inappropriate or harmful material and returns a report.
+ * - image: Function for moderating images. It checks the images for any inappropriate or harmful material and returns a report.
+ *
+ * @namespace moderation
+ * @property {function} content - Function for moderating content.
+ * @property {function} image - Function for moderating images.
+ */
 export const moderation = {
+  /**
+   * Content Moderation AI Models. A powerful AI Model that can be used to detect and filter out inappropriate content from your website or app. Read more at https://docs.worqhat.com/ai-models/content-moderation/text-content-moderation
+   * @param text_content - The text content to be moderated.
+   * @returns A Promise that resolves to the moderation results.
+   */
   content: contentModeration,
+  /**
+   * Image Moderation AI Models. A powerful AI Model that can be used to detect and filter out inappropriate content from your website or app. Read more at https://docs.worqhat.com/ai-models/content-moderation/image-moderation
+   * @param image - The image to be moderated. It can be a `File object` or a `URL` or `base64` encoded image data.
+   * @returns A Promise that resolves to the moderation results.
+   */
   image: imageModeration,
 };
 
