@@ -5,7 +5,7 @@ import * as Success from "../success";
 import FormData from "form-data";
 import { appConfiguration } from "../index";
 import { ContentModerationParams, ImageModerationParams } from "../types";
-import { readFileAsBase64 } from "../uploads";
+import { getImageAsBase64 } from "../uploads";
 import { createLogger, baseUrl } from "../core";
 
 export const contentModeration = async ({
@@ -59,27 +59,8 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
   }
   const timenow = new Date();
 
-  let base64Data: string;
+  let base64Data: string = await getImageAsBase64(image);
 
-  if (typeof image === "string") {
-    if (image.startsWith("http://") || image.startsWith("https://")) {
-      // If imageData is a URL, download the image and convert it to base64
-      const response = await axios.get(image, {
-        responseType: "arraybuffer",
-      });
-      base64Data = Buffer.from(response.data, "binary").toString("base64");
-    } else if (image.startsWith("data:image")) {
-      // If imageData is base64 data, use it directly
-      base64Data = image.split(",")[1];
-    } else {
-      // If imageData is a file path, read the file and convert it to base64
-      const fileData = await fs.promises.readFile(image);
-      base64Data = fileData.toString("base64");
-    }
-  } else {
-    // If imageData is a File object, read the file and convert it to base64
-    base64Data = await readFileAsBase64(image);
-  }
 
   const form = new FormData();
   // Append the image as a file
