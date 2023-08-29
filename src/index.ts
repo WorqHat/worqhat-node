@@ -3,7 +3,7 @@ import * as Errors from "./error";
 import { v2Content, v3Content, alphaContent } from "./ai/content-generation";
 import { v2ImageGen, v3ImageGen } from "./ai/image-generation";
 import { contentModeration, imageModeration } from "./ai/moderation";
-import { deleteTrainedDatasets } from "./ai/datasets";
+import { deleteTrainedDatasets, viewTrainedDatasets } from "./ai/datasets";
 import { v2Search, v3Search } from "./ai/search";
 import { authenticate } from "./auth/authentication";
 
@@ -196,8 +196,34 @@ export const moderation = {
   image: imageModeration,
 };
 
+/**
+ * The `datasets` object contains functions for managing trained datasets. It can access the Datasets API to manage datasets that you have trained for both AI and Search Interfaces. However, you will only be able to view and delete datasets that you have created or have access to.
+ * It has access to the following functions:
+ * - delete: Function for deleting trained datasets.
+ * - list: Function for viewing all trained datasets that you have access to.
+ *
+ * @namespace datasets
+ * @property {function} delete - Function for deleting trained datasets.
+ * @property {function} list - Function for viewing all trained datasets.
+ */
 export const datasets = {
+  /**
+   * Function for deleting trained datasets. It can access the Datasets API to delete a dataset that you have trained for both AI and Search Interfaces. However, you will only be able to delete datasets that you have created or have access to.
+   *
+   * @function delete
+   * @memberof datasets
+   * @param {string} datasetId - The ID of the dataset to be deleted. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the deletion result.
+   */
   delete: deleteTrainedDatasets,
+  /**
+   * Function for viewing all trained datasets. It can access the Datasets API to retrieve a list of all datasets that you have trained for both AI and Search Interfaces. However, you will only be able to view datasets that you have created or have access to.
+   *
+   * @function list
+   * @memberof datasets
+   * @returns {Promise} A Promise that resolves to an array of dataset objects.
+   */
+  list: viewTrainedDatasets,
 };
 
 export default {
