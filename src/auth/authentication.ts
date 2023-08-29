@@ -2,12 +2,22 @@ import axios from "axios";
 import * as Errors from "../error";
 import * as Success from "../success";
 import { createLogger, baseUrl } from "../core";
+import { debug, LogStatus } from "../core";
 
 export const authenticate = function (
   api_key: string | undefined,
 ): Promise<any> {
+  if (!api_key) {
+    debug(LogStatus.ERROR, "Authentication", "API Key is required");
+    throw new Error("API Key is required");
+  }
   var timenow = new Date();
   return new Promise((resolve, reject) => {
+    debug(
+      LogStatus.INFO,
+      "Authentication",
+      "Sending request to Authentication",
+    );
     axios
       .post(
         baseUrl + "/authentication",
@@ -21,6 +31,11 @@ export const authenticate = function (
       .then((response) => {
         var timeafter = new Date();
         var time = timeafter.getTime() - timenow.getTime();
+        debug(
+          LogStatus.INFO,
+          "Authentication",
+          "Authentication completed successfully",
+        );
         resolve({
           code: 200,
           processingTime: time,
@@ -28,6 +43,12 @@ export const authenticate = function (
         });
       })
       .catch((error) => {
+        debug(
+          LogStatus.ERROR,
+          "Authentication",
+          "Authentication failed",
+          error,
+        );
         reject(error);
       });
   });
