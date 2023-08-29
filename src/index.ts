@@ -3,6 +3,7 @@ import * as Errors from "./error";
 import { v2Content, v3Content, alphaContent } from "./ai/content-generation";
 import { v2ImageGen, v3ImageGen } from "./ai/image-generation";
 import { contentModeration, imageModeration } from "./ai/moderation";
+import { deleteTrainedDatasets } from "./ai/datasets";
 import { v2Search, v3Search } from "./ai/search";
 import { authenticate } from "./auth/authentication";
 
@@ -193,6 +194,10 @@ export const moderation = {
    * @returns A Promise that resolves to the moderation results.
    */
   image: imageModeration,
+};
+
+export const datasets = {
+  delete: deleteTrainedDatasets,
 };
 
 export default {

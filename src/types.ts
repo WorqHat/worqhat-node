@@ -49,3 +49,7 @@ export interface ContentModerationParams {
 export interface ImageModerationParams {
   image: File | string;
 }
+
+export interface deleteDatasetParam {
+  datasetId: string;
+}
