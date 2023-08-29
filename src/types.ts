@@ -47,5 +47,5 @@ export interface ContentModerationParams {
 }
 
 export interface ImageModerationParams {
-  imageData: File | string; // File object or URL or base64 encoded image data
+  image: File | string; // File object or URL or base64 encoded image data
 }

@@ -2,7 +2,7 @@
 import * as Errors from "./error";
 import { v2Content, v3Content, alphaContent } from "./ai/content-generation";
 import { v2ImageGen, v3ImageGen } from "./ai/image-generation";
-import { contentModeration } from "./ai/moderation";
+import { contentModeration, imageModeration } from "./ai/moderation";
 import { v2Search, v3Search } from "./ai/search";
 import { authenticate } from "./auth/authentication";
 
@@ -159,6 +159,7 @@ export const imageGeneration = {
 
 export const moderation = {
   content: contentModeration,
+  image: imageModeration,
 };
 
 export default {

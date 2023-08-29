@@ -46,10 +46,13 @@ export const contentModeration = async ({
   }
 };
 
-export const imageModeration = async ({ imageData }: ImageModerationParams) => {
-  if (!imageData) {
+export const imageModeration = async ({ image }: ImageModerationParams) => {
+  if (!image) {
     throw new Error("Image data is required");
   }
+
+  console.log("image: ", image);
+
 
   if (!appConfiguration) {
     throw new Error("App Configuration is null");
@@ -58,24 +61,24 @@ export const imageModeration = async ({ imageData }: ImageModerationParams) => {
 
   let base64Data: string;
 
-  if (typeof imageData === "string") {
-    if (imageData.startsWith("http://") || imageData.startsWith("https://")) {
+  if (typeof image === "string") {
+    if (image.startsWith("http://") || image.startsWith("https://")) {
       // If imageData is a URL, download the image and convert it to base64
-      const response = await axios.get(imageData, {
+      const response = await axios.get(image, {
         responseType: "arraybuffer",
       });
       base64Data = Buffer.from(response.data, "binary").toString("base64");
-    } else if (imageData.startsWith("data:image")) {
+    } else if (image.startsWith("data:image")) {
       // If imageData is base64 data, use it directly
-      base64Data = imageData.split(",")[1];
+      base64Data = image.split(",")[1];
     } else {
       // If imageData is a file path, read the file and convert it to base64
-      const fileData = await fs.promises.readFile(imageData);
+      const fileData = await fs.promises.readFile(image);
       base64Data = fileData.toString("base64");
     }
   } else {
     // If imageData is a File object, read the file and convert it to base64
-    base64Data = await readFileAsBase64(imageData);
+    base64Data = await readFileAsBase64(image);
   }
 
   const form = new FormData();
