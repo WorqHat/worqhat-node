@@ -45,7 +45,7 @@ const generateContent = async (
       processingTime: time,
       ...response.data,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log("Error: ", error);
     throw error;
   }
@@ -113,7 +113,7 @@ export const alphaContent = async ({ question }: AlphaParams) => {
       processingTime: time,
       ...response.data,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log("Error: ", error);
     throw error;
   }

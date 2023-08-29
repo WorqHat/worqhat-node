@@ -40,7 +40,7 @@ export const contentModeration = async ({
       processingTime: time,
       ...response.data,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log("Error: ", error);
     throw error;
   }
@@ -104,7 +104,7 @@ export const imageModeration = async ({ imageData }: ImageModerationParams) => {
       code: 200,
       ...response.data,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log("Error: ", error);
     throw error;
   }

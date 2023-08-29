@@ -1,6 +1,6 @@
 {
-  "name": "worqhat-node",
-  "version": "1.0.0",
+  "name": "worqhat",
+  "version": "0.0.0-development",
   "description": "NodeJS SDK for Worqhat Endpoints",
   "exports": {
     ".": {
@@ -42,28 +42,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/WorqHat/worqhat-sdk.git"
+    "url": "https://github.com/WorqHat/worqhat-node.git"
   },
   "keywords": [
-    "npm",
-    "javascript",
-    "typescript",
-    "esm",
-    "cjs",
     "nodejs",
-    "commonjs",
-    "ecmascript",
     "sdk",
     "worqhat",
     "worqhat-sdk",
     "worqhat-node"
   ],
-  "author": "Snyk Labs",
+  "author": "WorqHat",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/WorqHat/worqhat-sdk/issues"
+    "url": "https://github.com/WorqHat/worqhat-node/issues"
   },
-  "homepage": "https://github.com/WorqHat/worqhat-sdk#readme",
+  "homepage": "https://github.com/WorqHat/worqhat-node#readme",
   "devDependencies": {
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",
@@ -77,6 +70,7 @@
   },
   "dependencies": {
     "@highlight-run/node": "^3.2.0",
-    "newrelic": "^10.6.2"
+    "axios": "^1.5.0",
+    "form-data": "^4.0.0"
   }
 }

@@ -63,7 +63,7 @@ const generateImage = async (
       processingTime: time,
       ...response.data,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log("Error: ", error);
     throw error;
   }
