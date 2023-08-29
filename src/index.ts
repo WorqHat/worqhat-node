@@ -9,17 +9,30 @@ import { authenticate } from "./auth/authentication";
 /* The Configuration class is used to store and validate an API key. */
 export class Configuration {
   /**
-   * Configuration class to store and validate an API key.
+   * The API key used for authentication.
+   * This key is required to access the API services.
+   * @type {string}
    */
   apiKey: string;
-
   /**
-   * Initializes the Configuration object with the provided apiKey.
-   * Throws an error if the apiKey is missing or not a string.
-   * @param options - The options object with an apiKey property.
+   * Debug property that can be either true or false.
+   * If true, the application will log detailed process steps.
+   * If false, the application will stop logging.
+   * @type {boolean}
    */
-  constructor(options: { apiKey: string }) {
+  debug: boolean;
+  /**
+   * Initializes a new instance of the Configuration class.
+   *
+   * @param options - An object containing the configuration options.
+   * @param options.apiKey - The API key used for authentication. This key is required to access the API services.
+   * @param options.debug - Optional. A boolean value that controls the logging of detailed process steps. If true, the application will log detailed process steps. If false or not provided, the application will not log these details.
+   *
+   * @throws {Error} Will throw an error if the apiKey is not provided or if it is not a string.
+   */
+  constructor(options: { apiKey: string; debug?: boolean }) {
     this.apiKey = options.apiKey;
+    this.debug = options.debug || false;
 
     if (!this.apiKey) {
       throw new Error("API Key is required");

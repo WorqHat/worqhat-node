@@ -1,6 +1,7 @@
 import { VERSION } from "./version";
 import * as Success from "./success";
 import * as Errors from "./error";
+import { appConfiguration } from "./index";
 
 export const baseUrl = "https://api.worqhat.com";
 
@@ -174,7 +175,7 @@ export function hasOwn(obj: Object, key: string): boolean {
 }
 
 export function debug(action: string, ...args: any[]) {
-  if (typeof process !== "undefined" && process.env["DEBUG"] === "true") {
+  if (appConfiguration && appConfiguration.debug) {
     console.log(`WorqHat:DEBUG:${action}`, ...args);
   }
 }

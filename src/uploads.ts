@@ -19,7 +19,9 @@ export const readFileAsBase64 = (file: File): Promise<string> => {
   });
 };
 
-export const getImageAsBase64 = async (image: string | File): Promise<string> => {
+export const getImageAsBase64 = async (
+  image: string | File,
+): Promise<string> => {
   try {
     let base64Data: string;
     if (typeof image === "string") {

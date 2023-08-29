@@ -53,14 +53,12 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
 
   console.log("image: ", image);
 
-
   if (!appConfiguration) {
     throw new Error("App Configuration is null");
   }
   const timenow = new Date();
 
   let base64Data: string = await getImageAsBase64(image);
-
 
   const form = new FormData();
   // Append the image as a file
