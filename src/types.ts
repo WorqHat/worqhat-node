@@ -53,3 +53,9 @@ export interface ImageModerationParams {
 export interface deleteDatasetParam {
   datasetId: string;
 }
+
+export interface LargeParams {
+  datasetId: string;
+  question: string;
+  randomness?: number;
+}

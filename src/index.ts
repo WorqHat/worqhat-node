@@ -1,6 +1,11 @@
 // api-sdk/src/index.ts
 import * as Errors from "./error";
-import { v2Content, v3Content, alphaContent } from "./ai/content-generation";
+import {
+  v2Content,
+  v3Content,
+  alphaContent,
+  largeContent,
+} from "./ai/content-generation";
 import { v2ImageGen, v3ImageGen } from "./ai/image-generation";
 import { contentModeration, imageModeration } from "./ai/moderation";
 import { deleteTrainedDatasets, viewTrainedDatasets } from "./ai/datasets";
@@ -116,6 +121,7 @@ export const contentGeneration = {
    * @param question: A string representing the question to generate content for. Default is undefined.
    */
   alpha: alphaContent,
+  large: largeContent,
 };
 
 /**
