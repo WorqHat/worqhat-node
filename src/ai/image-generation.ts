@@ -64,7 +64,6 @@ const generateImage = async (
       ...response.data,
     };
   } catch (error: any) {
-    console.log("Error: ", error);
     throw error;
   }
 };

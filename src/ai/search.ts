@@ -39,7 +39,6 @@ export const v2Search = async ({ question, training_data }: searchV2Params) => {
       ...response.data,
     };
   } catch (error) {
-    console.log("Error: ", error);
     throw error;
   }
 };
@@ -83,7 +82,6 @@ export const v3Search = async ({
       ...response.data,
     };
   } catch (error) {
-    console.log("Error: ", error);
     throw error;
   }
 };

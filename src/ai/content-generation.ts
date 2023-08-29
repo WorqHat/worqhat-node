@@ -46,7 +46,6 @@ const generateContent = async (
       ...response.data,
     };
   } catch (error: any) {
-    console.log("Error: ", error);
     throw error;
   }
 };
@@ -114,7 +113,6 @@ export const alphaContent = async ({ question }: AlphaParams) => {
       ...response.data,
     };
   } catch (error: any) {
-    console.log("Error: ", error);
     throw error;
   }
 };

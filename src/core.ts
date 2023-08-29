@@ -174,9 +174,16 @@ export function hasOwn(obj: Object, key: string): boolean {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
-export function debug(action: string, ...args: any[]) {
+export enum LogStatus {
+  INFO = "INFO",
+  WARN = "WARN",
+  ERROR = "ERROR",
+}
+
+export function debug(status: LogStatus, action: string, ...args: any[]) {
   if (appConfiguration && appConfiguration.debug) {
-    console.log(`WorqHat:DEBUG:${action}`, ...args);
+    const timestamp = new Date().toISOString();
+    console.log(`WorqHat:DEBUG:${status}:${action}:${timestamp}`, ...args);
   }
 }
 

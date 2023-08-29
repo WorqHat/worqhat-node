@@ -28,7 +28,6 @@ export const authenticate = function (
         });
       })
       .catch((error) => {
-        console.log("Error: " + error.message);
         reject(error);
       });
   });
