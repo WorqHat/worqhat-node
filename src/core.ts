@@ -221,9 +221,6 @@ export const stopProcessingLog = () => {
   }
 };
 
-/**
- * https://stackoverflow.com/a/2117523
- */
 const uuid4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;

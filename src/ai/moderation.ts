@@ -1,5 +1,4 @@
 import axios from "axios";
-import * as fs from "fs";
 import * as Errors from "../error";
 import * as Success from "../success";
 import FormData from "form-data";

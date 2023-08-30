@@ -83,3 +83,7 @@ export interface ImageExtractionParams {
 export interface SpeechExtractionParams {
   audio: File | string;
 }
+
+export interface ImageAnalysisParams {
+  image: File | string;
+}
