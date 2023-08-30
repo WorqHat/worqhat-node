@@ -75,3 +75,7 @@ export interface PDFExtractionParams {
   };
   output_format: "text" | "json";
 }
+
+export interface ImageExtractionParams {
+  image: File | string;
+}

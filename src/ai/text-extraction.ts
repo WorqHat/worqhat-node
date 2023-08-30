@@ -2,10 +2,15 @@ import axios from "axios";
 import FormData from "form-data";
 import { createLogger, baseUrl } from "../core";
 import { appConfiguration } from "../index";
-import { WebExtractionParams, PDFExtractionParams } from "../types";
+import {
+  WebExtractionParams,
+  PDFExtractionParams,
+  ImageExtractionParams,
+} from "../types";
 import * as Errors from "../error";
 import fs from "fs";
 import { debug, LogStatus } from "../core";
+import { getImageAsBase64 } from "../uploads";
 
 export const webExtraction = async (params: WebExtractionParams) => {
   debug(LogStatus.INFO, `Web Extraction`, "Starting Web Extraction Process");
@@ -118,6 +123,75 @@ export const PDFExtraction = async ({
       LogStatus.ERROR,
       "PDF Extraction",
       `Error occurred during PDF Extraction: ${error}`,
+    );
+    throw error;
+  }
+};
+
+export const imageExtraction = async ({ image }: ImageExtractionParams) => {
+  try {
+    debug(
+      LogStatus.INFO,
+      "Image Extraction",
+      `Starting image extraction process`,
+    );
+
+    if (!image) {
+      debug(LogStatus.ERROR, "Image Extraction", `Image data is missing`);
+      throw new Error("Image data is required");
+    }
+
+    if (!appConfiguration) {
+      debug(LogStatus.ERROR, "Image Extraction", `App Configuration is null`);
+      throw new Error("App Configuration is null");
+    }
+
+    const timenow = new Date();
+    debug(LogStatus.INFO, "Image Extraction", `Received Image data`);
+    debug(LogStatus.INFO, "Image Extraction", `Converting image to base64`);
+    let base64Data: string = await getImageAsBase64(image);
+
+    const form = new FormData();
+    // Append the image as a file
+    debug(LogStatus.INFO, "Image Extraction", `AI Models processing image`);
+    form.append("image", Buffer.from(base64Data, "base64"), {
+      filename: "image.jpg",
+      contentType: "image/jpeg",
+    });
+
+    debug(
+      LogStatus.INFO,
+      "Image Extraction",
+      `Sending request for image extraction`,
+    );
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/v2/image-text-detection`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: "Bearer " + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    const timeafter = new Date();
+    const time = timeafter.getTime() - timenow.getTime();
+    debug(
+      LogStatus.INFO,
+      "Image Extraction",
+      `Image extraction process completed`,
+    );
+    return {
+      processingTime: time,
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    debug(
+      LogStatus.ERROR,
+      "Image Extraction",
+      `Error occurred during image extraction: ${error.message}`,
     );
     throw error;
   }
