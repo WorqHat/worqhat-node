@@ -10,7 +10,11 @@ import {
   startProcessingLog,
   stopProcessingLog,
 } from "../core";
-import { ImageAnalysisParams, DetectFacesParams } from "../types";
+import {
+  ImageAnalysisParams,
+  DetectFacesParams,
+  CompareFacesParams,
+} from "../types";
 import { getImageAsBase64 } from "../uploads";
 import { appConfiguration } from "../index";
 
@@ -153,6 +157,96 @@ export const detectFaces = async (params: DetectFacesParams) => {
       LogStatus.ERROR,
       "Detect Faces",
       `Error occurred during detect faces: ${error}`,
+    );
+    throw error;
+  }
+};
+
+export const compareFaces = async (params: CompareFacesParams) => {
+  const { source_image, target_image } = params;
+
+  debug(LogStatus.INFO, "Compare Faces", `Starting compare faces process`);
+
+  if (!source_image) {
+    debug(LogStatus.ERROR, "Compare Faces", `Source image data is missing`);
+    throw new Error("Source image data is required");
+  }
+
+  if (!target_image) {
+    debug(LogStatus.ERROR, "Compare Faces", `Target image data is missing`);
+    throw new Error("Target image data is required");
+  }
+  if (!appConfiguration) {
+    debug(LogStatus.ERROR, "Compare Faces", `App Configuration is null`);
+    throw new Error("App Configuration is null");
+  }
+
+  const timenow = new Date();
+  debug(
+    LogStatus.INFO,
+    "Compare Faces",
+    `Received source and target image data`,
+  );
+
+  debug(LogStatus.INFO, "Compare Faces", `Converting source image to base64`);
+  let base64Data_source: string = await getImageAsBase64(source_image);
+
+  debug(LogStatus.INFO, "Compare Faces", `Converting target image to base64`);
+  let base64Data_target: string = await getImageAsBase64(target_image);
+
+  const form = new FormData();
+  // Append the images as files
+  debug(LogStatus.INFO, "Compare Faces", `AI Models processing source image`);
+  form.append("source_image", Buffer.from(base64Data_source, "base64"), {
+    filename: "source_image.jpg",
+    contentType: "image/jpeg",
+  });
+
+  debug(LogStatus.INFO, "Compare Faces", `AI Models processing target image`);
+  form.append("target_image", Buffer.from(base64Data_target, "base64"), {
+    filename: "target_image.jpg",
+    contentType: "image/jpeg",
+  });
+
+  try {
+    debug(
+      LogStatus.INFO,
+      "Compare Faces",
+      `Processing AI Model for Compare Faces`,
+    );
+    startProcessingLog("Compare Faces");
+
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/v2/face-comparison`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: "Bearer " + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    const timeafter = new Date();
+    const time = timeafter.getTime() - timenow.getTime();
+    stopProcessingLog();
+
+    debug(
+      LogStatus.INFO,
+      "Compare Faces",
+      `Completed response from compare faces API`,
+    );
+
+    return {
+      processingTime: time,
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    debug(
+      LogStatus.ERROR,
+      "Compare Faces",
+      `Error occurred during compare faces: ${error}`,
     );
     throw error;
   }

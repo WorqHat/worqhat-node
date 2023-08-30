@@ -91,3 +91,8 @@ export interface ImageAnalysisParams {
 export interface DetectFacesParams {
   image: File | string;
 }
+
+export interface CompareFacesParams {
+  source_image: File | string;
+  target_image: File | string;
+}

@@ -17,7 +17,7 @@ import {
   imageExtraction,
   speechExtraction,
 } from "./ai/text-extraction";
-import { analyseImagesProcess } from "./ai/image-analysis";
+import { analyseImagesProcess, detectFaces } from "./ai/image-analysis";
 
 /* The Configuration class is used to store and validate an API key. */
 export class Configuration {
@@ -285,6 +285,7 @@ export const textExtraction = {
 
 export const analyseImages = {
   analyse: analyseImagesProcess,
+  detectFaces: detectFaces,
 };
 
 export default {
