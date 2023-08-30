@@ -87,3 +87,7 @@ export interface SpeechExtractionParams {
 export interface ImageAnalysisParams {
   image: File | string;
 }
+
+export interface DetectFacesParams {
+  image: File | string;
+}
