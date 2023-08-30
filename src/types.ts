@@ -96,3 +96,10 @@ export interface CompareFacesParams {
   source_image: File | string;
   target_image: File | string;
 }
+
+export interface ImageModificationParams {
+  existing_image: File | string;
+  modifications: string;
+  outputType: string;
+  similarity: number;
+}

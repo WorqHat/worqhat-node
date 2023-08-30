@@ -22,6 +22,7 @@ import {
   detectFaces,
   compareFaces,
 } from "./ai/image-analysis";
+import { imageModificationV2, imageModificationV3 } from "./ai/img2img";
 
 /* The Configuration class is used to store and validate an API key. */
 export class Configuration {
@@ -833,6 +834,11 @@ export const analyseImages = {
    * ```
    */
   compareFaces: compareFaces,
+};
+
+export const imageVariations = {
+  v2: imageModificationV2,
+  v3: imageModificationV3,
 };
 
 export default {
