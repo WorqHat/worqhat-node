@@ -41,6 +41,7 @@ export const contentModeration = async ({
       {
         headers: {
           Authorization: "Bearer " + appConfiguration.apiKey,
+          "Content-Type": "application/json",
         },
       },
     );

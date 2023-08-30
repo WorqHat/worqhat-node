@@ -33,6 +33,7 @@ export const v2Search = async ({ question, training_data }: searchV2Params) => {
       {
         headers: {
           Authorization: "Bearer " + appConfiguration.apiKey,
+          "Content-Type": "application/json",
         },
       },
     );
@@ -86,6 +87,7 @@ export const v3Search = async ({
       {
         headers: {
           Authorization: "Bearer " + appConfiguration.apiKey,
+          "Content-Type": "application/json",
         },
       },
     );

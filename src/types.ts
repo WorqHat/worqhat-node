@@ -59,3 +59,19 @@ export interface LargeParams {
   question: string;
   randomness?: number;
 }
+
+export interface WebExtractionParams {
+  code_blocks?: boolean;
+  headline?: boolean;
+  inline_code?: boolean;
+  references?: boolean;
+  url_path: string;
+}
+
+export interface PDFExtractionParams {
+  file: {
+    path: string;
+    name: string;
+  };
+  output_format: "text" | "json";
+}

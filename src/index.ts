@@ -11,6 +11,7 @@ import { contentModeration, imageModeration } from "./ai/moderation";
 import { deleteTrainedDatasets, viewTrainedDatasets } from "./ai/datasets";
 import { v2Search, v3Search } from "./ai/search";
 import { authenticate } from "./auth/authentication";
+import { webExtraction, PDFExtraction } from "./ai/text-extraction";
 
 /* The Configuration class is used to store and validate an API key. */
 export class Configuration {
@@ -230,6 +231,11 @@ export const datasets = {
    * @returns {Promise} A Promise that resolves to an array of dataset objects.
    */
   list: viewTrainedDatasets,
+};
+
+export const textExtraction = {
+  web: webExtraction,
+  pdf: PDFExtraction,
 };
 
 export default {

@@ -1,4 +1,124 @@
 import axios from "axios";
-import * as Errors from "../error";
-import * as Success from "../success";
+import FormData from "form-data";
 import { createLogger, baseUrl } from "../core";
+import { appConfiguration } from "../index";
+import { WebExtractionParams, PDFExtractionParams } from "../types";
+import * as Errors from "../error";
+import fs from "fs";
+import { debug, LogStatus } from "../core";
+
+export const webExtraction = async (params: WebExtractionParams) => {
+  debug(LogStatus.INFO, `Web Extraction`, "Starting Web Extraction Process");
+  const timenow = new Date();
+
+  if (!appConfiguration) {
+    debug(LogStatus.ERROR, `Web Extraction`, "App Configuration is null");
+    throw new Error("App Configuration is null");
+  }
+  if (!params.url_path) {
+    debug(LogStatus.ERROR, `Web Extraction`, "URL is required");
+    throw new Error("URL is required");
+  }
+  try {
+    debug(
+      LogStatus.INFO,
+      `Web Extraction`,
+      "Sending request to Web Extraction AI Model",
+    );
+    const response = await axios.post(
+      `${baseUrl}/api/ai/v2/web-extract`,
+      {
+        code_blocks: params.code_blocks,
+        headline: params.headline,
+        inline_code: params.inline_code,
+        references: params.references,
+        url_path: params.url_path,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + appConfiguration.apiKey,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    debug(
+      LogStatus.INFO,
+      `Web Extraction`,
+      "Web Extraction Process completed successfully",
+    );
+
+    const timeafter = new Date();
+    const time = timeafter.getTime() - timenow.getTime();
+    return {
+      code: 200,
+      processingTime: time,
+      ...response.data,
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const PDFExtraction = async ({
+  file,
+  output_format,
+}: PDFExtractionParams) => {
+  if (!appConfiguration) {
+    debug(LogStatus.ERROR, "PDF Extraction", "App Configuration is null");
+    throw new Error("App Configuration is null");
+  }
+  if (!file) {
+    debug(LogStatus.ERROR, "PDF Extraction", "Unable to identify file");
+    throw new Error("Unable to identify file");
+  }
+  if (!output_format || !["text", "json"].includes(output_format)) {
+    debug(LogStatus.ERROR, "PDF Extraction", "Invalid output format");
+    throw new Error("Invalid output format");
+  }
+
+  const form = new FormData();
+
+  if (file) {
+    form.append("file", fs.createReadStream(file.path), {
+      filename: file.name,
+      contentType: "application/pdf",
+    });
+  }
+
+  form.append("output_format", output_format);
+
+  try {
+    debug(
+      LogStatus.INFO,
+      "PDF Extraction",
+      "Sending request to PDF Extraction AI Model",
+    );
+    const response = await axios.post(
+      `${baseUrl}/api/ai/v2/pdf-extract`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: "Bearer " + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    debug(
+      LogStatus.INFO,
+      "PDF Extraction",
+      "PDF Extraction Process completed successfully",
+    );
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    debug(
+      LogStatus.ERROR,
+      "PDF Extraction",
+      `Error occurred during PDF Extraction: ${error}`,
+    );
+    throw error;
+  }
+};

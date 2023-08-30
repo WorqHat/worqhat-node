@@ -48,6 +48,7 @@ const generateContent = async (
       {
         headers: {
           Authorization: "Bearer " + appConfiguration.apiKey,
+          "Content-Type": "application/json",
         },
       },
     );
@@ -145,6 +146,7 @@ export const alphaContent = async ({ question }: AlphaParams) => {
       {
         headers: {
           Authorization: "Bearer " + appConfiguration.apiKey,
+          "Content-Type": "application/json",
         },
       },
     );
@@ -217,6 +219,7 @@ export const largeContent = async ({
       {
         headers: {
           Authorization: "Bearer " + appConfiguration.apiKey,
+          "Content-Type": "application/json",
         },
       },
     );

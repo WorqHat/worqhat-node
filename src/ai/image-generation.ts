@@ -89,6 +89,7 @@ const generateImage = async (
       {
         headers: {
           Authorization: "Bearer " + appConfiguration.apiKey,
+          "Content-Type": "application/json",
         },
       },
     );
