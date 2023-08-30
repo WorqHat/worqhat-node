@@ -2,10 +2,12 @@ import axios from "axios";
 import FormData from "form-data";
 import { createLogger, baseUrl } from "../core";
 import { appConfiguration } from "../index";
+import path from "path";
 import {
   WebExtractionParams,
   PDFExtractionParams,
   ImageExtractionParams,
+  SpeechExtractionParams,
 } from "../types";
 import * as Errors from "../error";
 import fs from "fs";
@@ -192,6 +194,73 @@ export const imageExtraction = async ({ image }: ImageExtractionParams) => {
       LogStatus.ERROR,
       "Image Extraction",
       `Error occurred during image extraction: ${error.message}`,
+    );
+    throw error;
+  }
+};
+
+export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
+  try {
+    debug(
+      LogStatus.INFO,
+      "Speech Extraction",
+      `Starting speech extraction process`,
+    );
+
+    if (!audio) {
+      debug(LogStatus.ERROR, "Speech Extraction", `Audio data is missing`);
+      throw new Error("Audio data is required");
+    }
+
+    if (!appConfiguration) {
+      debug(LogStatus.ERROR, "Speech Extraction", `App Configuration is null`);
+      throw new Error("App Configuration is null");
+    }
+
+    const form = new FormData();
+    // Append the audio as a file
+    debug(LogStatus.INFO, "Speech Extraction", `AI Models processing audio`);
+
+    // Check if audio is a Blob
+    if (audio instanceof Blob) {
+      form.append("audio", audio, {
+        filename: "audio.mp3",
+        contentType: "audio/mpeg", // Update this based on your audio file type
+      });
+    } else {
+      // Assume audio is a file path
+      form.append("audio", fs.createReadStream(audio), {
+        filename: path.basename(audio),
+        contentType: "audio/mpeg", // Update this based on your audio file type
+      });
+    }
+
+    debug(
+      LogStatus.INFO,
+      "Speech Extraction",
+      `Sending request for speech extraction`,
+    );
+    const response = await axios.post(`${baseUrl}/api/ai/speech-text`, form, {
+      headers: {
+        ...form.getHeaders(),
+        Authorization: "Bearer " + appConfiguration.apiKey,
+      },
+    });
+
+    debug(
+      LogStatus.INFO,
+      "Speech Extraction",
+      `Speech extraction process completed`,
+    );
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    debug(
+      LogStatus.ERROR,
+      "Speech Extraction",
+      `Error occurred during speech extraction: ${error.message}`,
     );
     throw error;
   }

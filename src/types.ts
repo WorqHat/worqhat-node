@@ -79,3 +79,7 @@ export interface PDFExtractionParams {
 export interface ImageExtractionParams {
   image: File | string;
 }
+
+export interface SpeechExtractionParams {
+  audio: File | string;
+}

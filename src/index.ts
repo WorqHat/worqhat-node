@@ -15,6 +15,7 @@ import {
   webExtraction,
   PDFExtraction,
   imageExtraction,
+  speechExtraction,
 } from "./ai/text-extraction";
 
 /* The Configuration class is used to store and validate an API key. */
@@ -251,28 +252,34 @@ export const datasets = {
  */
 export const textExtraction = {
   /**
- * Function for extracting text from web pages. It sends a request to the Web Extraction AI Model and returns the extracted text. Key components such as headlines, paragraphs, images, and tables are identified, and the algorithm extracts them in a structured format like JSON. Additionally, the extracted data is cleaned and normalized to enhance its usability for analysis and processing purposes. Read more at: https://docs.worqhat.com/ai-models/text-extraction/web-extraction
- * @param code_blocks - A boolean indicating whether to extract code blocks. Default is false.
- * @param headline - A boolean indicating whether to extract headlines. Default is false.
- * @param inline_code - A boolean indicating whether to extract inline code. Default is false.
- * @param references - A boolean indicating whether to extract references. Default is false.
- * @param url_path - A string representing the URL of the web page to extract text from. This is a required parameter.
- * @returns {Promise} A Promise that resolves to the extracted text.
- */
+   * Function for extracting text from web pages. It sends a request to the Web Extraction AI Model and returns the extracted text. Key components such as headlines, paragraphs, images, and tables are identified, and the algorithm extracts them in a structured format like JSON. Additionally, the extracted data is cleaned and normalized to enhance its usability for analysis and processing purposes. Read more at: https://docs.worqhat.com/ai-models/text-extraction/web-extraction
+   * @param code_blocks - A boolean indicating whether to extract code blocks. Default is false.
+   * @param headline - A boolean indicating whether to extract headlines. Default is false.
+   * @param inline_code - A boolean indicating whether to extract inline code. Default is false.
+   * @param references - A boolean indicating whether to extract references. Default is false.
+   * @param url_path - A string representing the URL of the web page to extract text from. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the extracted text.
+   */
   web: webExtraction,
   /**
- * Function for extracting text from PDF files. It sends a request to the PDF Extraction AI Model and returns the extracted text. Read more at: https://docs.worqhat.com/ai-models/text-extraction/pdf-extraction
- * @param file - An object representing the PDF file to extract text from. It contains the path and name of the file. This is a required parameter.
- * @param output_format - A string representing the output format of the extracted text. You can choose between ``text`` or ``json``. This is a required parameter. It defaults to ``text``.
- * @returns {Promise} A Promise that resolves to the extracted text.
- */
+   * Function for extracting text from PDF files. It sends a request to the PDF Extraction AI Model and returns the extracted text. Read more at: https://docs.worqhat.com/ai-models/text-extraction/pdf-extraction
+   * @param file - An object representing the PDF file to extract text from. It contains the path and name of the file. This is a required parameter.
+   * @param output_format - A string representing the output format of the extracted text. You can choose between ``text`` or ``json``. This is a required parameter. It defaults to ``text``.
+   * @returns {Promise} A Promise that resolves to the extracted text.
+   */
   pdf: PDFExtraction,
   /**
- * Function for extracting text from images. It sends a request to the Image Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/text-extraction/image-extraction
- * @param image - The image to extract text from. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
- * @returns {Promise} A Promise that resolves to the extracted text.
- */
+   * Function for extracting text from images. It sends a request to the Image Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/text-extraction/image-extraction
+   * @param image - The image to extract text from. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the extracted text.
+   */
   image: imageExtraction,
+  /**
+   * Function for extracting text from speech. It sends a request to the Speech Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/speech-extraction
+   * @param audio - The audio to extract text from. It can be a `File object` or `base64` encoded audio data. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the extracted text.
+   **/
+  speech: speechExtraction,
 };
 
 export default {
