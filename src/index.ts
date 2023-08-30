@@ -17,7 +17,11 @@ import {
   imageExtraction,
   speechExtraction,
 } from "./ai/text-extraction";
-import { analyseImagesProcess, detectFaces } from "./ai/image-analysis";
+import {
+  analyseImagesProcess,
+  detectFaces,
+  compareFaces,
+} from "./ai/image-analysis";
 
 /* The Configuration class is used to store and validate an API key. */
 export class Configuration {
@@ -275,17 +279,34 @@ export const textExtraction = {
    * @returns {Promise} A Promise that resolves to the extracted text.
    */
   image: imageExtraction,
-  /**
-   * Function for extracting text from speech. It sends a request to the Speech Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/speech-extraction
-   * @param audio - The audio to extract text from. It can be a `File object` or `base64` encoded audio data. This is a required parameter.
-   * @returns {Promise} A Promise that resolves to the extracted text.
-   **/
+/**
+ * Function for extracting text from speech. It sends a request to the Speech Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/speech-extraction
+ * @param audio - The audio to extract text from. It can be a `File object` or `base64` encoded audio data. This is a required parameter.
+ * @returns {Promise} A Promise that resolves to the extracted text.
+ *
+ * @example
+ * ```javascript
+ * import { textExtraction } from 'worqhat-node';
+ *
+ * // Assuming you have a File object for the audio
+ * let audioFile = new File([""], "filename");
+ *
+ * textExtraction.speech(audioFile)
+ *   .then((text) => {
+ *     console.log(text);
+ *   })
+ *   .catch((error) => {
+ *     console.error(error);
+ *   });
+ * ```
+ **/
   speech: speechExtraction,
 };
 
 export const analyseImages = {
   analyse: analyseImagesProcess,
   detectFaces: detectFaces,
+  compareFaces: compareFaces,
 };
 
 export default {
