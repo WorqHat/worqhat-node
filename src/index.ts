@@ -69,6 +69,19 @@ export let appConfiguration: Configuration | null = null;
  * @param {Configuration} configuration - The `configuration` parameter is an object that contains the
  * necessary settings and options for initializing the app. It is of type `Configuration`.
  * @returns A Promise is being returned.
+ * @example
+ * ```javascript
+ * const worqhat = require('worqhat');
+ *
+ * var config = new worqhat.Configuration({
+ *   apiKey: "your-api-key",
+ *   debug: true,
+ * });
+ *
+ * worqhat.initializeApp(config)
+ *   .then(() => console.log("App initialized successfully"))
+ *   .catch((error) => console.error("Error initializing app:", error));
+ * ```
  */
 export const initializeApp = (configuration: Configuration) => {
   appConfiguration = configuration;
@@ -85,6 +98,29 @@ export const initializeApp = (configuration: Configuration) => {
  * The function checks if the app is initialized and returns an error if not, otherwise it
  * authenticates using the app's API key and returns the response.
  * @returns either an error object or a response object.
+ * @example
+ * ```javascript
+ * const worqhat = require('worqhat');
+ *
+ * var config = new worqhat.Configuration({
+ *   apiKey: "your-api-key",
+ *   debug: true,
+ * });
+ *
+ * worqhat.initializeApp(config);
+ *
+ * async function checkAuth() {
+ *   try {
+ *     var result = await worqhat.checkAuthentication();
+ *     console.log(result);
+ *
+ *   } catch (error) {
+ *     console.error(error);
+ *   }
+ * }
+ *
+ * checkAuth();
+ * ```
  */
 export const checkAuthentication = () => {
   if (!appConfiguration) {
@@ -116,6 +152,35 @@ export const contentGeneration = {
    * @param question: A string representing the question to generate content for. Default is undefined.
    * @param training_data: A string representing the training data to use for generating content. Default is undefined.
    * @param randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function generateContent() {
+   *   try {
+   *     var result = await worqhat.contentGeneration.v2({
+   *       history_object: { "previous": "Previous conversation history" },
+   *       preserve_history: true,
+   *       question: "Your question here",
+   *       training_data: "your-training-data-id",
+   *       randomness: 0.3
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * generateContent();
+   * ```
    */
   v2: v2Content,
   /**
@@ -125,13 +190,102 @@ export const contentGeneration = {
    * @param question: A string representing the question to generate content for. Default is undefined.
    * @param training_data: A string representing the training data to use for generating content. Default is undefined.
    * @param randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function generateContent() {
+   *   try {
+   *     var result = await worqhat.contentGeneration.v3({
+   *       history_object: { "previous": "Previous conversation history" },
+   *       preserve_history: true,
+   *       question: "Your question here",
+   *       training_data: "your-training-data-id",
+   *       randomness: 0.3
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * generateContent();
+   * ```
    */
   v3: v3Content,
   /**
    * Alpha version Content Generation AI with data upto 2023 which can be used to generate Current Data based content. The Alpha Channel of AiCon V2 is mostly dependent on the Data upto May 2023 which makes it relatively upto date and more accurate than the previous versions of AiCon. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
    * @param question: A string representing the question to generate content for. Default is undefined.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function generateAlphaContent() {
+   *   try {
+   *     var result = await worqhat.contentGeneration.alpha({
+   *       question: "Your question here"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * generateAlphaContent();
+   * ```
    */
   alpha: alphaContent,
+  /**
+   * Large Content Generation AI Model. This model is designed to generate large amounts of content based on the provided parameters. You can provide a pre-trained model to generate content on top of it. This is mostly used for use-cases where you want to run a model based on your pre-trained dataset. It can be used to generate content for a variety of use cases where the content is more creative or complex.
+   *  Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-large-beta
+   * @param {string} datasetId - The id of the dataset to be used for content generation. This is a required parameter.
+   * @param {string} question - The question or prompt based on which the content will be generated. This is a required parameter.
+   * @param {number} randomness - A number representing the level of randomness to use for generating content. Default is 0.2.
+   * @returns {Promise} A Promise that resolves to the generated content.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function generateLargeContent() {
+   *   try {
+   *     var result = await worqhat.contentGeneration.large({
+   *       datasetId: "your-dataset-id",
+   *       question: "Your question here",
+   *       randomness: 0.3
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * generateLargeContent();
+   * ```
+   */
   large: largeContent,
 };
 
@@ -148,6 +302,32 @@ export const search = {
    * @param question - The search query string.
    * @param training_data - Contains the Referenced Dataset Id for the pre-trained dataset.
    * @returns A Promise that resolves to the search results. By default it returns all the results that match the query.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function search() {
+   *   try {
+   *     var result = await worqhat.search.v2({
+   *       question: "Your search query here",
+   *       training_data: "your-training-data-id"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * search();
+   * ```
    */
   v2: v2Search,
   /**
@@ -156,6 +336,33 @@ export const search = {
    * @param training_data - Contains the Referenced Dataset Id for the pre-trained dataset.
    * @param search_count - Returns the number of parameters we want to return. Default is 3. You can return as many as you want, but the more you return, the longer it will take.
    * @returns A Promise that resolves to the search results.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function search() {
+   *   try {
+   *     var result = await worqhat.search.v3({
+   *       question: "Your search query here",
+   *       training_data: "your-training-data-id",
+   *       search_count: 5
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * search();
+   * ```
    */
   v3: v3Search,
 };
@@ -175,6 +382,34 @@ export const imageGeneration = {
    * @param output_type: A string representing the output type of the image. You can choose between ``url`` or ``blob``. The``url`` parameter returns the Cloud Hosted Link to the Image, ``blob`` returns the Base64 Image. Default is "url".
    * @param prompt: An array of strings representing the prompts for the image generation. This is a required parameter.
    * @returns A Promise that resolves to the generated image.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function generateImage() {
+   *   try {
+   *     var result = await worqhat.imageGeneration.v2({
+   *       orientation: "Square",
+   *       image_style: "default",
+   *       output_type: "url",
+   *       prompt: ["Your prompt here"]
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * generateImage();
+   * ```
    */
   v2: v2ImageGen,
   /**
@@ -184,6 +419,34 @@ export const imageGeneration = {
    * @param output_type: A string representing the output type of the image. You can choose between ``url`` or ``blob``. The``url`` parameter returns the Cloud Hosted Link to the Image, ``blob`` returns the Base64 Image. Default is "url".
    * @param prompt: An array of strings representing the prompts for the image generation. This is a required parameter.
    * @returns A Promise that resolves to the generated image.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function generateImage() {
+   *   try {
+   *     var result = await worqhat.imageGeneration.v3({
+   *       orientation: "Landscape",
+   *       image_style: "default",
+   *       output_type: "url",
+   *       prompt: ["Your prompt here"]
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * generateImage();
+   * ```
    */
   v3: v3ImageGen,
 };
@@ -203,12 +466,62 @@ export const moderation = {
    * Content Moderation AI Models. A powerful AI Model that can be used to detect and filter out inappropriate content from your website or app. Read more at https://docs.worqhat.com/ai-models/content-moderation/text-content-moderation
    * @param text_content - The text content to be moderated.
    * @returns A Promise that resolves to the moderation results.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function moderateContent() {
+   *   try {
+   *     var result = await worqhat.moderation.content({
+   *       text_content: "Your text content here"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * moderateContent();
+   * ```
    */
   content: contentModeration,
   /**
    * Image Moderation AI Models. A powerful AI Model that can be used to detect and filter out inappropriate content from your website or app. Read more at https://docs.worqhat.com/ai-models/content-moderation/image-moderation
    * @param image - The image to be moderated. It can be a `File object` or a `URL` or `base64` encoded image data.
    * @returns A Promise that resolves to the moderation results.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function moderateImage() {
+   *   try {
+   *     var result = await worqhat.moderation.image({
+   *       image: "./path-to-your-image.png"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * moderateImage();
+   * ```
    */
   image: imageModeration,
 };
@@ -231,6 +544,31 @@ export const datasets = {
    * @memberof datasets
    * @param {string} datasetId - The ID of the dataset to be deleted. This is a required parameter.
    * @returns {Promise} A Promise that resolves to the deletion result.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function deleteDataset() {
+   *   try {
+   *     var result = await worqhat.datasets.delete({
+   *      datasetId: "your-dataset-id"
+   * });
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * deleteDataset();
+   * ```
    */
   delete: deleteTrainedDatasets,
   /**
@@ -239,6 +577,29 @@ export const datasets = {
    * @function list
    * @memberof datasets
    * @returns {Promise} A Promise that resolves to an array of dataset objects.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function listDatasets() {
+   *   try {
+   *     var datasets = await worqhat.datasets.list();
+   *     console.log(datasets);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * listDatasets();
+   * ```
    */
   list: viewTrainedDatasets,
 };
@@ -271,41 +632,206 @@ export const textExtraction = {
    * @param file - An object representing the PDF file to extract text from. It contains the path and name of the file. This is a required parameter.
    * @param output_format - A string representing the output format of the extracted text. You can choose between ``text`` or ``json``. This is a required parameter. It defaults to ``text``.
    * @returns {Promise} A Promise that resolves to the extracted text.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function extractTextFromPdf() {
+   *   try {
+   *     var result = await worqhat.textExtraction.pdf({
+   *       file: "./path-to-your-pdf-file.pdf",
+   *       output_format: "text"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * extractTextFromPdf();
+   * ```
    */
   pdf: PDFExtraction,
   /**
    * Function for extracting text from images. It sends a request to the Image Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/text-extraction/image-extraction
    * @param image - The image to extract text from. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
    * @returns {Promise} A Promise that resolves to the extracted text.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function extractTextFromImage() {
+   *   try {
+   *     var result = await worqhat.textExtraction.image({
+   *       image: "./path-to-your-image.png"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * extractTextFromImage();
+   * ```
    */
   image: imageExtraction,
-/**
- * Function for extracting text from speech. It sends a request to the Speech Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/speech-extraction
- * @param audio - The audio to extract text from. It can be a `File object` or `base64` encoded audio data. This is a required parameter.
- * @returns {Promise} A Promise that resolves to the extracted text.
- *
- * @example
- * ```javascript
- * import { textExtraction } from 'worqhat-node';
- *
- * // Assuming you have a File object for the audio
- * let audioFile = new File([""], "filename");
- *
- * textExtraction.speech(audioFile)
- *   .then((text) => {
- *     console.log(text);
- *   })
- *   .catch((error) => {
- *     console.error(error);
- *   });
- * ```
- **/
+  /**
+   * Function for extracting text from speech. It sends a request to the Speech Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/speech-extraction
+   * @param audio - The audio to extract text from. It can be a `File object` or `base64` encoded audio data. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the extracted text.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function extractSpeech() {
+   *   try {
+   *     var result = await worqhat.textExtraction.speech({
+   *       audio: "./path-to-your-audio-file.wav"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * extractSpeech();
+   * ```
+   **/
   speech: speechExtraction,
 };
 
+/**
+ * The `analyseImages` object contains functions for analysing images, detecting faces in images, and comparing faces in images.
+ * It has access to the following functions:
+ * - analyse: Function for analysing images.
+ * - detectFaces: Function for detecting faces in images.
+ * - compareFaces: Function for comparing faces in images.
+ *
+ * @namespace analyseImages
+ * @property {function} analyse - Function for analysing images.
+ * @property {function} detectFaces - Function for detecting faces in images.
+ * @property {function} compareFaces - Function for comparing faces in images.
+ *
+ **/
 export const analyseImages = {
+  /**
+   * Function for analysing images. It sends a request to the Image Analysis AI Model and returns the analysis results. they can detect a wide range of labels, numbering in the thousands. These labels encompass objects such as “Palm Tree,” scenes like “Beach,” actions such as “Running,” and concepts like “Outdoors”. Also analyze various image properties using computer vision techniques. These properties include foreground and background colors, sharpness, brightness, and contrast. By analyzing these properties, the models gain further insights into the visual characteristics and qualities of the image. Read more at https://docs.worqhat.com/ai-models/image-analysis/image-analysis-v2
+   * @param image - The image to be analysed. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the analysis results.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function analyseImage() {
+   *   try {
+   *     var result = await worqhat.analyseImages.analyse({
+   *       image: "./path-to-your-image.png"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * analyseImage();
+   * ```
+   */
   analyse: analyseImagesProcess,
+  /**
+   * Function for detecting faces in images. You can detect faces within an image, and obtain valuable information about those faces. This includes the location of detected faces, facial landmarks such as the position of eyes, and attributes such as emotions (e.g., happiness or sadness) and the presence of glasses or face occlusion.. It sends a request to the Face Detection AI Model and returns the detection results. Read more at https://docs.worqhat.com/ai-models/image-analysis/face-analysis
+   * @param image - The image to be analysed. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the detection results.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function detectFaces() {
+   *   try {
+   *     var result = await worqhat.analyseImages.detectFaces({
+   *       image: "./path-to-your-image.png"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * detectFaces();
+   * ```
+   */
   detectFaces: detectFaces,
+  /**
+   * Function for Detecting faces in images and comparing them with other faces in a Database or another image. It sends a process request to the Face Comparison AI Model and returns the comparison results. Read more at https://docs.worqhat.com/ai-models/image-analysis/face-comparison-v2
+   * @param source_image - The source image to be compared. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @param target_image - The target image to be compared. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the comparison results.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function compareFaces() {
+   *   try {
+   *     var result = await worqhat.analyseImages.compareFaces({
+   *       source_image: "./path-to-source-image.png",
+   *       target_image: "./path-to-target-image.png"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * compareFaces();
+   * ```
+   */
   compareFaces: compareFaces,
 };
 

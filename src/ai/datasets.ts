@@ -79,7 +79,6 @@ export const deleteTrainedDatasets = async ({
       return {
         code: 200,
         processingTime: time,
-        ...response.data,
       };
     })
     .catch((error) => {
