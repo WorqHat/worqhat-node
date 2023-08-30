@@ -10,7 +10,14 @@ import {
 } from "../types";
 import * as Errors from "../error";
 import fs from "fs";
-import { createLogger, baseUrl, debug, LogStatus, startProcessingLog, stopProcessingLog } from "../core";
+import {
+  createLogger,
+  baseUrl,
+  debug,
+  LogStatus,
+  startProcessingLog,
+  stopProcessingLog,
+} from "../core";
 import { getImageAsBase64 } from "../uploads";
 
 export const webExtraction = async (params: WebExtractionParams) => {
@@ -31,7 +38,7 @@ export const webExtraction = async (params: WebExtractionParams) => {
       `Web Extraction`,
       "Sending request to Web Extraction AI Model",
     );
-    startProcessingLog('Web Extraction');
+    startProcessingLog("Web Extraction");
     const response = await axios.post(
       `${baseUrl}/api/ai/v2/web-extract`,
       {
@@ -101,7 +108,7 @@ export const PDFExtraction = async ({
       "PDF Extraction",
       "Sending request to PDF Extraction AI Model",
     );
-    startProcessingLog('PDF Extraction');
+    startProcessingLog("PDF Extraction");
     const response = await axios.post(
       `${baseUrl}/api/ai/v2/pdf-extract`,
       form,
@@ -169,7 +176,7 @@ export const imageExtraction = async ({ image }: ImageExtractionParams) => {
       "Image Extraction",
       `Sending request for image extraction`,
     );
-    startProcessingLog('Image Extraction');
+    startProcessingLog("Image Extraction");
     const response = await axios.post(
       `${baseUrl}/api/ai/images/v2/image-text-detection`,
       form,
@@ -246,6 +253,8 @@ export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
       "Speech Extraction",
       `Sending request for speech extraction`,
     );
+    startProcessingLog("Speech Extraction");
+
     const response = await axios.post(`${baseUrl}/api/ai/speech-text`, form, {
       headers: {
         ...form.getHeaders(),
@@ -253,6 +262,7 @@ export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
       },
     });
 
+    stopProcessingLog();
     debug(
       LogStatus.INFO,
       "Speech Extraction",

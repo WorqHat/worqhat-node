@@ -3,7 +3,14 @@ import * as Errors from "../error";
 import * as Success from "../success";
 import { appConfiguration } from "../index";
 import { ImageGenV2Params, ImageGenV3Params } from "../types";
-import { createLogger, baseUrl, debug, LogStatus, startProcessingLog, stopProcessingLog } from "../core";
+import {
+  createLogger,
+  baseUrl,
+  debug,
+  LogStatus,
+  startProcessingLog,
+  stopProcessingLog,
+} from "../core";
 
 const generateImage = async (
   version: string,

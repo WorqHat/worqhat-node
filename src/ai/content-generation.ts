@@ -1,5 +1,12 @@
 import axios from "axios";
-import { createLogger, baseUrl, debug, LogStatus, startProcessingLog, stopProcessingLog } from "../core";
+import {
+  createLogger,
+  baseUrl,
+  debug,
+  LogStatus,
+  startProcessingLog,
+  stopProcessingLog,
+} from "../core";
 import { appConfiguration } from "../index";
 import { ContentGenerationParams, AlphaParams, LargeParams } from "../types";
 import * as Errors from "../error";

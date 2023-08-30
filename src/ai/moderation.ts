@@ -6,7 +6,14 @@ import FormData from "form-data";
 import { appConfiguration } from "../index";
 import { ContentModerationParams, ImageModerationParams } from "../types";
 import { getImageAsBase64 } from "../uploads";
-import { createLogger, baseUrl, debug, LogStatus, startProcessingLog, stopProcessingLog } from "../core";
+import {
+  createLogger,
+  baseUrl,
+  debug,
+  LogStatus,
+  startProcessingLog,
+  stopProcessingLog,
+} from "../core";
 
 export const contentModeration = async ({
   text_content,
@@ -33,7 +40,7 @@ export const contentModeration = async ({
       "Content Moderation",
       `Processing AI Model for Content Moderation`,
     );
-    startProcessingLog('Content Moderation');
+    startProcessingLog("Content Moderation");
     const response = await axios.post(
       `${baseUrl}/api/ai/content-moderation/v1`,
       {
@@ -104,7 +111,7 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
       "Image Moderation",
       `Processing AI Model for Image Moderation`,
     );
-    startProcessingLog('Image Moderation');
+    startProcessingLog("Image Moderation");
     const response = await axios.post(
       `${baseUrl}/api/ai/images/v2/image-moderation`,
       form,
