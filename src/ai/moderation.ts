@@ -6,7 +6,7 @@ import FormData from "form-data";
 import { appConfiguration } from "../index";
 import { ContentModerationParams, ImageModerationParams } from "../types";
 import { getImageAsBase64 } from "../uploads";
-import { createLogger, baseUrl, debug, LogStatus } from "../core";
+import { createLogger, baseUrl, debug, LogStatus, startProcessingLog, stopProcessingLog } from "../core";
 
 export const contentModeration = async ({
   text_content,
@@ -33,6 +33,7 @@ export const contentModeration = async ({
       "Content Moderation",
       `Processing AI Model for Content Moderation`,
     );
+    startProcessingLog('Content Moderation');
     const response = await axios.post(
       `${baseUrl}/api/ai/content-moderation/v1`,
       {
@@ -48,6 +49,7 @@ export const contentModeration = async ({
 
     const timeafter = new Date();
     const time = timeafter.getTime() - timenow.getTime();
+    stopProcessingLog();
     debug(
       LogStatus.INFO,
       "Content Moderation",
@@ -100,8 +102,9 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
     debug(
       LogStatus.INFO,
       "Image Moderation",
-      `Receiving Responses for image moderation`,
+      `Processing AI Model for Image Moderation`,
     );
+    startProcessingLog('Image Moderation');
     const response = await axios.post(
       `${baseUrl}/api/ai/images/v2/image-moderation`,
       form,
@@ -115,6 +118,7 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
 
     const timeafter = new Date();
     const time = timeafter.getTime() - timenow.getTime();
+    stopProcessingLog();
     debug(
       LogStatus.INFO,
       "Image Moderation",

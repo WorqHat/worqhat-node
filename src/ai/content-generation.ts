@@ -1,9 +1,8 @@
 import axios from "axios";
-import { createLogger, baseUrl } from "../core";
+import { createLogger, baseUrl, debug, LogStatus, startProcessingLog, stopProcessingLog } from "../core";
 import { appConfiguration } from "../index";
 import { ContentGenerationParams, AlphaParams, LargeParams } from "../types";
 import * as Errors from "../error";
-import { debug, LogStatus } from "../core";
 
 const generateContent = async (
   version: string,
@@ -35,6 +34,7 @@ const generateContent = async (
     `AiCon${version}`,
     "Processing AI Model for Content Generation",
   );
+  startProcessingLog(`AiCon${version}`);
   try {
     const response = await axios.post(
       `${baseUrl}/api/ai/content/${version}`,
@@ -55,6 +55,7 @@ const generateContent = async (
 
     const timeafter = new Date();
     const time = timeafter.getTime() - timenow.getTime();
+    stopProcessingLog();
     debug(
       LogStatus.INFO,
       `AiCon${version}`,

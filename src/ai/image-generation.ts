@@ -3,7 +3,7 @@ import * as Errors from "../error";
 import * as Success from "../success";
 import { appConfiguration } from "../index";
 import { ImageGenV2Params, ImageGenV3Params } from "../types";
-import { createLogger, baseUrl, debug, LogStatus } from "../core";
+import { createLogger, baseUrl, debug, LogStatus, startProcessingLog, stopProcessingLog } from "../core";
 
 const generateImage = async (
   version: string,
@@ -77,6 +77,7 @@ const generateImage = async (
       `Image Generation ${version}`,
       "Start Processing Image Generation Request",
     );
+    startProcessingLog(`Image Generation ${version}`);
     const response = await axios.post(
       `${baseUrl}/api/ai/images/generate/${version}`,
       {
@@ -96,6 +97,7 @@ const generateImage = async (
 
     const timeafter = new Date();
     const time = timeafter.getTime() - timenow.getTime();
+    stopProcessingLog();
     debug(
       LogStatus.INFO,
       `Image Generation ${version}`,

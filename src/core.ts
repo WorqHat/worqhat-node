@@ -183,9 +183,43 @@ export enum LogStatus {
 export function debug(status: LogStatus, action: string, ...args: any[]) {
   if (appConfiguration && appConfiguration.debug) {
     const timestamp = new Date().toISOString();
-    console.log(`WorqHat:DEBUG:${status}:${action}:${timestamp}`, ...args);
+    let statusOutput: string;
+
+    switch (status) {
+      case LogStatus.INFO:
+        statusOutput = `\x1b[32m${status}\x1b[0m`;
+        break;
+      case LogStatus.WARN:
+        statusOutput = `\x1b[33m${status}\x1b[0m`;
+        break;
+      case LogStatus.ERROR:
+        statusOutput = `\x1b[31m${status}\x1b[0m`;
+        break;
+      default:
+        statusOutput = status;
+    }
+
+    console.log(
+      `WorqHat:DEBUG:${statusOutput}:${action}:${timestamp}`,
+      ...args,
+    );
   }
 }
+
+let intervalId: NodeJS.Timeout | null = null;
+
+export const startProcessingLog = (modelName: string) => {
+  intervalId = setInterval(() => {
+    debug(LogStatus.INFO, modelName, `AI Model is processing data`);
+  }, 1000);
+};
+
+export const stopProcessingLog = () => {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+};
 
 /**
  * https://stackoverflow.com/a/2117523
