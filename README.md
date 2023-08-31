@@ -22,14 +22,14 @@ The Worqhat Node SDK is a comprehensive library that allows developers to intera
 ## Installation
 
 You can install the Worqhat Node SDK via npm:
-\`\`\`
+```bash
 npm install worqhat
-\`\`\`
+```
 
 ## Usage
 
 First, you need to import the Worqhat SDK and initialize it with your API key:
-\`\`\`
+```JavaScript
 const worqhat = require('worqhat');
 
 var config = new worqhat.Configuration({
@@ -38,12 +38,12 @@ var config = new worqhat.Configuration({
 });
 
 worqhat.initializeApp(config);
-\`\`\`
+```
 
 ### Content Generation
 
-You can generate content using the \`contentGeneration\` method:
-\`\`\`
+You can generate content using the `contentGeneration` method:
+```JavaScript
 async function contentV2() {
   try {
     var content = await worqhat.contentGeneration.v2({
@@ -54,12 +54,12 @@ async function contentV2() {
     console.error(error);
   }
 }
-\`\`\`
+```
 
 ### Image Generation
 
-You can generate images using the \`imageGeneration\` method:
-\`\`\`
+You can generate images using the `imageGeneration` method:
+```JavaScript
 async function imageV2() {
   try {
     var image = await worqhat.imageGeneration.v2({
@@ -75,12 +75,12 @@ async function imageV2() {
     console.error(error);
   }
 }
-\`\`\`
+```
 
 ### Text Extraction
 
-You can extract text from images or speech using the \`textExtraction\` method:
-\`\`\`
+You can extract text from images or speech using the `textExtraction` method:
+```JavaScript
 async function imageExtraction() {
   try {
     var image = await worqhat.textExtraction.image({
@@ -91,12 +91,13 @@ async function imageExtraction() {
     console.error(error);
   }
 }
-\`\`\`
+```
 
 ### Image Analysis
 
-You can analyze images using the \`analyseImages\` method:
-\`\`\`
+You can analyze images using the `analyseImages` method:
+
+```JavaScript
 async function analyseImage() {
   try {
     var image = await worqhat.analyseImages.analyse({
@@ -107,11 +108,11 @@ async function analyseImage() {
     console.error(error);
   }
 }
-\`\`\`
+```
 
 ## License
 
-This project is licensed under the MIT License. For more details, please refer to the [LICENSE](filePath: worqhat-node/LICENSE) file.
+This project is licensed under the MIT License. For more details, please refer to the [LICENSE](LICENSE) file.
 
 ## Contributing
 
@@ -119,8 +120,8 @@ We welcome contributions from the community. Please read our [contributing guide
 
 ## Support
 
-If you encounter any issues or have any questions, please file an issue on our [GitHub issues page](filePath: worqhat-node/package.json, startLine: 56, endLine: 58).
+If you encounter any issues or have any questions, please file an issue on our [GitHub issues page](https://github.com/WorqHat/worqhat-node/issues).
 
 ## Documentation
 
-For more detailed documentation, please visit our [official documentation](filePath: worqhat-node/package.json, startLine: 59, endLine: 59).
+For more detailed documentation, please visit our [official documentation](https://docs.worqhat.com).
