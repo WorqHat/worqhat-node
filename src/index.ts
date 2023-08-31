@@ -22,7 +22,11 @@ import {
   detectFaces,
   compareFaces,
 } from "./ai/image-analysis";
-import { imageModificationV2, imageModificationV3 } from "./ai/img2img";
+import {
+  imageModificationV2,
+  imageModificationV3,
+  imageUpscaler,
+} from "./ai/img2img";
 
 /* The Configuration class is used to store and validate an API key. */
 export class Configuration {
@@ -836,9 +840,128 @@ export const analyseImages = {
   compareFaces: compareFaces,
 };
 
+/**
+ * The `imageVariations` object contains functions for modifying images using different versions of the API and for upscaling images.
+ * It has access to the following functions:
+ * - v2: Function for modifying images using version 2 of the AI Image Model and it carries the inherent features of the model.
+ * - v3: Function for modifying images using version 3 of the API and it carries the inherent features of the model.
+ * - upscale: Function for upscaling images upto 4x or maximum size of 2048px using the AI Image Upscaler Model.
+ *
+ * @namespace imageVariations
+ * @property {function} v2 - Function for modifying images using version 2 of the API.
+ * @property {function} v3 - Function for modifying images using version 3 of the API.
+ * @property {function} upscale - Function for upscaling images.
+ */
 export const imageVariations = {
+  /**
+   * Function for modifying images using version 2 of the API. It sends a request to the Image Modification V2 AI Model and returns the new image.
+   * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @param {string} modifications - The modifications to be made to the image. This is a required parameter.
+   * @param {"url" | "blob"} outputType - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+   * @param {number} similarity - The similarity percentage for the image modification. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the modified image.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function modifyImage() {
+   *   try {
+   *     var result = await worqhat.imageVariations.v2({
+   *       existing_image: "./path-to-your-image.png",
+   *       modifications: "your modifications",
+   *       outputType: "url",
+   *       similarity: 80
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * modifyImage();
+   * ```
+   */
   v2: imageModificationV2,
+  /**
+   * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+   * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @param {string} modifications - The modifications to be made to the image. This is a required parameter.
+   * @param {"url" | "blob"} outputType - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+   * @param {number} similarity - The similarity percentage for the image modification. This is a required parameter.
+   * @returns {Promise} A Promise that resolves to the modified image.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function modifyImage() {
+   *   try {
+   *     var result = await worqhat.imageVariations.v3({
+   *       existing_image: "./path-to-your-image.png",
+   *       modifications: "your modifications",
+   *       outputType: "url",
+   *       similarity: 80
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * modifyImage();
+   * ```
+   */
   v3: imageModificationV3,
+  /**
+   * Function for upscaling images using the AI Image Upscaler Model. It sends a request to the Image Upscaler AI Model and returns the upscaled image.
+   * @param {File | string} existing_image - The existing image to be upscaled. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @param {number} scale - The scale factor for the image upscaling. This is an optional parameter. Make sure to use a value between 1 and 4 so that it does not scale one side beyond 2048px.
+   * @param {"url" | "blob"} output_type - The output type of the upscaled image. It can be either "url" or "blob". This is an optional parameter.
+   * @returns {Promise} A Promise that resolves to the upscaled image.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function upscaleImage() {
+   *   try {
+   *     var result = await worqhat.imageVariations.upscale({
+   *       existing_image: "./path-to-your-image.png",
+   *       scale: 2,
+   *       output_type: "url"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * upscaleImage();
+   * ```
+   */
+  upscale: imageUpscaler,
 };
 
 export default {

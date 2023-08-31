@@ -245,7 +245,11 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
   }
 
   const timenow = new Date();
-  debug(LogStatus.INFO, "Image Upscale", `Received Image data ${existing_image}`);
+  debug(
+    LogStatus.INFO,
+    "Image Upscale",
+    `Received Image data ${existing_image}`,
+  );
   debug(LogStatus.INFO, "Image Upscale", `Converting image to base64`);
 
   let base64Data: string = await getImageAsBase64(existing_image);
@@ -258,18 +262,37 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
   const metadata = await sharp(imageBuffer).metadata();
 
   if (!metadata.width || !metadata.height) {
-    debug(LogStatus.ERROR, "Image Upscale", `Image metadata is missing width or height.`);
+    debug(
+      LogStatus.ERROR,
+      "Image Upscale",
+      `Image metadata is missing width or height.`,
+    );
     throw new Error("Image metadata is missing width or height.");
   }
 
-  if ((metadata.width * scale) * (metadata.height * scale) > MAX_PIXEL_COUNT) {
-    debug(LogStatus.ERROR, "Image Upscale", `Upscaled image will exceed the maximum pixel count of ${MAX_PIXEL_COUNT}.`);
-    throw new Error(`Upscaled image will exceed the maximum pixel count of ${MAX_PIXEL_COUNT}.`);
+  if (metadata.width * scale * (metadata.height * scale) > MAX_PIXEL_COUNT) {
+    debug(
+      LogStatus.ERROR,
+      "Image Upscale",
+      `Upscaled image will exceed the maximum pixel count of ${MAX_PIXEL_COUNT}.`,
+    );
+    throw new Error(
+      `Upscaled image will exceed the maximum pixel count of ${MAX_PIXEL_COUNT}.`,
+    );
   }
 
-  if (metadata.width * scale <= MIN_UPSCALED_DIMENSION && metadata.height * scale <= MIN_UPSCALED_DIMENSION) {
-    debug(LogStatus.ERROR, "Image Upscale", `Upscaled height or width should be greater than ${MIN_UPSCALED_DIMENSION}.`);
-    throw new Error(`Upscaled height or width should be greater than ${MIN_UPSCALED_DIMENSION}.`);
+  if (
+    metadata.width * scale <= MIN_UPSCALED_DIMENSION &&
+    metadata.height * scale <= MIN_UPSCALED_DIMENSION
+  ) {
+    debug(
+      LogStatus.ERROR,
+      "Image Upscale",
+      `Upscaled height or width should be greater than ${MIN_UPSCALED_DIMENSION}.`,
+    );
+    throw new Error(
+      `Upscaled height or width should be greater than ${MIN_UPSCALED_DIMENSION}.`,
+    );
   }
 
   const form = new FormData();
