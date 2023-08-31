@@ -10,8 +10,10 @@ import {
   LogStatus,
   startProcessingLog,
   stopProcessingLog,
+  MAX_PIXEL_COUNT,
+  MIN_UPSCALED_DIMENSION,
 } from "../core";
-import { ImageModificationParams } from "../types";
+import { ImageModificationParams, ImageUpscaleParams } from "../types";
 import { getImageAsBase64 } from "../uploads";
 import { appConfiguration } from "../index";
 
@@ -226,4 +228,100 @@ export const imageModificationV3 = async (params: ImageModificationParams) => {
       );
     }
   });
+};
+
+export const imageUpscaler = async (params: ImageUpscaleParams) => {
+  const { existing_image } = params;
+
+  debug(LogStatus.INFO, "Image Upscale", `Starting image upscale process`);
+  if (!existing_image) {
+    debug(LogStatus.ERROR, "Image Upscale", `Image data is missing`);
+    throw new Error("Image data is required");
+  }
+
+  if (!appConfiguration) {
+    debug(LogStatus.ERROR, "Image Upscale", `App Configuration is null`);
+    throw new Error("App Configuration is null");
+  }
+
+  const timenow = new Date();
+  debug(LogStatus.INFO, "Image Upscale", `Received Image data ${existing_image}`);
+  debug(LogStatus.INFO, "Image Upscale", `Converting image to base64`);
+
+  let base64Data: string = await getImageAsBase64(existing_image);
+
+  let scale = params.scale || 2;
+
+  let imageBuffer = Buffer.from(base64Data, "base64");
+
+  // Get the dimensions of the image
+  const metadata = await sharp(imageBuffer).metadata();
+
+  if (!metadata.width || !metadata.height) {
+    debug(LogStatus.ERROR, "Image Upscale", `Image metadata is missing width or height.`);
+    throw new Error("Image metadata is missing width or height.");
+  }
+
+  if ((metadata.width * scale) * (metadata.height * scale) > MAX_PIXEL_COUNT) {
+    debug(LogStatus.ERROR, "Image Upscale", `Upscaled image will exceed the maximum pixel count of ${MAX_PIXEL_COUNT}.`);
+    throw new Error(`Upscaled image will exceed the maximum pixel count of ${MAX_PIXEL_COUNT}.`);
+  }
+
+  if (metadata.width * scale <= MIN_UPSCALED_DIMENSION && metadata.height * scale <= MIN_UPSCALED_DIMENSION) {
+    debug(LogStatus.ERROR, "Image Upscale", `Upscaled height or width should be greater than ${MIN_UPSCALED_DIMENSION}.`);
+    throw new Error(`Upscaled height or width should be greater than ${MIN_UPSCALED_DIMENSION}.`);
+  }
+
+  const form = new FormData();
+  // Append the image as a file
+  debug(LogStatus.INFO, "Image Upscale", `AI Models processing image`);
+  form.append("image", Buffer.from(base64Data, "base64"), {
+    filename: "image.jpg",
+    contentType: "image/jpeg",
+  });
+  form.append("output_type", params.output_type || "url");
+  form.append("scale", scale);
+
+  try {
+    debug(
+      LogStatus.INFO,
+      "Image Upscale",
+      `Processing AI Model for Image Upscale`,
+    );
+    startProcessingLog("Image Upscale");
+
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/upscale/v3`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: "Bearer " + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    const timeafter = new Date();
+    const time = timeafter.getTime() - timenow.getTime();
+    stopProcessingLog();
+
+    debug(
+      LogStatus.INFO,
+      "Image Upscale",
+      `Completed response from image upscale API`,
+    );
+
+    return {
+      processingTime: time,
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    debug(
+      LogStatus.ERROR,
+      "Image Upscale",
+      `Error occurred during image upscale: ${error}`,
+    );
+    throw error;
+  }
 };

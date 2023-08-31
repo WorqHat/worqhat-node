@@ -100,6 +100,12 @@ export interface CompareFacesParams {
 export interface ImageModificationParams {
   existing_image: File | string;
   modifications: string;
-  outputType: string;
+  outputType?: "url" | "blob";
   similarity: number;
+}
+
+export interface ImageUpscaleParams {
+  existing_image: File | string;
+  scale?: number;
+  output_type?: "url" | "blob";
 }
