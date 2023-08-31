@@ -964,6 +964,9 @@ export const imageVariations = {
   upscale: imageUpscaler,
 };
 
+export const trainingData = {
+}
+
 export default {
   checkAuthentication,
   initializeApp,
