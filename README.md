@@ -7,21 +7,22 @@ The Worqhat Node SDK is a comprehensive library that allows developers to intera
 ## Table of Contents
 
 - [Worqhat Node SDK](#worqhat-node-sdk)
-	- [Table of Contents](#table-of-contents)
-	- [Installation](#installation)
-	- [Usage](#usage)
-		- [Content Generation](#content-generation)
-		- [Image Generation](#image-generation)
-		- [Text Extraction](#text-extraction)
-		- [Image Analysis](#image-analysis)
-	- [License](#license)
-	- [Contributing](#contributing)
-	- [Support](#support)
-	- [Documentation](#documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Content Generation](#content-generation)
+    - [Image Generation](#image-generation)
+    - [Text Extraction](#text-extraction)
+    - [Image Analysis](#image-analysis)
+  - [License](#license)
+  - [Contributing](#contributing)
+  - [Support](#support)
+  - [Documentation](#documentation)
 
 ## Installation
 
 You can install the Worqhat Node SDK via npm:
+
 ```bash
 npm install worqhat
 ```
@@ -29,6 +30,7 @@ npm install worqhat
 ## Usage
 
 First, you need to import the Worqhat SDK and initialize it with your API key:
+
 ```JavaScript
 const worqhat = require('worqhat');
 
@@ -43,6 +45,7 @@ worqhat.initializeApp(config);
 ### Content Generation
 
 You can generate content using the `contentGeneration` method:
+
 ```JavaScript
 async function contentV2() {
   try {
@@ -59,6 +62,7 @@ async function contentV2() {
 ### Image Generation
 
 You can generate images using the `imageGeneration` method:
+
 ```JavaScript
 async function imageV2() {
   try {
@@ -80,6 +84,7 @@ async function imageV2() {
 ### Text Extraction
 
 You can extract text from images or speech using the `textExtraction` method:
+
 ```JavaScript
 async function imageExtraction() {
   try {
