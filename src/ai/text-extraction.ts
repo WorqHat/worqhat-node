@@ -140,7 +140,7 @@ export const PDFExtraction = async ({
   }
 };
 
-export const imageExtraction = async ({ image }: ImageExtractionParams) => {
+export const imageExtraction = async ({ image, output_format }: ImageExtractionParams) => {
   try {
     debug(
       LogStatus.INFO,
@@ -170,6 +170,7 @@ export const imageExtraction = async ({ image }: ImageExtractionParams) => {
       filename: "image.jpg",
       contentType: "image/jpeg",
     });
+    form.append("output_format", output_format || "json");
 
     debug(
       LogStatus.INFO,

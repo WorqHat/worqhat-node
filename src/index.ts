@@ -668,6 +668,7 @@ export const textExtraction = {
   /**
    * Function for extracting text from images. It sends a request to the Image Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/text-extraction/image-extraction
    * @param image - The image to extract text from. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+   * @param output_format - A string representing the output format of the extracted text. You can choose between ``text`` or ``json``. This is a required parameter. It defaults to ``json``.
    * @returns {Promise} A Promise that resolves to the extracted text.
    * @example
    * ```javascript
@@ -683,7 +684,8 @@ export const textExtraction = {
    * async function extractTextFromImage() {
    *   try {
    *     var result = await worqhat.textExtraction.image({
-   *       image: "./path-to-your-image.png"
+   *       image: "./path-to-your-image.png",
+   *      output_format: "json"
    *     })
    *     console.log(result);
    *

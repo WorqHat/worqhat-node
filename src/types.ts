@@ -78,6 +78,7 @@ export interface PDFExtractionParams {
 
 export interface ImageExtractionParams {
   image: File | string;
+  output_format: "text" | "json";
 }
 
 export interface SpeechExtractionParams {
