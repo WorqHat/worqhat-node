@@ -11,12 +11,10 @@ export interface ContentGenerationParams {
   question?: string;
   training_data?: string;
   randomness?: number;
-  stream_data?: boolean;
 }
 
 export interface AlphaParams {
   question: string;
-  stream_data?: boolean;
 }
 
 export interface searchV2Params {
@@ -60,7 +58,6 @@ export interface LargeParams {
   datasetId: string;
   question: string;
   randomness?: number;
-  stream_data?: boolean;
 }
 
 export interface WebExtractionParams {

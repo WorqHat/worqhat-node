@@ -11,6 +11,8 @@ import { appConfiguration } from "../index";
 import { ContentGenerationParams, AlphaParams, LargeParams } from "../types";
 import * as Errors from "../error";
 
+import { Readable } from "stream";
+
 const generateContent = async (
   version: string,
   history_object: object | undefined,
@@ -18,8 +20,7 @@ const generateContent = async (
   question: string | undefined,
   training_data: string | undefined,
   randomness: number | undefined,
-  stream_data?: boolean | undefined,
-) => {
+): Promise<Readable | object> => {
   debug(
     LogStatus.INFO,
     `AiCon${version}`,
@@ -43,28 +44,26 @@ const generateContent = async (
     "Processing AI Model for Content Generation",
   );
   startProcessingLog(`AiCon${version}`);
+
   try {
-    const response = await axios.post(
-      `${baseUrl}/api/ai/content/${version}`,
-      {
+    const response = await axios({
+      method: "post",
+      url: `${baseUrl}/api/ai/content/${version}`,
+      data: {
         history_object: history_object || {},
         preserve_history: preserve_history || false,
         question: question,
         training_data: training_data || "",
         randomness: randomness || 0.2,
-        stream_data: stream_data || false,
       },
-      {
-        headers: {
-          Authorization: "Bearer " + appConfiguration.apiKey,
-          "Content-Type": "application/json",
-        },
+      headers: {
+        Authorization: "Bearer " + appConfiguration.apiKey,
+        "Content-Type": "application/json",
       },
-    );
+    });
 
     const timeafter = new Date();
     const time = timeafter.getTime() - timenow.getTime();
-    stopProcessingLog();
     debug(
       LogStatus.INFO,
       `AiCon${version}`,
@@ -89,7 +88,7 @@ export const v2Content = ({
   randomness,
 }: ContentGenerationParams) => {
   debug(LogStatus.INFO, "AiConV2", "Function called with question:", question);
-  generateContent(
+  return generateContent(
     "v2",
     history_object,
     preserve_history,
@@ -112,7 +111,7 @@ export const v3Content = ({
     "Function called with question:",
     question,
   );
-  generateContent(
+  return generateContent(
     "v3",
     history_object,
     preserve_history,
@@ -122,7 +121,7 @@ export const v3Content = ({
   );
 };
 
-export const alphaContent = async ({ question, stream_data }: AlphaParams) => {
+export const alphaContent = async ({ question }: AlphaParams) => {
   debug(
     LogStatus.INFO,
     "AiConV2 Alpha",
@@ -152,7 +151,6 @@ export const alphaContent = async ({ question, stream_data }: AlphaParams) => {
       `${baseUrl}/api/ai/content/v2/new/alpha`,
       {
         question: question,
-        stream_data: stream_data || false,
       },
       {
         headers: {
@@ -184,7 +182,6 @@ export const largeContent = async ({
   datasetId,
   question,
   randomness,
-  stream_data,
 }: LargeParams) => {
   debug(
     LogStatus.INFO,
@@ -227,7 +224,6 @@ export const largeContent = async ({
         datasetId: datasetId,
         question: question,
         randomness: randomness || 0.2,
-        stream_data: stream_data || false,
       },
       {
         headers: {

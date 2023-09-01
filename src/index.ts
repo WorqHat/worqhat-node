@@ -168,7 +168,6 @@ export const contentGeneration = {
    * @param question: A string representing the question to generate content for. Default is undefined.
    * @param training_data: A string representing the training data to use for generating content. Default is undefined.
    * @param randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
-   * @param stream_data: A boolean indicating whether to stream the data or not. Default is false.
    * @example
    * ```javascript
    * const worqhat = require('worqhat');
@@ -188,7 +187,6 @@ export const contentGeneration = {
    *       question: "Your question here",
    *       training_data: "your-training-data-id",
    *       randomness: 0.3,
-   *      stream_data: true
    *     })
    *     console.log(result);
    *
@@ -208,7 +206,6 @@ export const contentGeneration = {
    * @param question: A string representing the question to generate content for. Default is undefined.
    * @param training_data: A string representing the training data to use for generating content. Default is undefined.
    * @param randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
-   * @param stream_data: A boolean indicating whether to stream the data or not. Default is false.
    * @example
    * ```javascript
    * const worqhat = require('worqhat');
@@ -228,7 +225,6 @@ export const contentGeneration = {
    *       question: "Your question here",
    *       training_data: "your-training-data-id",
    *       randomness: 0.3,
-   *     stream_data: true
    *     })
    *     console.log(result);
    *
@@ -244,7 +240,6 @@ export const contentGeneration = {
   /**
    * Alpha version Content Generation AI with data upto 2023 which can be used to generate Current Data based content. The Alpha Channel of AiCon V2 is mostly dependent on the Data upto May 2023 which makes it relatively upto date and more accurate than the previous versions of AiCon. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
    * @param question: A string representing the question to generate content for. Default is undefined.
-   * @param stream_data: A boolean indicating whether to stream the data or not. Default is false.
    * @example
    * ```javascript
    * const worqhat = require('worqhat');
@@ -260,7 +255,6 @@ export const contentGeneration = {
    *   try {
    *     var result = await worqhat.contentGeneration.alpha({
    *       question: "Your question here",
-   *      stream_data: true
    *     })
    *     console.log(result);
    *
@@ -279,7 +273,6 @@ export const contentGeneration = {
    * @param {string} datasetId - The id of the dataset to be used for content generation. This is a required parameter.
    * @param {string} question - The question or prompt based on which the content will be generated. This is a required parameter.
    * @param {number} randomness - A number representing the level of randomness to use for generating content. Default is 0.2.
-   * @param {boolean} stream_data - A boolean indicating whether to stream the data or not. Default is false.
    * @returns {Promise} A Promise that resolves to the generated content.
    * @example
    * ```javascript
@@ -298,7 +291,6 @@ export const contentGeneration = {
    *       datasetId: "your-dataset-id",
    *       question: "Your question here",
    *       randomness: 0.3,
-   *      stream_data: true
    *     })
    *     console.log(result);
    *
