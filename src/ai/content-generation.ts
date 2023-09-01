@@ -18,6 +18,7 @@ const generateContent = async (
   question: string | undefined,
   training_data: string | undefined,
   randomness: number | undefined,
+  stream_data?: boolean | undefined,
 ) => {
   debug(
     LogStatus.INFO,
@@ -51,6 +52,7 @@ const generateContent = async (
         question: question,
         training_data: training_data || "",
         randomness: randomness || 0.2,
+        stream_data: stream_data || false,
       },
       {
         headers: {
@@ -120,7 +122,7 @@ export const v3Content = ({
   );
 };
 
-export const alphaContent = async ({ question }: AlphaParams) => {
+export const alphaContent = async ({ question, stream_data }: AlphaParams) => {
   debug(
     LogStatus.INFO,
     "AiConV2 Alpha",
@@ -150,6 +152,7 @@ export const alphaContent = async ({ question }: AlphaParams) => {
       `${baseUrl}/api/ai/content/v2/new/alpha`,
       {
         question: question,
+        stream_data: stream_data || false,
       },
       {
         headers: {
@@ -181,6 +184,7 @@ export const largeContent = async ({
   datasetId,
   question,
   randomness,
+  stream_data,
 }: LargeParams) => {
   debug(
     LogStatus.INFO,
@@ -223,6 +227,7 @@ export const largeContent = async ({
         datasetId: datasetId,
         question: question,
         randomness: randomness || 0.2,
+        stream_data: stream_data || false,
       },
       {
         headers: {
