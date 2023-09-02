@@ -56,7 +56,7 @@
   "bugs": {
     "url": "https://github.com/WorqHat/worqhat-node/issues"
   },
-  "homepage": "https://github.com/WorqHat/worqhat-node#readme",
+  "homepage": "https://docs.worqhat.com/node-sdk",
   "devDependencies": {
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",

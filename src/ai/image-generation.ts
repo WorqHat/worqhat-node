@@ -138,7 +138,7 @@ export const v2ImageGen = ({
     "Starting Image Generation V2:",
     prompt,
   );
-  generateImage(
+  return generateImage(
     "v2",
     orientation || "Square",
     image_style || "default",
@@ -159,7 +159,7 @@ export const v3ImageGen = ({
     "Starting Image Generation V3:",
     prompt,
   );
-  generateImage(
+  return generateImage(
     "v3",
     orientation || "Square",
     image_style || "default",

@@ -1,12 +1,19 @@
 # Worqhat Node SDK
 
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/trle.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
+[![NPM version](https://img.shields.io/npm/v/worqhat.svg)](https://npmjs.org/package/worqhat)
 
-The Worqhat Node SDK is a comprehensive library that allows developers to interact with the Worqhat API. It provides a simple and intuitive interface to access various AI services such as content generation, image generation, text extraction, image analysis, and more.
+The WorqHat Node SDK is a comprehensive library that allows developers to interact with the 
+WorqHat API. It provides a simple and intuitive interface to access various AI services such as 
+content generation, image generation, text extraction, image analysis, and more.
+
+This library provides convenient access to the WorqHat REST API from TypeScript or JavaScript.
+
+To learn how to use the WorqHat APIs, check out our [API Reference](https://docs.worqhat.com/api-reference/authentication) and [Documentation](https://docs.worqhat.com/introduction).
 
 ## Table of Contents
 
-- [Worqhat Node SDK](#worqhat-node-sdk)
+- [WorqHat Node SDK](#worqhat-node-sdk)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -21,10 +28,14 @@ The Worqhat Node SDK is a comprehensive library that allows developers to intera
 
 ## Installation
 
-You can install the Worqhat Node SDK via npm:
+You can install the WorqHat Node SDK via npm or yarn:
 
 ```bash
 npm install worqhat
+```
+
+```bash
+yarn add worqhat
 ```
 
 ## Usage
@@ -37,10 +48,15 @@ const worqhat = require('worqhat');
 var config = new worqhat.Configuration({
   apiKey: "your-api-key",
   debug: true,
+  
 });
 
 worqhat.initializeApp(config);
 ```
+
+> [!IMPORTANT]
+> Previous versions of this SDK used a `Configuration` class. See the [v3 to v4 migration guide](https://github.com/openai/openai-node/discussions/217).
+
 
 ### Content Generation
 
