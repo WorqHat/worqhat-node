@@ -273,6 +273,7 @@ export const contentGeneration = {
    * @param {string} datasetId - The id of the dataset to be used for content generation. This is a required parameter.
    * @param {string} question - The question or prompt based on which the content will be generated. This is a required parameter.
    * @param {number} randomness - A number representing the level of randomness to use for generating content. Default is 0.2.
+   * @param {array} instructions - An array of strings representing the instructions for the content generation. Default is undefined.
    * @returns {Promise} A Promise that resolves to the generated content.
    * @example
    * ```javascript
@@ -641,6 +642,35 @@ export const textExtraction = {
    * @param references - A boolean indicating whether to extract references. Default is false.
    * @param url_path - A string representing the URL of the web page to extract text from. This is a required parameter.
    * @returns {Promise} A Promise that resolves to the extracted text.
+   * @example
+   * ```javascript
+   * const worqhat = require('worqhat');
+   *
+   * var config = new worqhat.Configuration({
+   *   apiKey: "your-api-key",
+   *   debug: true,
+   * });
+   *
+   * worqhat.initializeApp(config);
+   *
+   * async function extractTextFromWeb() {
+   *   try {
+   *     var result = await worqhat.textExtraction.web({
+   *       code_blocks: true,
+   *      headline: true,
+   *     inline_code: true,
+   *    references: true,
+   *      url_path: "https://www.your-website.com"
+   *     })
+   *     console.log(result);
+   *
+   *   } catch (error) {
+   *     console.error(error);
+   *   }
+   * }
+   *
+   * extractTextFromWeb();
+   * ```
    */
   web: webExtraction,
   /**
@@ -711,7 +741,7 @@ export const textExtraction = {
   image: imageExtraction,
   /**
    * Function for extracting text from speech. It sends a request to the Speech Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/speech-extraction
-   * @param audio - The audio to extract text from. It can be a `File object` or `base64` encoded audio data. This is a required parameter.
+   * @param audio - The audio to extract text from. It can be a `File Path`. This is a required parameter.
    * @returns {Promise} A Promise that resolves to the extracted text.
    * @example
    * ```javascript
@@ -867,7 +897,7 @@ export const analyseImages = {
  */
 export const imageVariations = {
   /**
-   * Function for modifying images using version 2 of the API. It sends a request to the Image Modification V2 AI Model and returns the new image.
+   * Function for modifying images using version 2 of the API. It sends a request to the Image Modification V2 AI Model and returns the new image. Read more at https://docs.worqhat.com/ai-models/image-generation/image-image-v2
    * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
    * @param {string} modifications - The modifications to be made to the image. This is a required parameter.
    * @param {"url" | "blob"} outputType - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
@@ -904,7 +934,7 @@ export const imageVariations = {
    */
   v2: imageModificationV2,
   /**
-   * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+   * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image. Read more about the Model at https://docs.worqhat.com/ai-models/image-generation/image-image-v3
    * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
    * @param {string} modifications - The modifications to be made to the image. This is a required parameter.
    * @param {"url" | "blob"} outputType - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
@@ -941,7 +971,7 @@ export const imageVariations = {
    */
   v3: imageModificationV3,
   /**
-   * Function for upscaling images using the AI Image Upscaler Model. It sends a request to the Image Upscaler AI Model and returns the upscaled image.
+   * Function for upscaling images using the AI Image Upscaler Model. It sends a request to the Image Upscaler AI Model and returns the upscaled image. Read more at https://docs.worqhat.com/ai-models/image-generation/image-upscale
    * @param {File | string} existing_image - The existing image to be upscaled. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
    * @param {number} scale - The scale factor for the image upscaling. This is an optional parameter. Make sure to use a value between 1 and 4 so that it does not scale one side beyond 2048px.
    * @param {"url" | "blob"} output_type - The output type of the upscaled image. It can be either "url" or "blob". This is an optional parameter.

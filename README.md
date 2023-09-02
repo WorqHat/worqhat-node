@@ -16,14 +16,14 @@ To learn how to use the WorqHat APIs, check out our [API Reference](https://docs
 ### Table of Contents
 
 - [Worqhat Node SDK](#worqhat-node-sdk)
-    - [Table of Contents](#table-of-contents)
-    - [Installation](#installation)
-    - [Usage](#usage)
-    - [TypeScript support](#typescript-support)
-      - [Verify User Profile](#verify-user-profile)
-    - [Sample Functions](#sample-functions)
-        - [AiCon V2](#aicon-v2)
-        - [AiCon V3](#aicon-v3)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [TypeScript support](#typescript-support)
+    - [Verify User Profile](#verify-user-profile)
+  - [Sample Functions](#sample-functions)
+    - [AiCon V2](#aicon-v2)
+    - [AiCon V3](#aicon-v3)
   - [Documentations](#documentations)
   - [License](#license)
   - [Contributing](#contributing)
@@ -61,18 +61,18 @@ worqhat.initializeApp(config);
 
 Here are the configuration options you can set when initializing the Worqhat SDK:
 
-Option | Description | Required
---- | --- | ---
-`apiKey` | The API key used for authentication. This key is required to access the API services. | Yes
-`debug` | If set to `true`, the SDK will log debug information to the console. Default value is `false`.| No
-`max_retries` | The maximum number of retries to attempt for a request. The default value is `2`. Max limit is `5`. | No
+| Option        | Description                                                                                         | Required |
+| ------------- | --------------------------------------------------------------------------------------------------- | -------- |
+| `apiKey`      | The API key used for authentication. This key is required to access the API services.               | Yes      |
+| `debug`       | If set to `true`, the SDK will log debug information to the console. Default value is `false`.      | No       |
+| `max_retries` | The maximum number of retries to attempt for a request. The default value is `2`. Max limit is `5`. | No       |
 
 ### TypeScript support
 
 Import the package as a class and run the Typescript compiler. You can then use the SDK as follows:
 
 ```ts
-import * as worqhat from 'worqhat';
+import * as worqhat from "worqhat";
 
 const config = new worqhat.Configuration({
   apiKey: "your-api-key",
@@ -80,43 +80,41 @@ const config = new worqhat.Configuration({
 });
 
 worqhat.initializeApp(config);
-
 ```
 
 #### Verify User Profile
 
 The easiest way to verify whether the package is working or not is by sending a request to the Authenticate endpoint. This can be done by calling the `checkAuthentication` method provided by the SDK. Here is an example of how to do this:
 
- ```javascript
- const worqhat = require('worqhat');
+```javascript
+const worqhat = require("worqhat");
 
- const config = new worqhat.Configuration({
-   apiKey: "your-api-key",
-   debug: true,
- });
+const config = new worqhat.Configuration({
+  apiKey: "your-api-key",
+  debug: true,
+});
 
- worqhat.initializeApp(config);
+worqhat.initializeApp(config);
 
- async function checkAuth() {
-   try {
-     const result = await worqhat.checkAuthentication();
-     console.log(result);
-   } catch (error) {
-     console.error(error);
-   }
- }
+async function checkAuth() {
+  try {
+    const result = await worqhat.checkAuthentication();
+    console.log(result);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
- checkAuth();
-
+checkAuth();
 ```
+
 ### Sample Functions
 
 You can generate content using the `contentGeneration` method:
 
 ##### AiCon V2
 
-  Version 2 Content Generation AI focused only on Business Content Generation Purpose. It can be used to generate content for a variety of business use cases where the content is not too creative or complex. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-textgen
-
+Version 2 Content Generation AI focused only on Business Content Generation Purpose. It can be used to generate content for a variety of business use cases where the content is not too creative or complex. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-textgen
 
 ```JavaScript
    async function generateContent() {
@@ -140,22 +138,21 @@ You can generate content using the `contentGeneration` method:
 
 Here are the parameters that can be passed to the `contentGeneration` method:
 
-Parameter | Description | Required
---- | --- | ---
-`history_object` | An object representing the history of the conversation. | No
-`preserve_history` | A boolean indicating whether to preserve the conversation history. | No
-`question` | A string representing the question to generate content for. | Yes
-`training_data` | A string representing the training data to use for generating content. | No
-`randomness` | A float representing the randomness or hallucinating factor for content generation. | No
+| Parameter          | Description                                                                         | Required |
+| ------------------ | ----------------------------------------------------------------------------------- | -------- |
+| `history_object`   | An object representing the history of the conversation.                             | No       |
+| `preserve_history` | A boolean indicating whether to preserve the conversation history.                  | No       |
+| `question`         | A string representing the question to generate content for.                         | Yes      |
+| `training_data`    | A string representing the training data to use for generating content.              | No       |
+| `randomness`       | A float representing the randomness or hallucinating factor for content generation. | No       |
 
 Note: If `history_object` is not provided, the default value is `undefined`. If `preserve_history` is not provided, the default value is `false`. If `training_data` is not provided, the default value is `undefined`. If `randomness` is not provided, the default value is `0.2`.
 
-
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ##### AiCon V3
 
-  Version 3 Advanced Generation AI focused for more creative and understanding capabilities. It can be used to generate content for a variety of use cases where the content is more creative or complex. It can run complex situational analysis and understand the context of the commands. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v3-textgen
+Version 3 Advanced Generation AI focused for more creative and understanding capabilities. It can be used to generate content for a variety of use cases where the content is more creative or complex. It can run complex situational analysis and understand the context of the commands. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v3-textgen
 
 ```JavaScript
    const worqhat = require('worqhat');
@@ -188,16 +185,15 @@ Note: If `history_object` is not provided, the default value is `undefined`. If 
 
 Here are the parameters that can be passed to the `contentGeneration` method:
 
-Parameter | Description | Required
---- | --- | ---
-`history_object` | An object representing the history of the conversation. | No
-`preserve_history` | A boolean indicating whether to preserve the conversation history. | No
-`question` | A string representing the question to generate content for. | Yes
-`training_data` | A string representing the training data to use for generating content. | No
-`randomness` | A float representing the randomness or hallucinating factor for content generation. | No
+| Parameter          | Description                                                                         | Required |
+| ------------------ | ----------------------------------------------------------------------------------- | -------- |
+| `history_object`   | An object representing the history of the conversation.                             | No       |
+| `preserve_history` | A boolean indicating whether to preserve the conversation history.                  | No       |
+| `question`         | A string representing the question to generate content for.                         | Yes      |
+| `training_data`    | A string representing the training data to use for generating content.              | No       |
+| `randomness`       | A float representing the randomness or hallucinating factor for content generation. | No       |
 
 Note: If `history_object` is not provided, the default value is `undefined`. If `preserve_history` is not provided, the default value is `false`. If `training_data` is not provided, the default value is `undefined`. If `randomness` is not provided, the default value is `0.2`.
-
 
 ## Documentations
 
