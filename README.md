@@ -3,8 +3,8 @@
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/trle.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
 [![NPM version](https://img.shields.io/npm/v/worqhat.svg)](https://npmjs.org/package/worqhat)
 
-The WorqHat Node SDK is a comprehensive library that allows developers to interact with the 
-WorqHat API. It provides a simple and intuitive interface to access various AI services such as 
+The WorqHat Node SDK is a comprehensive library that allows developers to interact with the
+WorqHat API. It provides a simple and intuitive interface to access various AI services such as
 content generation, image generation, text extraction, image analysis, and more.
 
 This library provides convenient access to the WorqHat REST API from TypeScript or JavaScript.
@@ -13,10 +13,12 @@ To learn how to use the WorqHat APIs, check out our [API Reference](https://docs
 
 ## Table of Contents
 
-- [WorqHat Node SDK](#worqhat-node-sdk)
+- [Worqhat Node SDK](#worqhat-node-sdk)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
+  - [TypeScript support](#typescript-support)
+    - [Verify User Profile](#verify-user-profile)
     - [Content Generation](#content-generation)
     - [Image Generation](#image-generation)
     - [Text Extraction](#text-extraction)
@@ -31,10 +33,12 @@ To learn how to use the WorqHat APIs, check out our [API Reference](https://docs
 You can install the WorqHat Node SDK via npm or yarn:
 
 ```bash
+# using npm
 npm install worqhat
 ```
 
 ```bash
+# using yarn
 yarn add worqhat
 ```
 
@@ -48,14 +52,62 @@ const worqhat = require('worqhat');
 var config = new worqhat.Configuration({
   apiKey: "your-api-key",
   debug: true,
-  
+  max_retries: 3,
 });
 
 worqhat.initializeApp(config);
 ```
 
-> [!IMPORTANT]
-> Previous versions of this SDK used a `Configuration` class. See the [v3 to v4 migration guide](https://github.com/openai/openai-node/discussions/217).
+Here are the configuration options you can set when initializing the Worqhat SDK:
+
+Option | Description | Required
+--- | --- | ---
+`apiKey` | The API key used for authentication. This key is required to access the API services. | Yes
+`debug` | If set to `true`, the SDK will log debug information to the console. Default value is `false`.| No
+`max_retries` | The maximum number of retries to attempt for a request. The default value is `2`. Max limit is `5`. | No
+
+## TypeScript support
+
+Import the package as a class and run the Typescript compiler. You can then use the SDK as follows:
+
+```ts
+import * as worqhat from 'worqhat';
+
+const config = new worqhat.Configuration({
+  apiKey: "your-api-key",
+  debug: false,
+});
+
+worqhat.initializeApp(config);
+
+```
+
+### Verify User Profile
+
+The easiest way to verify whether the package is working or not is by sending a request to the Authenticate endpoint. This can be done by calling the `checkAuthentication` method provided by the SDK. Here is an example of how to do this:
+
+ ```javascript
+ const worqhat = require('worqhat');
+
+ const config = new worqhat.Configuration({
+   apiKey: "your-api-key",
+   debug: true,
+ });
+
+ worqhat.initializeApp(config);
+
+ async function checkAuth() {
+   try {
+     const result = await worqhat.checkAuthentication();
+     console.log(result);
+   } catch (error) {
+     console.error(error);
+   }
+ }
+
+ checkAuth();
+
+```
 
 
 ### Content Generation
