@@ -63,7 +63,7 @@ export class Configuration {
     debug?: boolean;
     max_retries?: number;
   }) {
-    this.apiKey = options.apiKey;
+    this.apiKey = options.apiKey || process.env.WORQHAT_API_KEY || "";
     this.debug = options.debug || false;
     this.max_retries = 2;
 
