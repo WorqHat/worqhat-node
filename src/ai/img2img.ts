@@ -298,7 +298,7 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
   const form = new FormData();
   // Append the image as a file
   debug(LogStatus.INFO, "Image Upscale", `AI Models processing image`);
-  form.append("image", Buffer.from(base64Data, "base64"), {
+  form.append("existing_image", Buffer.from(base64Data, "base64"), {
     filename: "image.jpg",
     contentType: "image/jpeg",
   });

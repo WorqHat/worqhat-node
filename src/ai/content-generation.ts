@@ -69,6 +69,7 @@ const generateContent = async (
       `AiCon${version}`,
       "Completed Processing from Content Generation AI Model",
     );
+    stopProcessingLog();
     return {
       code: 200,
       processingTime: time,
@@ -140,7 +141,7 @@ export const alphaContent = async ({ question }: AlphaParams) => {
     debug(LogStatus.ERROR, "AiConV2 Alpha", "App Configuration is null");
     throw new Error("App Configuration is null");
   }
-
+  startProcessingLog(`AiConV2 Alpha`);
   try {
     debug(
       LogStatus.INFO,
@@ -167,6 +168,7 @@ export const alphaContent = async ({ question }: AlphaParams) => {
       "AiConV2 Alpha",
       "Completed Processing from Content Generation AI Model",
     );
+    stopProcessingLog();
     return {
       code: 200,
       processingTime: time,
@@ -211,7 +213,7 @@ export const largeContent = async ({
     debug(LogStatus.ERROR, "AiConV2 Large", "Question is missing from request");
     throw new Error("Question is required");
   }
-
+  startProcessingLog(`AiConV2 Large`);
   try {
     debug(
       LogStatus.INFO,
@@ -240,6 +242,7 @@ export const largeContent = async ({
       "AiConV2 Large",
       "Completed Processing from Answer Generation AI Model",
     );
+    stopProcessingLog();
     return {
       code: 200,
       processingTime: time,
