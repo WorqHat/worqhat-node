@@ -9,7 +9,7 @@ import {
 } from "../core";
 import { appConfiguration } from "../index";
 import { ContentGenerationParams, AlphaParams, LargeParams } from "../types";
-import * as Errors from "../error";
+import { handleAxiosError } from "../error";
 
 import { Readable } from "stream";
 
@@ -77,7 +77,7 @@ const generateContent = async (
     };
   } catch (error: any) {
     debug(LogStatus.ERROR, `AiCon${version}`, "Error:", error);
-    throw error;
+    return handleAxiosError(error);
   }
 };
 
@@ -176,7 +176,7 @@ export const alphaContent = async ({ question }: AlphaParams) => {
     };
   } catch (error: any) {
     debug(LogStatus.ERROR, "AiConV2 Alpha", "Error:", error);
-    throw error;
+    return handleAxiosError(error);
   }
 };
 
@@ -250,6 +250,6 @@ export const largeContent = async ({
     };
   } catch (error: any) {
     debug(LogStatus.ERROR, "AiConV2 Large", "Error:", error);
-    throw error;
+    return handleAxiosError(error);
   }
 };

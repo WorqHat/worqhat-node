@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as Errors from "../error";
+import { handleAxiosError } from "../error";
 import * as Success from "../success";
 import { appConfiguration } from "../index";
 import { searchV2Params, searchV3Params } from "../types";
@@ -58,7 +58,7 @@ export const v2Search = async ({ question, training_data }: searchV2Params) => {
     };
   } catch (error) {
     debug(LogStatus.ERROR, "Search V2", "Search V2 failed", error);
-    throw error;
+    throw handleAxiosError(error);
   }
 };
 
@@ -113,6 +113,6 @@ export const v3Search = async ({
       ...response.data,
     };
   } catch (error) {
-    throw error;
+    throw handleAxiosError(error);
   }
 };

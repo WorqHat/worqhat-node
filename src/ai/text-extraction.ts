@@ -1,6 +1,7 @@
 import axios from "axios";
 import FormData from "form-data";
 import { appConfiguration } from "../index";
+import { handleAxiosError } from "../error";
 import path from "path";
 import {
   WebExtractionParams,
@@ -70,7 +71,13 @@ export const webExtraction = async (params: WebExtractionParams) => {
       ...response.data,
     };
   } catch (error) {
-    console.error(error);
+    debug(
+      LogStatus.ERROR,
+      `Web Extraction`,
+      `Error occurred during Web Extraction: ${error}`,
+    );
+    const errorResponse = handleAxiosError(error);
+    return errorResponse;
   }
 };
 
@@ -136,7 +143,7 @@ export const PDFExtraction = async ({
       "PDF Extraction",
       `Error occurred during PDF Extraction: ${error}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };
 
@@ -211,7 +218,7 @@ export const imageExtraction = async ({
       "Image Extraction",
       `Error occurred during image extraction: ${error.message}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };
 
@@ -285,6 +292,6 @@ export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
       "Speech Extraction",
       `Error occurred during speech extraction: ${error.message}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };

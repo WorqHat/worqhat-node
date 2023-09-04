@@ -17,6 +17,7 @@ import {
 } from "../types";
 import { getImageAsBase64 } from "../uploads";
 import { appConfiguration } from "../index";
+import { handleAxiosError } from "../error";
 
 export const analyseImagesProcess = async (params: ImageAnalysisParams) => {
   const { image } = params;
@@ -86,7 +87,7 @@ export const analyseImagesProcess = async (params: ImageAnalysisParams) => {
       "Image Analysis",
       `Error occurred during image analysis: ${error}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };
 
@@ -158,7 +159,7 @@ export const detectFaces = async (params: DetectFacesParams) => {
       "Detect Faces",
       `Error occurred during detect faces: ${error}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };
 
@@ -248,6 +249,6 @@ export const compareFaces = async (params: CompareFacesParams) => {
       "Compare Faces",
       `Error occurred during compare faces: ${error}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };

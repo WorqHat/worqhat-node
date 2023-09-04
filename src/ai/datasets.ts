@@ -2,7 +2,7 @@ import axios from "axios";
 import { createLogger, baseUrl, debug, LogStatus } from "../core";
 import { appConfiguration } from "../index";
 import { deleteDatasetParam } from "../types";
-import * as Errors from "../error";
+import { handleAxiosError } from "../error";
 
 export const viewTrainedDatasets = async () => {
   debug(LogStatus.INFO, "View Datasets", "Starting Dataset View Process");
@@ -41,7 +41,7 @@ export const viewTrainedDatasets = async () => {
       "Dataset View Process failed",
       error,
     );
-    throw new Error("Unable to view datasets");
+    throw handleAxiosError(error);
   }
 };
 
@@ -88,6 +88,6 @@ export const deleteTrainedDatasets = async ({
         "Dataset deletion failed",
         error,
       );
-      throw new Error("Dataset deletion failed");
+      throw handleAxiosError(error);
     });
 };

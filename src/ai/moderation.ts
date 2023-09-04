@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as Errors from "../error";
+import { handleAxiosError } from "../error";
 import * as Success from "../success";
 import FormData from "form-data";
 import { appConfiguration } from "../index";
@@ -72,7 +72,7 @@ export const contentModeration = async ({
       "Content Moderation",
       `Error occurred during Content Moderation: ${error}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };
 
@@ -141,6 +141,6 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
       "Image Moderation",
       `Error occurred during image moderation: ${error}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };

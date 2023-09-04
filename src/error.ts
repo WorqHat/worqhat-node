@@ -1,33 +1,56 @@
+import { VERSION } from "./version";
+import os from "os";
+
+function getOperatingSystem() {
+  return os.platform();
+}
+function getArchitecture() {
+  return os.arch();
+}
+
 export class APIError extends Error {
   readonly status: number | undefined;
   readonly error: Object | undefined;
+  readonly headers: Record<string, string>;
+
   constructor(
     status: number | undefined,
     error: Object | undefined,
     message: string | undefined,
+    headers: Record<string, string> = {},
   ) {
-    super(APIError.makeMessage(error, message));
+    super(APIError.makeMessage(error, message, headers));
     this.status = status;
 
     const data = error as Record<string, any>;
     this.error = data;
     this.message = data?.["message"];
+    this.headers = headers;
   }
 
-  private static makeMessage(error: any, message: string | undefined) {
-    return error?.message
+  private static makeMessage(
+    error: any,
+    message: string | undefined,
+    headers: Record<string, string>,
+  ) {
+    let msg = error?.message
       ? typeof error.message === "string"
         ? error.message
         : JSON.stringify(error.message)
       : error
       ? JSON.stringify(error)
       : message || "Unknown error occurred";
+
+    msg += "\nHeaders: " + JSON.stringify(headers);
+
+    return msg;
   }
 
   static generate(
     status: number | undefined,
     errorResponse: Object | undefined,
     message: string | undefined,
+    headers: Record<string, string> = {},
   ) {
     const error = (errorResponse as Record<string, any>)?.["error"];
 
@@ -127,3 +150,41 @@ export class RateLimitError extends APIError {
 }
 
 export class InternalServerError extends APIError {}
+
+export function handleAxiosError(error: any) {
+  if (error.response) {
+    const { status, data, statusText } = error.response;
+    const errorDetails = {
+      status,
+      data,
+      statusText,
+      headers: {
+        "X-WorqHat-Lang": "js",
+        "X-WorqHat-Package-Version": VERSION,
+        "X-WorqHat-OS": getOperatingSystem(),
+        "X-WorqHat-Arch": getArchitecture(),
+        "X-WorqHat-Runtime": process.release.name,
+        "X-WorqHat-Runtime-Version": process.version,
+      },
+    };
+
+    return {
+      error: errorDetails,
+    };
+  } else {
+    return {
+      error: {
+        message: error.message,
+        stack: error.stack,
+        headers: {
+          "X-WorqHat-Lang": "js",
+          "X-WorqHat-Package-Version": VERSION,
+          "X-WorqHat-OS": getOperatingSystem(),
+          "X-WorqHat-Arch": getArchitecture(),
+          "X-WorqHat-Runtime": process.release.name,
+          "X-WorqHat-Runtime-Version": process.version,
+        },
+      },
+    };
+  }
+}

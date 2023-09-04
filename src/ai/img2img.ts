@@ -16,6 +16,7 @@ import {
 import { ImageModificationParams, ImageUpscaleParams } from "../types";
 import { getImageAsBase64 } from "../uploads";
 import { appConfiguration } from "../index";
+import { handleAxiosError } from "../error";
 
 const processImage = async (
   params: ImageModificationParams,
@@ -124,7 +125,7 @@ const processImage = async (
       `Image Modification ${version}`,
       `Error occurred during image modification: ${error}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };
 
@@ -345,6 +346,6 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
       "Image Upscale",
       `Error occurred during image upscale: ${error}`,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };

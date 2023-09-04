@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as Errors from "../error";
+import { handleAxiosError } from "../error";
 import * as Success from "../success";
 import { createLogger, baseUrl } from "../core";
 import { debug, LogStatus } from "../core";
@@ -49,7 +49,8 @@ export const authenticate = function (
           "Authentication failed",
           error,
         );
-        reject(error);
+        const errorResponse = handleAxiosError(error);
+        reject(errorResponse);
       });
   });
 };

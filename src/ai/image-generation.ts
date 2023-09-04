@@ -3,6 +3,8 @@ import * as Errors from "../error";
 import * as Success from "../success";
 import { appConfiguration } from "../index";
 import { ImageGenV2Params, ImageGenV3Params } from "../types";
+import { handleAxiosError } from "../error";
+
 import {
   createLogger,
   baseUrl,
@@ -122,7 +124,7 @@ const generateImage = async (
       "Image Generation process failed",
       error,
     );
-    throw error;
+    throw handleAxiosError(error);
   }
 };
 
