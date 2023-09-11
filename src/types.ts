@@ -69,11 +69,7 @@ export interface WebExtractionParams {
 }
 
 export interface PDFExtractionParams {
-  file: {
-    path: string;
-    name: string;
-  };
-  output_format: "text" | "json";
+  file: File | string;
 }
 
 export interface ImageExtractionParams {

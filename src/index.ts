@@ -676,7 +676,6 @@ export const textExtraction = {
   /**
    * Function for extracting text from PDF files. It sends a request to the PDF Extraction AI Model and returns the extracted text. Read more at: https://docs.worqhat.com/ai-models/text-extraction/pdf-extraction
    * @param file - An object representing the PDF file to extract text from. It contains the path and name of the file. This is a required parameter.
-   * @param output_format - A string representing the output format of the extracted text. You can choose between ``text`` or ``json``. This is a required parameter. It defaults to ``text``.
    * @returns {Promise} A Promise that resolves to the extracted text.
    * @example
    * ```javascript
@@ -693,7 +692,6 @@ export const textExtraction = {
    *   try {
    *     var result = await worqhat.textExtraction.pdf({
    *       file: "./path-to-your-pdf-file.pdf",
-   *       output_format: "text"
    *     })
    *     console.log(result);
    *

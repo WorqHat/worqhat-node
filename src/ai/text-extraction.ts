@@ -81,10 +81,7 @@ export const webExtraction = async (params: WebExtractionParams) => {
   }
 };
 
-export const PDFExtraction = async ({
-  file,
-  output_format,
-}: PDFExtractionParams) => {
+export const PDFExtraction = async ({ file }: PDFExtractionParams) => {
   if (!appConfiguration) {
     debug(LogStatus.ERROR, "PDF Extraction", "App Configuration is null");
     throw new Error("App Configuration is null");
@@ -93,21 +90,20 @@ export const PDFExtraction = async ({
     debug(LogStatus.ERROR, "PDF Extraction", "Unable to identify file");
     throw new Error("Unable to identify file");
   }
-  if (!output_format || !["text", "json"].includes(output_format)) {
-    debug(LogStatus.ERROR, "PDF Extraction", "Invalid output format");
-    throw new Error("Invalid output format");
-  }
 
   const form = new FormData();
 
-  if (file) {
-    form.append("file", fs.createReadStream(file.path), {
-      filename: file.name,
-      contentType: "application/pdf",
-    });
-  }
+  const timenow = new Date();
+  debug(LogStatus.INFO, "PDF Extraction", `Received PDF data`);
+  debug(LogStatus.INFO, "PDF Extraction", `Converting PDF to base64`);
+  let base64Data: string = await getImageAsBase64(file);
 
-  form.append("output_format", output_format);
+  // Append the image as a file
+  debug(LogStatus.INFO, "PDF Extraction", `AI Models processing PDF`);
+  form.append("file", Buffer.from(base64Data, "base64"), {
+    filename: "file.pdf",
+    contentType: "application/pdf",
+  });
 
   try {
     debug(
@@ -133,8 +129,11 @@ export const PDFExtraction = async ({
       "PDF Extraction",
       "PDF Extraction Process completed successfully",
     );
+    const timeafter = new Date();
+    const time = timeafter.getTime() - timenow.getTime();
     return {
       code: 200,
+      processingTime: time,
       ...response.data,
     };
   } catch (error: any) {
