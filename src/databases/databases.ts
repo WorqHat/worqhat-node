@@ -49,7 +49,6 @@ export class Collection {
   }
 
   delete() {
-    // Delete the collection
     return deleteCollection(this.name);
   }
 }
