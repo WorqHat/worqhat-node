@@ -72,10 +72,10 @@ Here are the configuration options you can set when initializing the Worqhat SDK
 Import the package as a class and run the Typescript compiler. You can then use the SDK as follows:
 
 ```ts
-import * as worqhat from "worqhat";
+import * as worqhat from 'worqhat';
 
 const config = new worqhat.Configuration({
-  apiKey: "your-api-key",
+  apiKey: 'your-api-key',
   debug: false,
 });
 
@@ -87,10 +87,10 @@ worqhat.initializeApp(config);
 The easiest way to verify whether the package is working or not is by sending a request to the Authenticate endpoint. This can be done by calling the `checkAuthentication` method provided by the SDK. Here is an example of how to do this:
 
 ```javascript
-const worqhat = require("worqhat");
+const worqhat = require('worqhat');
 
 const config = new worqhat.Configuration({
-  apiKey: "your-api-key",
+  apiKey: 'your-api-key',
   debug: true,
 });
 

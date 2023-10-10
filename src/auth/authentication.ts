@@ -1,30 +1,30 @@
-import axios from "axios";
-import { handleAxiosError } from "../error";
-import * as Success from "../success";
-import { createLogger, baseUrl } from "../core";
-import { debug, LogStatus } from "../core";
+import axios from 'axios';
+import { handleAxiosError } from '../error';
+import * as Success from '../success';
+import { createLogger, baseUrl } from '../core';
+import { debug, LogStatus } from '../core';
 
 export const authenticate = function (
   api_key: string | undefined,
 ): Promise<any> {
   if (!api_key) {
-    debug(LogStatus.ERROR, "Authentication", "API Key is required");
-    throw new Error("API Key is required");
+    debug(LogStatus.ERROR, 'Authentication', 'API Key is required');
+    throw new Error('API Key is required');
   }
   var timenow = new Date();
   return new Promise((resolve, reject) => {
     debug(
       LogStatus.INFO,
-      "Authentication",
-      "Sending request to Authentication",
+      'Authentication',
+      'Sending request to Authentication',
     );
     axios
       .post(
-        baseUrl + "/authentication",
+        baseUrl + '/authentication',
         {},
         {
           headers: {
-            Authorization: "Bearer " + api_key,
+            Authorization: 'Bearer ' + api_key,
           },
         },
       )
@@ -33,8 +33,8 @@ export const authenticate = function (
         var time = timeafter.getTime() - timenow.getTime();
         debug(
           LogStatus.INFO,
-          "Authentication",
-          "Authentication completed successfully",
+          'Authentication',
+          'Authentication completed successfully',
         );
         resolve({
           code: 200,
@@ -45,8 +45,8 @@ export const authenticate = function (
       .catch((error) => {
         debug(
           LogStatus.ERROR,
-          "Authentication",
-          "Authentication failed",
+          'Authentication',
+          'Authentication failed',
           error,
         );
         const errorResponse = handleAxiosError(error);

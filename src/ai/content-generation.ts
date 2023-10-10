@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import {
   createLogger,
   baseUrl,
@@ -6,12 +6,12 @@ import {
   LogStatus,
   startProcessingLog,
   stopProcessingLog,
-} from "../core";
-import { appConfiguration } from "../index";
-import { ContentGenerationParams, AlphaParams, LargeParams } from "../types";
-import { handleAxiosError } from "../error";
+} from '../core';
+import { appConfiguration } from '../index';
+import { ContentGenerationParams, AlphaParams, LargeParams } from '../types';
+import { handleAxiosError } from '../error';
 
-import { Readable } from "stream";
+import { Readable } from 'stream';
 
 const generateContent = async (
   version: string,
@@ -24,41 +24,41 @@ const generateContent = async (
   debug(
     LogStatus.INFO,
     `AiCon${version}`,
-    "Processor function called with question:",
+    'Processor function called with question:',
     question,
   );
   if (!question) {
-    debug(LogStatus.ERROR, `AiCon${version}`, "Question is missing");
-    throw new Error("Question is required");
+    debug(LogStatus.ERROR, `AiCon${version}`, 'Question is missing');
+    throw new Error('Question is required');
   }
 
   const timenow = new Date();
   if (!appConfiguration) {
-    debug(LogStatus.ERROR, `AiCon${version}`, "App Configuration is null");
-    throw new Error("App Configuration is null");
+    debug(LogStatus.ERROR, `AiCon${version}`, 'App Configuration is null');
+    throw new Error('App Configuration is null');
   }
 
   debug(
     LogStatus.INFO,
     `AiCon${version}`,
-    "Processing AI Model for Content Generation",
+    'Processing AI Model for Content Generation',
   );
   startProcessingLog(`AiCon${version}`);
 
   try {
     const response = await axios({
-      method: "post",
+      method: 'post',
       url: `${baseUrl}/api/ai/content/${version}`,
       data: {
         history_object: history_object || {},
         preserve_history: preserve_history || false,
         question: question,
-        training_data: training_data || "",
+        training_data: training_data || '',
         randomness: randomness || 0.2,
       },
       headers: {
-        Authorization: "Bearer " + appConfiguration.apiKey,
-        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + appConfiguration.apiKey,
+        'Content-Type': 'application/json',
       },
     });
 
@@ -67,7 +67,7 @@ const generateContent = async (
     debug(
       LogStatus.INFO,
       `AiCon${version}`,
-      "Completed Processing from Content Generation AI Model",
+      'Completed Processing from Content Generation AI Model',
     );
     stopProcessingLog();
     return {
@@ -76,7 +76,7 @@ const generateContent = async (
       ...response.data,
     };
   } catch (error: any) {
-    debug(LogStatus.ERROR, `AiCon${version}`, "Error:", error);
+    debug(LogStatus.ERROR, `AiCon${version}`, 'Error:', error);
     return handleAxiosError(error);
   }
 };
@@ -88,9 +88,9 @@ export const v2Content = ({
   training_data,
   randomness,
 }: ContentGenerationParams) => {
-  debug(LogStatus.INFO, "AiConV2", "Function called with question:", question);
+  debug(LogStatus.INFO, 'AiConV2', 'Function called with question:', question);
   return generateContent(
-    "v2",
+    'v2',
     history_object,
     preserve_history,
     question,
@@ -108,12 +108,12 @@ export const v3Content = ({
 }: ContentGenerationParams) => {
   debug(
     LogStatus.INFO,
-    "v2Content",
-    "Function called with question:",
+    'v2Content',
+    'Function called with question:',
     question,
   );
   return generateContent(
-    "v3",
+    'v3',
     history_object,
     preserve_history,
     question,
@@ -125,28 +125,28 @@ export const v3Content = ({
 export const alphaContent = async ({ question }: AlphaParams) => {
   debug(
     LogStatus.INFO,
-    "AiConV2 Alpha",
-    "Function called with question:",
+    'AiConV2 Alpha',
+    'Function called with question:',
     question,
   );
 
   if (!question) {
-    debug(LogStatus.ERROR, "AiConV2 Alpha", "Question is missing");
-    throw new Error("Question is required");
+    debug(LogStatus.ERROR, 'AiConV2 Alpha', 'Question is missing');
+    throw new Error('Question is required');
   }
 
   const timenow = new Date();
 
   if (!appConfiguration) {
-    debug(LogStatus.ERROR, "AiConV2 Alpha", "App Configuration is null");
-    throw new Error("App Configuration is null");
+    debug(LogStatus.ERROR, 'AiConV2 Alpha', 'App Configuration is null');
+    throw new Error('App Configuration is null');
   }
   startProcessingLog(`AiConV2 Alpha`);
   try {
     debug(
       LogStatus.INFO,
-      "AiConV2 Alpha",
-      "Processing AI Model for Content Generation",
+      'AiConV2 Alpha',
+      'Processing AI Model for Content Generation',
     );
     const response = await axios.post(
       `${baseUrl}/api/ai/content/v2/new/alpha`,
@@ -155,8 +155,8 @@ export const alphaContent = async ({ question }: AlphaParams) => {
       },
       {
         headers: {
-          Authorization: "Bearer " + appConfiguration.apiKey,
-          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+          'Content-Type': 'application/json',
         },
       },
     );
@@ -165,8 +165,8 @@ export const alphaContent = async ({ question }: AlphaParams) => {
     const time = timeafter.getTime() - timenow.getTime();
     debug(
       LogStatus.INFO,
-      "AiConV2 Alpha",
-      "Completed Processing from Content Generation AI Model",
+      'AiConV2 Alpha',
+      'Completed Processing from Content Generation AI Model',
     );
     stopProcessingLog();
     return {
@@ -175,7 +175,7 @@ export const alphaContent = async ({ question }: AlphaParams) => {
       ...response.data,
     };
   } catch (error: any) {
-    debug(LogStatus.ERROR, "AiConV2 Alpha", "Error:", error);
+    debug(LogStatus.ERROR, 'AiConV2 Alpha', 'Error:', error);
     return handleAxiosError(error);
   }
 };
@@ -187,38 +187,38 @@ export const largeContent = async ({
 }: LargeParams) => {
   debug(
     LogStatus.INFO,
-    "AiConV2 Large",
-    "Function called with question & dataset:",
+    'AiConV2 Large',
+    'Function called with question & dataset:',
     { question, datasetId },
   );
 
   if (!question) {
-    debug(LogStatus.ERROR, "AiConV2 Large", "Question is missing");
-    throw new Error("Question is required");
+    debug(LogStatus.ERROR, 'AiConV2 Large', 'Question is missing');
+    throw new Error('Question is required');
   }
 
   const timenow = new Date();
 
   if (!appConfiguration) {
-    debug(LogStatus.ERROR, "AiConV2 Large", "App Configuration is null");
-    throw new Error("App Configuration is null");
+    debug(LogStatus.ERROR, 'AiConV2 Large', 'App Configuration is null');
+    throw new Error('App Configuration is null');
   }
 
   if (!datasetId) {
-    debug(LogStatus.ERROR, "AiConV2 Large", "Dataset ID is missing");
-    throw new Error("Dataset ID is required");
+    debug(LogStatus.ERROR, 'AiConV2 Large', 'Dataset ID is missing');
+    throw new Error('Dataset ID is required');
   }
 
   if (!question) {
-    debug(LogStatus.ERROR, "AiConV2 Large", "Question is missing from request");
-    throw new Error("Question is required");
+    debug(LogStatus.ERROR, 'AiConV2 Large', 'Question is missing from request');
+    throw new Error('Question is required');
   }
   startProcessingLog(`AiConV2 Large`);
   try {
     debug(
       LogStatus.INFO,
-      "AiConV2 Large",
-      "Processing AI Model for Answer Generation",
+      'AiConV2 Large',
+      'Processing AI Model for Answer Generation',
     );
     const response = await axios.post(
       `${baseUrl}/api/ai/content/v2-large/answering`,
@@ -229,8 +229,8 @@ export const largeContent = async ({
       },
       {
         headers: {
-          Authorization: "Bearer " + appConfiguration.apiKey,
-          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+          'Content-Type': 'application/json',
         },
       },
     );
@@ -239,8 +239,8 @@ export const largeContent = async ({
     const time = timeafter.getTime() - timenow.getTime();
     debug(
       LogStatus.INFO,
-      "AiConV2 Large",
-      "Completed Processing from Answer Generation AI Model",
+      'AiConV2 Large',
+      'Completed Processing from Answer Generation AI Model',
     );
     stopProcessingLog();
     return {
@@ -249,7 +249,7 @@ export const largeContent = async ({
       ...response.data,
     };
   } catch (error: any) {
-    debug(LogStatus.ERROR, "AiConV2 Large", "Error:", error);
+    debug(LogStatus.ERROR, 'AiConV2 Large', 'Error:', error);
     return handleAxiosError(error);
   }
 };
