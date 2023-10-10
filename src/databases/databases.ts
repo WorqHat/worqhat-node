@@ -5,13 +5,32 @@ import {
 import { deleteCollection } from './collections/delete-collection';
 import { addDataDb } from './data-mgmt/add-data';
 
+export class Document {
+  id: string;
+  data: any;
+  collectionName: string;
+
+  constructor(collectionName: string, id: string) {
+    this.collectionName = collectionName;
+    this.id = id;
+    this.data = {};
+  }
+
+  add(data: any) {
+    this.data = data;
+    return addDataDb(this.collectionName, this.id, data);
+  }
+}
+
 export class Collection {
   name: string;
   data: any[];
+  documents: { [key: string]: Document };
 
   constructor(name: string) {
     this.name = name;
     this.data = [];
+    this.documents = {};
   }
 
   create(data?: any, orderByKey?: string) {
@@ -55,6 +74,13 @@ export class Collection {
 
   add(data: any) {
     return addDataDb(this.name, '', data);
+  }
+
+  doc(docId: string) {
+    if (!this.documents[docId]) {
+      this.documents[docId] = new Document(this.name, docId);
+    }
+    return this.documents[docId];
   }
 }
 
