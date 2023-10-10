@@ -4,6 +4,7 @@ import {
 } from './collections/create-collection';
 import { deleteCollection } from './collections/delete-collection';
 import { addDataDb } from './data-mgmt/add-data';
+import { deleteDataDb } from './data-mgmt/delete-data';
 
 export class Document {
   id: string;
@@ -19,6 +20,10 @@ export class Document {
   add(data: any) {
     this.data = data;
     return addDataDb(this.collectionName, this.id, data);
+  }
+
+  delete() {
+    return deleteDataDb(this.collectionName, this.id);
   }
 }
 
