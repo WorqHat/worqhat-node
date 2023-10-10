@@ -84,14 +84,70 @@ export const createCollectionWithSchema = async (
   }
 };
 
-// Create a function to create a collection without schema.
-
 export const createCollectionWithoutSchema = async (name: string) => {
-  return {
-    code: 200,
-    message: 'Collection without schema created successfully',
-    data: {
-      name,
-    },
-  };
+  debug(
+    LogStatus.INFO,
+    'Create Database Collection',
+    `Starting Database Collection creation process`,
+  );
+  if (!name) {
+    debug(
+      LogStatus.ERROR,
+      'Create Database Collection',
+      `Collection Name is missing`,
+    );
+    throw new Error('Collection Name is required');
+  }
+
+  if (!appConfiguration) {
+    debug(
+      LogStatus.ERROR,
+      'Create Database Collection',
+      `App Configuration is null`,
+    );
+    throw new Error('App Configuration is null');
+  }
+
+  try {
+    debug(
+      LogStatus.INFO,
+      'Create Database Collection',
+      `Creating Database Collection`,
+    );
+    startProcessingLog(
+      'Create Database Collection',
+      'Creating Database Collection',
+    );
+    const response = await axios.post(
+      `${baseUrl}/api/collections/create`,
+      {
+        collection: name,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    stopProcessingLog();
+    debug(
+      LogStatus.INFO,
+      'Create Database Collection',
+      `Completed Database Collection creation`,
+    );
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    stopProcessingLog();
+    debug(
+      LogStatus.ERROR,
+      'Create Database Collection',
+      `Error occurred during Database Collection creation`,
+    );
+    throw handleAxiosError(error);
+  }
 };
