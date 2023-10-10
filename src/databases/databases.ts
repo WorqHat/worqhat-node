@@ -3,6 +3,7 @@ import {
   createCollectionWithoutSchema,
 } from './collections/create-collection';
 import { deleteCollection } from './collections/delete-collection';
+import { addDataDb } from './data-mgmt/add-data';
 
 export class Collection {
   name: string;
@@ -50,6 +51,10 @@ export class Collection {
 
   delete() {
     return deleteCollection(this.name);
+  }
+
+  add(data: any) {
+    return addDataDb(this.name, '', data);
   }
 }
 
