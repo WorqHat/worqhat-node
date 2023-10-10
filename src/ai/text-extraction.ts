@@ -39,7 +39,7 @@ export const webExtraction = async (params: WebExtractionParams) => {
       `Web Extraction`,
       'Sending request to Web Extraction AI Model',
     );
-    startProcessingLog('Web Extraction');
+    startProcessingLog('Web Extraction', 'AI Models processing text');
     const response = await axios.post(
       `${baseUrl}/api/ai/v2/web-extract`,
       {
@@ -111,7 +111,7 @@ export const PDFExtraction = async ({ file }: PDFExtractionParams) => {
       'PDF Extraction',
       'Sending request to PDF Extraction AI Model',
     );
-    startProcessingLog('PDF Extraction');
+    startProcessingLog('PDF Extraction', 'AI Models processing text');
     const response = await axios.post(
       `${baseUrl}/api/ai/v2/pdf-extract`,
       form,
@@ -186,7 +186,7 @@ export const imageExtraction = async ({
       'Image Extraction',
       `Sending request for image extraction`,
     );
-    startProcessingLog('Image Extraction');
+    startProcessingLog('Image Extraction', 'AI Models processing image');
     const response = await axios.post(
       `${baseUrl}/api/ai/images/v2/image-text-detection`,
       form,
@@ -263,7 +263,7 @@ export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
       'Speech Extraction',
       `Sending request for speech extraction`,
     );
-    startProcessingLog('Speech Extraction');
+    startProcessingLog('Speech Extraction', 'AI Models processing audio');
 
     const response = await axios.post(`${baseUrl}/api/ai/speech-text`, form, {
       headers: {

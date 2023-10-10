@@ -2,6 +2,7 @@ import {
   createCollectionWithSchema,
   createCollectionWithoutSchema,
 } from './collections/create-collection';
+import { deleteCollection } from './collections/delete-collection';
 
 export class Collection {
   name: string;
@@ -12,7 +13,7 @@ export class Collection {
     this.data = [];
   }
 
-  create(data?: any) {
+  create(data?: any, orderByKey?: string) {
     let response = {};
 
     if (!data || Object.keys(data).length === 0) {
@@ -42,9 +43,14 @@ export class Collection {
         }
       });
 
-      response = createCollectionWithSchema(this.name, data);
+      response = createCollectionWithSchema(this.name, data, orderByKey || '');
     }
     return response;
+  }
+
+  delete() {
+    // Delete the collection
+    return deleteCollection(this.name);
   }
 }
 

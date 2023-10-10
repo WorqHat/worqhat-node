@@ -211,9 +211,13 @@ export function debug(status: LogStatus, action: string, ...args: any[]) {
 
 let intervalId: NodeJS.Timeout | null = null;
 
-export const startProcessingLog = (modelName: string) => {
+export const startProcessingLog = (modelName: string, text_content: string) => {
   intervalId = setInterval(() => {
-    debug(LogStatus.INFO, modelName, `AI Model is processing data`);
+    debug(
+      LogStatus.INFO,
+      modelName,
+      text_content || `AI Model is processing data`,
+    );
   }, 1000);
 };
 

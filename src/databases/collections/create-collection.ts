@@ -10,19 +10,78 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-// Create two functions. 1. to create a collection with schema and the other to create a collection without schema.
+export const createCollectionWithSchema = async (
+  name: string,
+  schema: any,
+  sortBy: string,
+) => {
+  debug(
+    LogStatus.INFO,
+    'Create Database Collection',
+    `Starting Database Collection creation process with schema`,
+  );
+  if (!name) {
+    debug(
+      LogStatus.ERROR,
+      'Create Database Collection',
+      `Collection Name is missing`,
+    );
+    throw new Error('Collection Name is required');
+  }
 
-// Create a function to create a collection with schema.
+  if (!appConfiguration) {
+    debug(
+      LogStatus.ERROR,
+      'Create Database Collection',
+      `App Configuration is null`,
+    );
+    throw new Error('App Configuration is null');
+  }
 
-export const createCollectionWithSchema = async (name: string, schema: any) => {
-  return {
-    code: 200,
-    message: 'Collection schemas created successfully',
-    data: {
-      name,
-      schema,
-    },
-  };
+  try {
+    debug(
+      LogStatus.INFO,
+      'Create Database Collection',
+      `Creating Database Collection with schema`,
+    );
+    startProcessingLog(
+      'Create Database Collection',
+      'Creating Database Collection with schema',
+    );
+    const response = await axios.post(
+      `${baseUrl}/api/collections/create`,
+      {
+        collection: name,
+        collectionSchema: schema || {},
+        sortBy: sortBy || null,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    stopProcessingLog();
+    debug(
+      LogStatus.INFO,
+      'Create Database Collection',
+      `Completed Database Collection creation with schema`,
+    );
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    stopProcessingLog();
+    debug(
+      LogStatus.ERROR,
+      'Create Database Collection',
+      `Error occurred during Database Collection creation with schema`,
+    );
+    throw handleAxiosError(error);
+  }
 };
 
 // Create a function to create a collection without schema.

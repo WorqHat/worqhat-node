@@ -86,7 +86,7 @@ const generateImage = async (
       `Image Generation ${version}`,
       'Start Processing Image Generation Request',
     );
-    startProcessingLog(`Image Generation ${version}`);
+    startProcessingLog(`Image Generation ${version}`, 'Processing Image');
     const response = await axios.post(
       `${baseUrl}/api/ai/images/generate/${version}`,
       {

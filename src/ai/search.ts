@@ -30,7 +30,7 @@ export const v2Search = async ({ question, training_data }: searchV2Params) => {
 
   try {
     debug(LogStatus.INFO, 'Search V2', 'Sending request to Search AI Model');
-    startProcessingLog('Search V2');
+    startProcessingLog('Search V2', 'AI Models processing text');
     const response = await axios.post(
       `${baseUrl}/api/ai/search/v2`,
       {
@@ -85,7 +85,7 @@ export const v3Search = async ({
 
   try {
     debug(LogStatus.INFO, 'Search V3', 'Sending request to Search AI Model');
-    startProcessingLog('Search V3');
+    startProcessingLog('Search V3', 'AI Models processing text');
     const response = await axios.post(
       `${baseUrl}/api/ai/search/v3`,
       {

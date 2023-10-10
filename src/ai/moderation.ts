@@ -39,7 +39,7 @@ export const contentModeration = async ({
       'Content Moderation',
       `Processing AI Model for Content Moderation`,
     );
-    startProcessingLog('Content Moderation');
+    startProcessingLog('Content Moderation', 'AI Models processing text');
     const response = await axios.post(
       `${baseUrl}/api/ai/content-moderation/v1`,
       {
@@ -110,7 +110,7 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
       'Image Moderation',
       `Processing AI Model for Image Moderation`,
     );
-    startProcessingLog('Image Moderation');
+    startProcessingLog('Image Moderation', 'AI Models processing image');
     const response = await axios.post(
       `${baseUrl}/api/ai/images/v2/image-moderation`,
       form,

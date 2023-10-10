@@ -90,7 +90,7 @@ const processImage = async (
       `Processing AI Model for Image Modification`,
       modifications,
     );
-    startProcessingLog(`Image Modification ${version}`);
+    startProcessingLog(`Image Modification ${version}`, 'Processing Image');
 
     const response = await axios.post(
       `${baseUrl}/api/ai/images/modify/${version}`,
@@ -312,7 +312,7 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
       'Image Upscale',
       `Processing AI Model for Image Upscale`,
     );
-    startProcessingLog('Image Upscale');
+    startProcessingLog('Image Upscale', 'Processing Image');
 
     const response = await axios.post(
       `${baseUrl}/api/ai/images/upscale/v3`,

@@ -43,7 +43,10 @@ const generateContent = async (
     `AiCon${version}`,
     'Processing AI Model for Content Generation',
   );
-  startProcessingLog(`AiCon${version}`);
+  startProcessingLog(
+    `AiCon${version}`,
+    'Processing AI Model for Content Generation',
+  );
 
   try {
     const response = await axios({
@@ -141,7 +144,10 @@ export const alphaContent = async ({ question }: AlphaParams) => {
     debug(LogStatus.ERROR, 'AiConV2 Alpha', 'App Configuration is null');
     throw new Error('App Configuration is null');
   }
-  startProcessingLog(`AiConV2 Alpha`);
+  startProcessingLog(
+    `AiConV2 Alpha`,
+    'Processing AI Model for Content Generation',
+  );
   try {
     debug(
       LogStatus.INFO,
@@ -213,7 +219,10 @@ export const largeContent = async ({
     debug(LogStatus.ERROR, 'AiConV2 Large', 'Question is missing from request');
     throw new Error('Question is required');
   }
-  startProcessingLog(`AiConV2 Large`);
+  startProcessingLog(
+    `AiConV2 Large`,
+    'Processing AI Model for Answer Generation',
+  );
   try {
     debug(
       LogStatus.INFO,
