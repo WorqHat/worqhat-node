@@ -47,10 +47,10 @@ export const arrayUnionDb = async (
     );
     startProcessingLog(
       'Add Array to Document',
-      'Adding Array to Document ${docId}',
+      `Adding Array to Document ${docId}`,
     );
     const response = await axios.post(
-      `${baseUrl}/api/collections/data/array/update/union`,
+      `${baseUrl}/api/collections/data/array/update/add`,
       {
         collection: name,
         docId: docId,
