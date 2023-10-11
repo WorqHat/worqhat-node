@@ -22,6 +22,11 @@ export class Document {
     return addDataDb(this.collectionName, this.id, data);
   }
 
+  update(data: any) {
+    this.data = data;
+    return addDataDb(this.collectionName, this.id, data);
+  }
+
   delete() {
     return deleteDataDb(this.collectionName, this.id);
   }
