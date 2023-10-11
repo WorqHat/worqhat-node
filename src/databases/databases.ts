@@ -5,6 +5,7 @@ import {
 import { deleteCollection } from './collections/delete-collection';
 import { addDataDb } from './data-mgmt/add-data';
 import { deleteDataDb } from './data-mgmt/delete-data';
+import { updateDataDb } from './data-mgmt/update-data';
 
 export class Document {
   id: string;
@@ -24,7 +25,7 @@ export class Document {
 
   update(data: any) {
     this.data = data;
-    return addDataDb(this.collectionName, this.id, data);
+    return updateDataDb(this.collectionName, this.id, data);
   }
 
   delete() {
