@@ -6,6 +6,7 @@ import { deleteCollection } from './collections/delete-collection';
 import { addDataDb } from './data-mgmt/add-data';
 import { deleteDataDb } from './data-mgmt/delete-data';
 import { updateDataDb } from './data-mgmt/update-data';
+import { arrayUnionDb } from './db-functions/add-array';
 
 export class Document {
   id: string;
@@ -23,9 +24,23 @@ export class Document {
     return addDataDb(this.collectionName, this.id, data);
   }
 
-  update(data: any) {
-    this.data = data;
-    return updateDataDb(this.collectionName, this.id, data);
+  async update(data: any) {
+    for (const key in data) {
+      if (data[key].__op === 'arrayUnion') {
+        // Call the database function for array union operation
+        return await arrayUnionDb(
+          this.collectionName,
+          this.id,
+          key,
+          data[key].elements,
+        );
+      } else {
+        // Normal assignment
+        this.data[key] = data[key];
+      }
+    }
+
+    return updateDataDb(this.collectionName, this.id, this.data);
   }
 
   delete() {
@@ -107,5 +122,12 @@ export class Database {
       this.collections[name] = new Collection(name);
     }
     return this.collections[name];
+  }
+
+  arrayUnion(elements: string) {
+    return {
+      __op: 'arrayUnion',
+      elements: elements,
+    };
   }
 }
