@@ -29,16 +29,16 @@ export interface searchV3Params {
 }
 
 export interface ImageGenV3Params {
-  orientation?: "Landscape" | "Portrait" | "Shape";
+  orientation?: 'Landscape' | 'Portrait' | 'Shape';
   image_style?: string;
-  output_type?: "url" | "blob";
+  output_type?: 'url' | 'blob';
   prompt: any[];
 }
 
 export interface ImageGenV2Params {
-  orientation?: "Landscape" | "Portrait" | "Shape";
+  orientation?: 'Landscape' | 'Portrait' | 'Shape';
   image_style?: string;
-  output_type?: "url" | "blob";
+  output_type?: 'url' | 'blob';
   prompt: any[];
 }
 
@@ -74,7 +74,7 @@ export interface PDFExtractionParams {
 
 export interface ImageExtractionParams {
   image: File | string;
-  output_format: "text" | "json";
+  output_format: 'text' | 'json';
 }
 
 export interface SpeechExtractionParams {
@@ -97,12 +97,18 @@ export interface CompareFacesParams {
 export interface ImageModificationParams {
   existing_image: File | string;
   modifications: string;
-  outputType?: "url" | "blob";
+  outputType?: 'url' | 'blob';
   similarity: number;
 }
 
 export interface ImageUpscaleParams {
   existing_image: File | string;
   scale?: number;
-  output_type?: "url" | "blob";
+  output_type?: 'url' | 'blob';
+}
+
+export interface getUniqueQuery {
+  uniqueColumn: string;
+  orderByColumn: string;
+  orderDirection: 'asc' | 'desc' | null;
 }

@@ -1,9 +1,9 @@
-import axios from "axios";
-import * as Errors from "../error";
-import * as Success from "../success";
-import { appConfiguration } from "../index";
-import { ImageGenV2Params, ImageGenV3Params } from "../types";
-import { handleAxiosError } from "../error";
+import axios from 'axios';
+import * as Errors from '../error';
+import * as Success from '../success';
+import { appConfiguration } from '../index';
+import { ImageGenV2Params, ImageGenV3Params } from '../types';
+import { handleAxiosError } from '../error';
 
 import {
   createLogger,
@@ -12,7 +12,7 @@ import {
   LogStatus,
   startProcessingLog,
   stopProcessingLog,
-} from "../core";
+} from '../core';
 
 const generateImage = async (
   version: string,
@@ -24,12 +24,12 @@ const generateImage = async (
   debug(
     LogStatus.INFO,
     `Image Generation ${version}`,
-    "Starting image generation",
+    'Starting image generation',
     prompt,
   );
   if (prompt.length === 0) {
-    debug(LogStatus.ERROR, `Image Generation ${version}`, "Prompt is required");
-    throw new Error("Prompt is required");
+    debug(LogStatus.ERROR, `Image Generation ${version}`, 'Prompt is required');
+    throw new Error('Prompt is required');
   }
 
   let height = 512;
@@ -37,27 +37,27 @@ const generateImage = async (
 
   orientation = orientation.toLowerCase();
 
-  if (orientation === "square") {
+  if (orientation === 'square') {
     debug(
       LogStatus.INFO,
       `Image Generation ${version}`,
-      "Setting orientation to square",
+      'Setting orientation to square',
     );
     height = 512;
     width = 512;
-  } else if (orientation === "landscape") {
+  } else if (orientation === 'landscape') {
     debug(
       LogStatus.INFO,
       `Image Generation ${version}`,
-      "Setting orientation to landscape",
+      'Setting orientation to landscape',
     );
     height = 512;
     width = 768;
-  } else if (orientation === "portrait") {
+  } else if (orientation === 'portrait') {
     debug(
       LogStatus.INFO,
       `Image Generation ${version}`,
-      "Setting orientation to portrait",
+      'Setting orientation to portrait',
     );
     height = 768;
     width = 512;
@@ -65,9 +65,9 @@ const generateImage = async (
     debug(
       LogStatus.ERROR,
       `Image Generation ${version}`,
-      "Orientation is invalid",
+      'Orientation is invalid',
     );
-    throw new Error("Orientation is invalid");
+    throw new Error('Orientation is invalid');
   }
 
   const timenow = new Date();
@@ -75,31 +75,31 @@ const generateImage = async (
     debug(
       LogStatus.ERROR,
       `Image Generation ${version}`,
-      "App Configuration is null",
+      'App Configuration is null',
     );
-    throw new Error("App Configuration is null");
+    throw new Error('App Configuration is null');
   }
 
   try {
     debug(
       LogStatus.INFO,
       `Image Generation ${version}`,
-      "Start Processing Image Generation Request",
+      'Start Processing Image Generation Request',
     );
-    startProcessingLog(`Image Generation ${version}`);
+    startProcessingLog(`Image Generation ${version}`, 'Processing Image');
     const response = await axios.post(
       `${baseUrl}/api/ai/images/generate/${version}`,
       {
         height: height || 512,
-        image_style: image_style || "Default",
-        output_type: output_type || "url",
-        prompt: prompt.length > 0 ? prompt : ["This is the prompt"],
+        image_style: image_style || 'Default',
+        output_type: output_type || 'url',
+        prompt: prompt.length > 0 ? prompt : ['This is the prompt'],
         width: width || 512,
       },
       {
         headers: {
-          Authorization: "Bearer " + appConfiguration.apiKey,
-          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+          'Content-Type': 'application/json',
         },
       },
     );
@@ -110,7 +110,7 @@ const generateImage = async (
     debug(
       LogStatus.INFO,
       `Image Generation ${version}`,
-      "Image Generation process completed successfully",
+      'Image Generation process completed successfully',
     );
     return {
       code: 200,
@@ -121,7 +121,7 @@ const generateImage = async (
     debug(
       LogStatus.ERROR,
       `Image Generation ${version}`,
-      "Image Generation process failed",
+      'Image Generation process failed',
       error,
     );
     throw handleAxiosError(error);
@@ -136,15 +136,15 @@ export const v2ImageGen = ({
 }: ImageGenV2Params) => {
   debug(
     LogStatus.INFO,
-    "Image Generation V2",
-    "Starting Image Generation V2:",
+    'Image Generation V2',
+    'Starting Image Generation V2:',
     prompt,
   );
   return generateImage(
-    "v2",
-    orientation || "Square",
-    image_style || "default",
-    output_type || "url",
+    'v2',
+    orientation || 'Square',
+    image_style || 'default',
+    output_type || 'url',
     prompt,
   );
 };
@@ -157,15 +157,15 @@ export const v3ImageGen = ({
 }: ImageGenV3Params) => {
   debug(
     LogStatus.INFO,
-    "Image Generation V3",
-    "Starting Image Generation V3:",
+    'Image Generation V3',
+    'Starting Image Generation V3:',
     prompt,
   );
   return generateImage(
-    "v3",
-    orientation || "Square",
-    image_style || "default",
-    output_type || "url",
+    'v3',
+    orientation || 'Square',
+    image_style || 'default',
+    output_type || 'url',
     prompt,
   );
 };

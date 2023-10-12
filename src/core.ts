@@ -1,9 +1,10 @@
-import { VERSION } from "./version";
-import * as Success from "./success";
-import * as Errors from "./error";
-import { appConfiguration } from "./index";
+import { VERSION } from './version';
+import * as Success from './success';
+import * as Errors from './error';
+import { appConfiguration } from './index';
 
-export const baseUrl = "https://api.worqhat.com";
+// export const baseUrl = "https://api-prod.worqhat.com";
+export const baseUrl = 'http://localhost:3000';
 
 const MAX_RETRIES = 2;
 export const MAX_PIXEL_COUNT = 4194304;
@@ -13,9 +14,9 @@ declare const Deno: any;
 
 const createTrackerResponse = () => {
   var response = {
-    "X-WorqHat-Lang": "js",
-    "X-WorqHat-Package-Version": VERSION,
-    "X-WorqHat-Platform": "node",
+    'X-WorqHat-Lang': 'js',
+    'X-WorqHat-Package-Version': VERSION,
+    'X-WorqHat-Platform': 'node',
   };
   return response;
 };
@@ -41,15 +42,15 @@ export const createLogger = (
 };
 
 const storeLogData = (logData: any) => {
-  var url = baseUrl + "/internal/api/v1/logs";
+  var url = baseUrl + '/internal/api/v1/logs';
   var headers = {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + process.env.WORQHAT_API_KEY,
-    "x-server-token": "true",
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer ' + process.env.WORQHAT_API_KEY,
+    'x-server-token': 'true',
   };
 
   var options = {
-    method: "POST",
+    method: 'POST',
     headers: headers,
     body: JSON.stringify(logData),
   };
@@ -61,7 +62,7 @@ const storeLogData = (logData: any) => {
       return message;
     })
     .catch((err) => {
-      Errors.APIError.generate(400, { error: "Bad Request" }, "Bad Request");
+      Errors.APIError.generate(400, { error: 'Bad Request' }, 'Bad Request');
     });
 };
 
@@ -74,7 +75,7 @@ export const safeJSON = (text: string) => {
 };
 
 // https://stackoverflow.com/a/19709846
-const startsWithSchemeRegexp = new RegExp("^(?:[a-z]+:)?//", "i");
+const startsWithSchemeRegexp = new RegExp('^(?:[a-z]+:)?//', 'i');
 const isAbsoluteURL = (url: string): boolean => {
   return startsWithSchemeRegexp.test(url);
 };
@@ -82,7 +83,7 @@ const isAbsoluteURL = (url: string): boolean => {
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const validatePositiveInteger = (name: string, n: unknown): number => {
-  if (typeof n !== "number" || !Number.isInteger(n)) {
+  if (typeof n !== 'number' || !Number.isInteger(n)) {
     throw new Error(`${name} must be an integer`);
   }
   if (n < 0) {
@@ -110,18 +111,18 @@ export const ensurePresent = <T>(value: T | null | undefined): T => {
  * Will return undefined if the environment variable doesn't exist or cannot be accessed.
  */
 export const readEnv = (env: string): string | undefined => {
-  if (typeof process !== "undefined") {
+  if (typeof process !== 'undefined') {
     return process.env?.[env] ?? undefined;
   }
-  if (typeof Deno !== "undefined") {
+  if (typeof Deno !== 'undefined') {
     return Deno.env?.get?.(env);
   }
   return undefined;
 };
 
 export const coerceInteger = (value: unknown): number => {
-  if (typeof value === "number") return Math.round(value);
-  if (typeof value === "string") return parseInt(value, 10);
+  if (typeof value === 'number') return Math.round(value);
+  if (typeof value === 'string') return parseInt(value, 10);
 
   throw new Error(
     `Could not coerce ${value} (type: ${typeof value}) into a number`,
@@ -129,8 +130,8 @@ export const coerceInteger = (value: unknown): number => {
 };
 
 export const coerceFloat = (value: unknown): number => {
-  if (typeof value === "number") return value;
-  if (typeof value === "string") return parseFloat(value);
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string') return parseFloat(value);
 
   throw new Error(
     `Could not coerce ${value} (type: ${typeof value}) into a number`,
@@ -138,8 +139,8 @@ export const coerceFloat = (value: unknown): number => {
 };
 
 export const coerceBoolean = (value: unknown): boolean => {
-  if (typeof value === "boolean") return value;
-  if (typeof value === "string") return value === "true";
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') return value === 'true';
   return Boolean(value);
 };
 
@@ -177,9 +178,9 @@ export function hasOwn(obj: Object, key: string): boolean {
 }
 
 export enum LogStatus {
-  INFO = "INFO",
-  WARN = "WARN",
-  ERROR = "ERROR",
+  INFO = 'INFO',
+  WARN = 'WARN',
+  ERROR = 'ERROR',
 }
 
 export function debug(status: LogStatus, action: string, ...args: any[]) {
@@ -210,9 +211,13 @@ export function debug(status: LogStatus, action: string, ...args: any[]) {
 
 let intervalId: NodeJS.Timeout | null = null;
 
-export const startProcessingLog = (modelName: string) => {
+export const startProcessingLog = (modelName: string, text_content: string) => {
   intervalId = setInterval(() => {
-    debug(LogStatus.INFO, modelName, `AI Model is processing data`);
+    debug(
+      LogStatus.INFO,
+      modelName,
+      text_content || `AI Model is processing data`,
+    );
   }, 1000);
 };
 
@@ -224,9 +229,9 @@ export const stopProcessingLog = () => {
 };
 
 const uuid4 = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
@@ -234,11 +239,11 @@ const uuid4 = () => {
 export const isRunningInBrowser = () => {
   return (
     // @ts-ignore
-    typeof window !== "undefined" &&
+    typeof window !== 'undefined' &&
     // @ts-ignore
-    typeof window.document !== "undefined" &&
+    typeof window.document !== 'undefined' &&
     // @ts-ignore
-    typeof navigator !== "undefined"
+    typeof navigator !== 'undefined'
   );
 };
 
@@ -250,7 +255,7 @@ export type HeadersLike =
   | HeadersProtocol;
 
 export const isHeadersProtocol = (headers: any): headers is HeadersProtocol => {
-  return typeof headers?.get === "function";
+  return typeof headers?.get === 'function';
 };
 
 export const getHeader = (
@@ -275,16 +280,16 @@ export const getHeader = (
  * Encodes a string to Base64 format.
  */
 export const toBase64 = (str: string | null | undefined): string => {
-  if (!str) return "";
-  if (typeof Buffer !== "undefined") {
-    return Buffer.from(str).toString("base64");
+  if (!str) return '';
+  if (typeof Buffer !== 'undefined') {
+    return Buffer.from(str).toString('base64');
   }
 
-  if (typeof btoa !== "undefined") {
+  if (typeof btoa !== 'undefined') {
     return btoa(str);
   }
 
   throw new Error(
-    "Cannot generate b64 string; Expected `Buffer` or `btoa` to be defined",
+    'Cannot generate b64 string; Expected `Buffer` or `btoa` to be defined',
   );
 };

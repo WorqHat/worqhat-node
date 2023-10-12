@@ -1,11 +1,19 @@
-import { VERSION } from "./version";
-import os from "os";
+import { VERSION } from './version';
+import os from 'os';
 
 function getOperatingSystem() {
   return os.platform();
 }
 function getArchitecture() {
   return os.arch();
+}
+
+function createRequestId() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
 
 export class APIError extends Error {
@@ -24,7 +32,7 @@ export class APIError extends Error {
 
     const data = error as Record<string, any>;
     this.error = data;
-    this.message = data?.["message"];
+    this.message = data?.['message'];
     this.headers = headers;
   }
 
@@ -34,14 +42,14 @@ export class APIError extends Error {
     headers: Record<string, string>,
   ) {
     let msg = error?.message
-      ? typeof error.message === "string"
+      ? typeof error.message === 'string'
         ? error.message
         : JSON.stringify(error.message)
       : error
       ? JSON.stringify(error)
-      : message || "Unknown error occurred";
+      : message || 'Unknown error occurred';
 
-    msg += "\nHeaders: " + JSON.stringify(headers);
+    msg += '\nHeaders: ' + JSON.stringify(headers);
 
     return msg;
   }
@@ -52,7 +60,7 @@ export class APIError extends Error {
     message: string | undefined,
     headers: Record<string, string> = {},
   ) {
-    const error = (errorResponse as Record<string, any>)?.["error"];
+    const error = (errorResponse as Record<string, any>)?.['error'];
 
     if (status !== undefined && status === 400) {
       return new BadRequestError(status, error, message);
@@ -94,7 +102,7 @@ export class APIUserAbortError extends APIError {
   override readonly status: undefined = undefined;
 
   constructor({ message }: { message?: string } = {}) {
-    super(undefined, undefined, message || "Request was aborted.");
+    super(undefined, undefined, message || 'Request was aborted.');
   }
 }
 
@@ -108,7 +116,7 @@ export class APIConnectionError extends APIError {
     message?: string;
     cause?: Error | undefined;
   }) {
-    super(undefined, undefined, message || "Connection error.");
+    super(undefined, undefined, message || 'Connection error.');
     // in some environments the 'cause' property is already declared
     // @ts-ignore
     if (cause) this.cause = cause;
@@ -117,7 +125,7 @@ export class APIConnectionError extends APIError {
 
 export class APIConnectionTimeoutError extends APIConnectionError {
   constructor() {
-    super({ message: "Request timed out." });
+    super({ message: 'Request timed out.' });
   }
 }
 
@@ -159,12 +167,14 @@ export function handleAxiosError(error: any) {
       data,
       statusText,
       headers: {
-        "X-WorqHat-Lang": "js",
-        "X-WorqHat-Package-Version": VERSION,
-        "X-WorqHat-OS": getOperatingSystem(),
-        "X-WorqHat-Arch": getArchitecture(),
-        "X-WorqHat-Runtime": process.release.name,
-        "X-WorqHat-Runtime-Version": process.version,
+        'X-WorqHat-Lang': 'js',
+        'X-WorqHat-Package-Version': VERSION,
+        'X-WorqHat-OS': getOperatingSystem(),
+        'X-WorqHat-Arch': getArchitecture(),
+        'X-WorqHat-Request-Id': createRequestId(),
+        'X-WorqHat-Timestamp': new Date().toISOString(),
+        'X-WorqHat-Runtime': process.release.name,
+        'X-WorqHat-Runtime-Version': process.version,
       },
     };
 
@@ -174,15 +184,16 @@ export function handleAxiosError(error: any) {
   } else {
     return {
       error: {
-        message: error.message,
-        stack: error.stack,
+        message: `Netwok Error. This might happen because of Network Connectivity, Socket Connectivity Mismatch or Unable to connect with the Cloud Servers.`,
         headers: {
-          "X-WorqHat-Lang": "js",
-          "X-WorqHat-Package-Version": VERSION,
-          "X-WorqHat-OS": getOperatingSystem(),
-          "X-WorqHat-Arch": getArchitecture(),
-          "X-WorqHat-Runtime": process.release.name,
-          "X-WorqHat-Runtime-Version": process.version,
+          'X-WorqHat-Lang': 'js',
+          'X-WorqHat-Package-Version': VERSION,
+          'X-WorqHat-OS': getOperatingSystem(),
+          'X-WorqHat-Arch': getArchitecture(),
+          'X-WorqHat-Request-Id': createRequestId(),
+          'X-WorqHat-Timestamp': new Date().toISOString(),
+          'X-WorqHat-Runtime': process.release.name,
+          'X-WorqHat-Runtime-Version': process.version,
         },
       },
     };

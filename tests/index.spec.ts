@@ -1,2 +1,2 @@
-import "mocha";
-import { assert } from "chai";
+import 'mocha';
+import { assert } from 'chai';

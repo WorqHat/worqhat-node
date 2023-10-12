@@ -1,32 +1,33 @@
 // api-sdk/src/index.ts
-import * as Errors from "./error";
+import * as Errors from './error';
 import {
   v2Content,
   v3Content,
   alphaContent,
   largeContent,
-} from "./ai/content-generation";
-import { v2ImageGen, v3ImageGen } from "./ai/image-generation";
-import { contentModeration, imageModeration } from "./ai/moderation";
-import { deleteTrainedDatasets, viewTrainedDatasets } from "./ai/datasets";
-import { v2Search, v3Search } from "./ai/search";
-import { authenticate } from "./auth/authentication";
+} from './ai/content-generation';
+import { v2ImageGen, v3ImageGen } from './ai/image-generation';
+import { contentModeration, imageModeration } from './ai/moderation';
+import { deleteTrainedDatasets, viewTrainedDatasets } from './ai/datasets';
+import { v2Search, v3Search } from './ai/search';
+import { authenticate } from './auth/authentication';
 import {
   webExtraction,
   PDFExtraction,
   imageExtraction,
   speechExtraction,
-} from "./ai/text-extraction";
+} from './ai/text-extraction';
 import {
   analyseImagesProcess,
   detectFaces,
   compareFaces,
-} from "./ai/image-analysis";
+} from './ai/image-analysis';
 import {
   imageModificationV2,
   imageModificationV3,
   imageUpscaler,
-} from "./ai/img2img";
+} from './ai/img2img';
+import { Database } from './databases/databases';
 
 /* The Configuration class is used to store and validate an API key. */
 export class Configuration {
@@ -63,16 +64,16 @@ export class Configuration {
     debug?: boolean;
     max_retries?: number;
   }) {
-    this.apiKey = options.apiKey || process.env.WORQHAT_API_KEY || "";
+    this.apiKey = options.apiKey || process.env.WORQHAT_API_KEY || '';
     this.debug = options.debug || false;
     this.max_retries = 2;
 
     if (!this.apiKey) {
-      throw new Error("API Key is required");
+      throw new Error('API Key is required');
     }
 
-    if (typeof this.apiKey !== "string") {
-      throw new Error("API Key must be a string");
+    if (typeof this.apiKey !== 'string') {
+      throw new Error('API Key must be a string');
     }
   }
 }
@@ -142,8 +143,8 @@ export const checkAuthentication = () => {
   if (!appConfiguration) {
     var error = Errors.APIError.generate(
       400,
-      { error: "Bad Request" },
-      "App is not initialized. Call initializeApp first.",
+      { error: 'Bad Request' },
+      'App is not initialized. Call initializeApp first.',
     );
     return error;
   }
@@ -151,6 +152,10 @@ export const checkAuthentication = () => {
   return response;
 };
 
+export const database = (): Database => {
+  console.log('Creating new database instance.');
+  return new Database();
+};
 /**
  * These functions can be used to generate text content using different AI models. The available versions include v2, v3, and alpha.
  * It has access to the following functions:
