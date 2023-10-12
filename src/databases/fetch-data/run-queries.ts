@@ -18,16 +18,6 @@ export const fetchWithCondition = async (
   order?: 'asc' | 'desc' | null,
   limit?: number | null,
 ) => {
-  console.log(
-    'fetchWithCondition',
-    name,
-    whereQuery,
-    joinStatement,
-    orderBy,
-    order,
-    limit,
-  );
-
   debug(
     LogStatus.INFO,
     `Retrieve Data from Collection ${name}`,

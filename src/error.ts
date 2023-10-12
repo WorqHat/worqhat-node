@@ -8,6 +8,14 @@ function getArchitecture() {
   return os.arch();
 }
 
+function createRequestId() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export class APIError extends Error {
   readonly status: number | undefined;
   readonly error: Object | undefined;
@@ -163,6 +171,8 @@ export function handleAxiosError(error: any) {
         'X-WorqHat-Package-Version': VERSION,
         'X-WorqHat-OS': getOperatingSystem(),
         'X-WorqHat-Arch': getArchitecture(),
+        'X-WorqHat-Request-Id': createRequestId(),
+        'X-WorqHat-Timestamp': new Date().toISOString(),
         'X-WorqHat-Runtime': process.release.name,
         'X-WorqHat-Runtime-Version': process.version,
       },
@@ -174,13 +184,14 @@ export function handleAxiosError(error: any) {
   } else {
     return {
       error: {
-        message: error.message,
-        stack: error.stack,
+        message: `Netwok Error. This might happen because of Network Connectivity, Socket Connectivity Mismatch or Unable to connect with the Cloud Servers.`,
         headers: {
           'X-WorqHat-Lang': 'js',
           'X-WorqHat-Package-Version': VERSION,
           'X-WorqHat-OS': getOperatingSystem(),
           'X-WorqHat-Arch': getArchitecture(),
+          'X-WorqHat-Request-Id': createRequestId(),
+          'X-WorqHat-Timestamp': new Date().toISOString(),
           'X-WorqHat-Runtime': process.release.name,
           'X-WorqHat-Runtime-Version': process.version,
         },
