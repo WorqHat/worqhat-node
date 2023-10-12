@@ -13,6 +13,7 @@ import { incrementFieldDb } from './db-functions/increment-data';
 import { fetchAllData } from './fetch-data/fetch-collection';
 import { fetchUniqueData } from './fetch-data/fetch-unique';
 import { fetchCountData } from './fetch-data/fetch-count';
+import { fetchRowData } from './fetch-data/fetch-row';
 
 export class Document {
   id: string;
@@ -67,6 +68,10 @@ export class Document {
 
   delete() {
     return deleteDataDb(this.collectionName, this.id);
+  }
+
+  get() {
+    return fetchRowData(this.collectionName, this.id);
   }
 }
 
