@@ -9,6 +9,8 @@ import { updateDataDb } from './data-mgmt/update-data';
 import { arrayUnionDb } from './db-functions/add-array';
 import { arrayRemoveDb } from './db-functions/remove-array';
 import { incrementFieldDb } from './db-functions/increment-data';
+import { fetchAllData } from './fetch-data/fetch-collection';
+import { fetchUniqueData } from './fetch-data/fetch-unique';
 
 export class Document {
   id: string;
@@ -118,6 +120,18 @@ export class Collection {
 
   add(data: any) {
     return addDataDb(this.name, '', data);
+  }
+
+  getAll() {
+    return fetchAllData(this.name);
+  }
+
+  getCount() {}
+
+  getUnique(this: Collection, columnName: string) {
+    let promise = fetchUniqueData(this.name, columnName);
+
+    return promise;
   }
 
   doc(docId: string) {
