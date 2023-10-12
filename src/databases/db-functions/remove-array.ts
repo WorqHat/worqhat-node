@@ -16,37 +16,25 @@ export const arrayRemoveDb = async (
   key: string,
   elements: string,
 ) => {
-  debug(
-    LogStatus.INFO,
-    'Remove Array from Document',
-    `Starting Array Remove operation`,
-  );
+  debug(LogStatus.INFO, 'Document Function', `Starting Array Remove operation`);
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Remove Array from Document',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Document Function', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Remove Array from Document',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Document Function', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
   try {
     debug(
       LogStatus.INFO,
-      'Remove Array from Document',
+      'Document Function',
       `Removing Array from Document ${docId}`,
     );
     startProcessingLog(
-      'Remove Array from Document',
+      'Document Function',
       `Removing Array from Document ${docId}`,
     );
     const response = await axios.post(
@@ -68,7 +56,7 @@ export const arrayRemoveDb = async (
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      'Remove Array from Document',
+      'Document Function',
       `Array removed from Document ${docId}`,
     );
     return {
@@ -79,7 +67,7 @@ export const arrayRemoveDb = async (
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      'Remove Array from Document',
+      'Document Function',
       `Error removing Array from Document ${docId}`,
     );
     throw handleAxiosError(error);

@@ -13,43 +13,31 @@ import {
 export const deleteDataDb = async (name: string, docId: any) => {
   debug(
     LogStatus.INFO,
-    `Delete Document ${docId} from Collection ${name}`,
+    `Update Database`,
     `Deleting document ${docId} from collection ${name}`,
   );
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Delete Document from Collection',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Update Database', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
   if (!docId) {
-    debug(
-      LogStatus.ERROR,
-      'Delete Document from Collection',
-      `Document ID is missing`,
-    );
+    debug(LogStatus.ERROR, 'Update Database', `Document ID is missing`);
     throw new Error('Document ID is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Delete Document from Collection',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Update Database', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
   try {
     debug(
       LogStatus.INFO,
-      `Delete Document ${docId} from Collection ${name}`,
+      `Update Database`,
       `Deleting document ${docId} from collection ${name}`,
     );
     startProcessingLog(
-      `Delete Document ${docId} from Collection ${name}`,
+      `Update Database`,
       `Deleting document ${docId} from collection ${name}`,
     );
     const response = await axios.post(
@@ -69,7 +57,7 @@ export const deleteDataDb = async (name: string, docId: any) => {
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      `Delete Document ${docId} from Collection ${name}`,
+      `Update Database`,
       `Document ${docId} deleted from collection ${name}`,
     );
     return {
@@ -80,7 +68,7 @@ export const deleteDataDb = async (name: string, docId: any) => {
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      `Delete Document ${docId} from Collection ${name}`,
+      `Update Database`,
       `Error deleting document ${docId} from collection ${name}`,
     );
     throw handleAxiosError(error);

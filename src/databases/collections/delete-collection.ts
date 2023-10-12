@@ -13,37 +13,22 @@ import {
 export const deleteCollection = async (name: string) => {
   debug(
     LogStatus.INFO,
-    'Delete Database Collection',
+    'Delete Collection',
     `Starting Database Collection deletion process`,
   );
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Delete Database Collection',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Delete Collection', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Delete Database Collection',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Delete Collection', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
   try {
-    debug(
-      LogStatus.INFO,
-      'Delete Database Collection',
-      `Deleting Database Collection`,
-    );
-    startProcessingLog(
-      'Delete Database Collection',
-      'Deleting Database Collection',
-    );
+    debug(LogStatus.INFO, 'Delete Collection', `Deleting Database Collection`);
+    startProcessingLog('Delete Collection', 'Deleting Database Collection');
     const response = await axios.post(
       `${baseUrl}/api/collections/secure-end/delete`,
       {
@@ -60,7 +45,7 @@ export const deleteCollection = async (name: string) => {
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      'Delete Database Collection',
+      'Delete Collection',
       `Database Collection deleted successfully`,
     );
     return {
@@ -71,7 +56,7 @@ export const deleteCollection = async (name: string) => {
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      'Delete Database Collection',
+      'Delete Collection',
       `Error deleting Database Collection`,
     );
     throw handleAxiosError(error);

@@ -13,35 +13,27 @@ import {
 export const fetchNlpQuery = async (name: string, query: string) => {
   debug(
     LogStatus.INFO,
-    `Running Language Query on Collection ${name}`,
+    `Database Query`,
     `Running Language Query on collection ${name}`,
   );
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Retrieve Data from Collection',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Database Query', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Retrieve Data from Collection',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Database Query', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
   try {
     debug(
       LogStatus.INFO,
-      `Run Natural Language Query on Collection ${name}`,
+      `Database Query`,
       `Running Language Query on collection ${name}`,
     );
     startProcessingLog(
-      `Run Natural Language Query on Collection ${name}`,
+      `Database Query`,
       `Running Language Query on collection ${name}`,
     );
     const response = await axios.post(
@@ -61,7 +53,7 @@ export const fetchNlpQuery = async (name: string, query: string) => {
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      `Run Natural Language Query on Collection ${name}`,
+      `Database Query`,
       `Running Language Query on collection ${name}`,
     );
     return {
@@ -72,7 +64,7 @@ export const fetchNlpQuery = async (name: string, query: string) => {
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      `Error retrieving data from collection ${name}`,
+      `Database Query`,
       `Error retrieving data from collection ${name}`,
     );
     throw handleAxiosError(error);

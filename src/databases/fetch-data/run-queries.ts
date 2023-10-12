@@ -20,35 +20,27 @@ export const fetchWithCondition = async (
 ) => {
   debug(
     LogStatus.INFO,
-    `Retrieve Data from Collection ${name}`,
+    `Database Query`,
     `Retrieving data from collection ${name}`,
   );
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Retrieve Data from Collection',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Database Query', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Retrieve Data from Collection',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Database Query', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
   try {
     debug(
       LogStatus.INFO,
-      `Retrieve Data from Collection ${name}`,
+      `Database Query`,
       `Retrieving data from collection ${name}`,
     );
     startProcessingLog(
-      `Retrieve Data from Collection ${name}`,
+      `Database Query`,
       `Retrieving data from collection ${name}`,
     );
     const response = await axios.post(
@@ -72,7 +64,7 @@ export const fetchWithCondition = async (
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      `Retrieve Data from Collection ${name}`,
+      `Database Query`,
       `Retrieving data from collection ${name}`,
     );
     return {
@@ -83,7 +75,7 @@ export const fetchWithCondition = async (
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      `Retrieve Data from Collection ${name}`,
+      `Database Query`,
       `Error retrieving data from collection ${name}`,
     );
     throw handleAxiosError(error);

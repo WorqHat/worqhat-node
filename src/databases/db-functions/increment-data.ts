@@ -18,24 +18,16 @@ export const incrementFieldDb = async (
 ) => {
   debug(
     LogStatus.INFO,
-    'Increment Field in Document',
+    'Document Function',
     `Starting Increment Field operation`,
   );
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Increment Field in Document',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Document Function', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Increment Field in Document',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Document Function', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
@@ -44,11 +36,11 @@ export const incrementFieldDb = async (
   try {
     debug(
       LogStatus.INFO,
-      'Increment Field in Document',
+      'Document Function',
       `Incrementing Field in Document ${docId}`,
     );
     startProcessingLog(
-      'Increment Field in Document',
+      'Document Function',
       `Incrementing Field in Document ${docId}`,
     );
     const response = await axios.post(
@@ -70,7 +62,7 @@ export const incrementFieldDb = async (
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      'Increment Field in Document',
+      'Document Function',
       `Field incremented in Document ${docId}`,
     );
     return {
@@ -81,7 +73,7 @@ export const incrementFieldDb = async (
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      'Increment Field in Document',
+      'Document Function',
       `Error while incrementing field in Document ${docId}`,
     );
     throw handleAxiosError(error);

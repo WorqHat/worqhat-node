@@ -17,35 +17,27 @@ export const createCollectionWithSchema = async (
 ) => {
   debug(
     LogStatus.INFO,
-    'Create Database Collection',
+    'Create Collection',
     `Starting Database Collection creation process with schema`,
   );
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Create Database Collection',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Create Collection', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Create Database Collection',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Create Collection', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
   try {
     debug(
       LogStatus.INFO,
-      'Create Database Collection',
+      'Create Collection',
       `Creating Database Collection with schema`,
     );
     startProcessingLog(
-      'Create Database Collection',
+      'Create Collection',
       'Creating Database Collection with schema',
     );
     const response = await axios.post(
@@ -66,7 +58,7 @@ export const createCollectionWithSchema = async (
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      'Create Database Collection',
+      'Create Collection',
       `Completed Database Collection creation with schema`,
     );
     return {
@@ -77,7 +69,7 @@ export const createCollectionWithSchema = async (
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      'Create Database Collection',
+      'Create Collection',
       `Error occurred during Database Collection creation with schema`,
     );
     throw handleAxiosError(error);
@@ -87,37 +79,22 @@ export const createCollectionWithSchema = async (
 export const createCollectionWithoutSchema = async (name: string) => {
   debug(
     LogStatus.INFO,
-    'Create Database Collection',
+    'Create Collection',
     `Starting Database Collection creation process`,
   );
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Create Database Collection',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Create Collection', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Create Database Collection',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Create Collection', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
   try {
-    debug(
-      LogStatus.INFO,
-      'Create Database Collection',
-      `Creating Database Collection`,
-    );
-    startProcessingLog(
-      'Create Database Collection',
-      'Creating Database Collection',
-    );
+    debug(LogStatus.INFO, 'Create Collection', `Creating Database Collection`);
+    startProcessingLog('Create Collection', 'Creating Database Collection');
     const response = await axios.post(
       `${baseUrl}/api/collections/create`,
       {
@@ -134,7 +111,7 @@ export const createCollectionWithoutSchema = async (name: string) => {
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      'Create Database Collection',
+      'Create Collection',
       `Completed Database Collection creation`,
     );
     return {
@@ -145,7 +122,7 @@ export const createCollectionWithoutSchema = async (name: string) => {
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      'Create Database Collection',
+      'Create Collection',
       `Error occurred during Database Collection creation`,
     );
     throw handleAxiosError(error);

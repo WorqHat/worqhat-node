@@ -13,35 +13,27 @@ import {
 export const updateDataDb = async (name: string, docId: any, data: any) => {
   debug(
     LogStatus.INFO,
-    `Update Data to Collection ${name} with docId ${docId}`,
+    `Update Database`,
     `Updating data to collection ${name} with docId ${docId}`,
   );
   if (!name) {
-    debug(
-      LogStatus.ERROR,
-      'Update Data to Collection',
-      `Collection Name is missing`,
-    );
+    debug(LogStatus.ERROR, 'Update Database', `Collection Name is missing`);
     throw new Error('Collection Name is required');
   }
 
   if (!appConfiguration) {
-    debug(
-      LogStatus.ERROR,
-      'Update Data to Collection',
-      `App Configuration is null`,
-    );
+    debug(LogStatus.ERROR, 'Update Database', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
 
   try {
     debug(
       LogStatus.INFO,
-      `Update Data to Collection ${name} with docId ${docId}`,
+      `Update Database`,
       `Updating data to collection ${name} with docId ${docId}`,
     );
     startProcessingLog(
-      `Update Data to Collection ${name} with docId ${docId}`,
+      `Update Database`,
       `Updating data to collection ${name} with docId ${docId}`,
     );
     const response = await axios.post(
@@ -62,7 +54,7 @@ export const updateDataDb = async (name: string, docId: any, data: any) => {
     stopProcessingLog();
     debug(
       LogStatus.INFO,
-      `Update Data to Collection ${name} with docId ${docId}`,
+      `Update Database`,
       `Data updated to collection ${name} with docId ${docId}`,
     );
     return {
@@ -73,7 +65,7 @@ export const updateDataDb = async (name: string, docId: any, data: any) => {
     stopProcessingLog();
     debug(
       LogStatus.ERROR,
-      `Update Data to Collection ${name} with docId ${docId}`,
+      `Update Database`,
       `Error updating data to collection ${name} with docId ${docId}`,
     );
     throw handleAxiosError(error);
