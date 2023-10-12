@@ -8,6 +8,7 @@ import { deleteDataDb } from './data-mgmt/delete-data';
 import { updateDataDb } from './data-mgmt/update-data';
 import { arrayUnionDb } from './db-functions/add-array';
 import { arrayRemoveDb } from './db-functions/remove-array';
+import { incrementFieldDb } from './db-functions/increment-data';
 
 export class Document {
   id: string;
@@ -38,6 +39,14 @@ export class Document {
       } else if (data[key].__op === 'arrayRemove') {
         // Call the database function for array union operation
         return await arrayRemoveDb(
+          this.collectionName,
+          this.id,
+          key,
+          data[key].elements,
+        );
+      } else if (data[key].__op === 'increment') {
+        // Call the database function for array union operation
+        return await incrementFieldDb(
           this.collectionName,
           this.id,
           key,
@@ -143,6 +152,12 @@ export class Database {
   arrayRemove(elements: string) {
     return {
       __op: 'arrayRemove',
+      elements: elements,
+    };
+  }
+  increment(elements: number) {
+    return {
+      __op: 'increment',
       elements: elements,
     };
   }
