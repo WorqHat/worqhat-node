@@ -84,6 +84,7 @@ export class Collection {
   private languageQuery: string;
   private whereQuery: { field: string; operator: string; value: any }[] = [];
   private joinOperator: string;
+  private orderColumn: string;
 
   constructor(name: string) {
     this.name = name;
@@ -92,6 +93,7 @@ export class Collection {
     this.languageQuery = '';
     this.whereQuery = [];
     this.joinOperator = 'AND';
+    this.orderColumn = '';
   }
 
   create(data?: any, orderByKey?: string) {
@@ -150,6 +152,18 @@ export class Collection {
     return this; // return the instance of the class to allow method chaining
   }
 
+  private getUniqueQuery: getUniqueQuery = {
+    uniqueColumn: '',
+    orderByColumn: '',
+    orderDirection: 'asc',
+  };
+
+  orderBy(orderByColumn: string, orderDirection: 'asc' | 'desc') {
+    this.getUniqueQuery.orderByColumn = orderByColumn;
+    this.getUniqueQuery.orderDirection = orderDirection;
+    return this;
+  }
+
   where(field: string, operator: string, value: any) {
     this.whereQuery.push({ field, operator, value });
     return this; // return the instance of the class to allow method chaining
@@ -164,26 +178,20 @@ export class Collection {
     if (this.languageQuery) {
       return fetchNlpQuery(this.name, this.languageQuery);
     } else if (this.whereQuery.length > 0) {
-      return fetchWithCondition(this.name, this.whereQuery, this.joinOperator);
+      return fetchWithCondition(
+        this.name,
+        this.whereQuery,
+        this.joinOperator,
+        this.getUniqueQuery.orderByColumn,
+        this.getUniqueQuery.orderDirection,
+      );
     } else {
       return fetchAllData(this.name);
     }
   }
 
-  private getUniqueQuery: getUniqueQuery = {
-    uniqueColumn: '',
-    orderByColumn: '',
-    orderDirection: 'asc',
-  };
-
   getUnique(uniqueColumn: string) {
     this.getUniqueQuery.uniqueColumn = uniqueColumn;
-    return this;
-  }
-
-  orderBy(orderByColumn: string, orderDirection: 'asc' | 'desc' = 'asc') {
-    this.getUniqueQuery.orderByColumn = orderByColumn;
-    this.getUniqueQuery.orderDirection = orderDirection;
     return this;
   }
 
