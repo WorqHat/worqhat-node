@@ -84,7 +84,7 @@ export class Collection {
   private languageQuery: string;
   private whereQuery: { field: string; operator: string; value: any }[] = [];
   private joinOperator: string;
-  private orderColumn: string;
+  private limitCount: number | null;
 
   constructor(name: string) {
     this.name = name;
@@ -93,7 +93,7 @@ export class Collection {
     this.languageQuery = '';
     this.whereQuery = [];
     this.joinOperator = 'AND';
-    this.orderColumn = '';
+    this.limitCount = null;
   }
 
   create(data?: any, orderByKey?: string) {
@@ -149,16 +149,16 @@ export class Collection {
 
   language(query: string) {
     this.languageQuery = query;
-    return this; // return the instance of the class to allow method chaining
+    return this;
   }
 
   private getUniqueQuery: getUniqueQuery = {
     uniqueColumn: '',
     orderByColumn: '',
-    orderDirection: 'asc',
+    orderDirection: null as 'asc' | 'desc' | null,
   };
 
-  orderBy(orderByColumn: string, orderDirection: 'asc' | 'desc') {
+  orderBy(orderByColumn: string, orderDirection: 'asc' | 'desc' | null) {
     this.getUniqueQuery.orderByColumn = orderByColumn;
     this.getUniqueQuery.orderDirection = orderDirection;
     return this;
@@ -166,12 +166,17 @@ export class Collection {
 
   where(field: string, operator: string, value: any) {
     this.whereQuery.push({ field, operator, value });
-    return this; // return the instance of the class to allow method chaining
+    return this;
   }
 
   join(operator: string) {
     this.joinOperator = operator.toUpperCase();
-    return this; // return the instance of the class to allow method chaining
+    return this;
+  }
+
+  limit(limitCount: number) {
+    this.limitCount = limitCount;
+    return this;
   }
 
   async get() {
@@ -184,6 +189,7 @@ export class Collection {
         this.joinOperator,
         this.getUniqueQuery.orderByColumn,
         this.getUniqueQuery.orderDirection,
+        this.limitCount,
       );
     } else {
       return fetchAllData(this.name);

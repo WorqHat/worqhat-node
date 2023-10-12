@@ -14,7 +14,7 @@ export const fetchUniqueData = async (
   name: string,
   column: string,
   orderBy?: string,
-  order?: 'asc' | 'desc' | '',
+  order?: 'asc' | 'desc' | null,
 ) => {
   debug(
     LogStatus.INFO,

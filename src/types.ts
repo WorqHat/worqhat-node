@@ -110,5 +110,5 @@ export interface ImageUpscaleParams {
 export interface getUniqueQuery {
   uniqueColumn: string;
   orderByColumn: string;
-  orderDirection: 'asc' | 'desc';
+  orderDirection: 'asc' | 'desc' | null;
 }

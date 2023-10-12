@@ -3,8 +3,8 @@ export const fetchWithCondition = (
   whereQuery: { field: string; operator: string; value: any }[],
   joinStatement?: string,
   orderBy?: string,
-  order?: 'asc' | 'desc' | '',
-  limit?: number,
+  order?: 'asc' | 'desc' | null,
+  limit?: number | null,
 ): Promise<any[]> => {
   console.log(
     'fetchWithCondition',
