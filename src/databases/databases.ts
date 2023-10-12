@@ -12,6 +12,7 @@ import { arrayRemoveDb } from './db-functions/remove-array';
 import { incrementFieldDb } from './db-functions/increment-data';
 import { fetchAllData } from './fetch-data/fetch-collection';
 import { fetchUniqueData } from './fetch-data/fetch-unique';
+import { fetchCountData } from './fetch-data/fetch-count';
 
 export class Document {
   id: string;
@@ -127,7 +128,9 @@ export class Collection {
     return fetchAllData(this.name);
   }
 
-  getCount() {}
+  getCount(column: string) {
+    return fetchCountData(this.name, column);
+  }
 
   private getUniqueQuery: getUniqueQuery = {
     uniqueColumn: '',
