@@ -15,6 +15,7 @@ import { fetchUniqueData } from './fetch-data/fetch-unique';
 import { fetchCountData } from './fetch-data/fetch-count';
 import { fetchRowData } from './fetch-data/fetch-row';
 import { fetchNlpQuery } from './fetch-data/nlp-query';
+import { fetchWithCondition } from './fetch-data/run-queries';
 
 export class Document {
   id: string;
@@ -81,12 +82,16 @@ export class Collection {
   data: any[];
   documents: { [key: string]: Document };
   private languageQuery: string;
+  private whereQuery: { field: string; operator: string; value: any }[] = [];
+  private joinOperator: string;
 
   constructor(name: string) {
     this.name = name;
     this.data = [];
     this.documents = {};
     this.languageQuery = '';
+    this.whereQuery = [];
+    this.joinOperator = 'AND';
   }
 
   create(data?: any, orderByKey?: string) {
@@ -145,9 +150,21 @@ export class Collection {
     return this; // return the instance of the class to allow method chaining
   }
 
+  where(field: string, operator: string, value: any) {
+    this.whereQuery.push({ field, operator, value });
+    return this; // return the instance of the class to allow method chaining
+  }
+
+  join(operator: string) {
+    this.joinOperator = operator.toUpperCase();
+    return this; // return the instance of the class to allow method chaining
+  }
+
   async get() {
     if (this.languageQuery) {
       return fetchNlpQuery(this.name, this.languageQuery);
+    } else if (this.whereQuery.length > 0) {
+      return fetchWithCondition(this.name, this.whereQuery, this.joinOperator);
     } else {
       return fetchAllData(this.name);
     }
