@@ -14,6 +14,7 @@ import { fetchAllData } from './fetch-data/fetch-collection';
 import { fetchUniqueData } from './fetch-data/fetch-unique';
 import { fetchCountData } from './fetch-data/fetch-count';
 import { fetchRowData } from './fetch-data/fetch-row';
+import { fetchNlpQuery } from './fetch-data/nlp-query';
 
 export class Document {
   id: string;
@@ -79,11 +80,13 @@ export class Collection {
   name: string;
   data: any[];
   documents: { [key: string]: Document };
+  private languageQuery: string;
 
   constructor(name: string) {
     this.name = name;
     this.data = [];
     this.documents = {};
+    this.languageQuery = '';
   }
 
   create(data?: any, orderByKey?: string) {
@@ -135,6 +138,19 @@ export class Collection {
 
   getCount(column: string) {
     return fetchCountData(this.name, column);
+  }
+
+  language(query: string) {
+    this.languageQuery = query;
+    return this; // return the instance of the class to allow method chaining
+  }
+
+  async get() {
+    if (this.languageQuery) {
+      return fetchNlpQuery(this.name, this.languageQuery);
+    } else {
+      return fetchAllData(this.name);
+    }
   }
 
   private getUniqueQuery: getUniqueQuery = {
