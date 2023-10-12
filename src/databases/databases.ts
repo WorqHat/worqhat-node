@@ -1,3 +1,4 @@
+import { getUniqueQuery } from '../types';
 import {
   createCollectionWithSchema,
   createCollectionWithoutSchema,
@@ -128,10 +129,44 @@ export class Collection {
 
   getCount() {}
 
-  getUnique(this: Collection, columnName: string) {
-    let promise = fetchUniqueData(this.name, columnName);
+  private getUniqueQuery: getUniqueQuery = {
+    uniqueColumn: '',
+    orderByColumn: '',
+    orderDirection: 'asc',
+  };
 
-    return promise;
+  getUnique(uniqueColumn: string) {
+    this.getUniqueQuery.uniqueColumn = uniqueColumn;
+    return this;
+  }
+
+  orderBy(orderByColumn: string, orderDirection: 'asc' | 'desc' = 'asc') {
+    this.getUniqueQuery.orderByColumn = orderByColumn;
+    this.getUniqueQuery.orderDirection = orderDirection;
+    return this;
+  }
+
+  async execute() {
+    const { uniqueColumn, orderByColumn, orderDirection } = this.getUniqueQuery;
+
+    if (!uniqueColumn) {
+      return { error: 'Please specify a unique column.' };
+    }
+
+    let fetchData = {};
+
+    if (orderByColumn) {
+      fetchData = fetchUniqueData(
+        this.name,
+        uniqueColumn,
+        orderByColumn,
+        orderDirection,
+      );
+    } else {
+      fetchData = fetchUniqueData(this.name, uniqueColumn);
+    }
+
+    return fetchData;
   }
 
   doc(docId: string) {

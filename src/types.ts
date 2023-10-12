@@ -106,3 +106,9 @@ export interface ImageUpscaleParams {
   scale?: number;
   output_type?: 'url' | 'blob';
 }
+
+export interface getUniqueQuery {
+  uniqueColumn: string;
+  orderByColumn: string;
+  orderDirection: 'asc' | 'desc';
+}
