@@ -48,7 +48,6 @@ const processImage = async (
     throw new Error('App Configuration is null');
   }
 
-  const timenow = new Date();
   debug(
     LogStatus.INFO,
     `Image Modification ${version}`,
@@ -103,8 +102,6 @@ const processImage = async (
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
 
     debug(
@@ -115,7 +112,6 @@ const processImage = async (
     );
 
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
@@ -246,7 +242,6 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
     throw new Error('App Configuration is null');
   }
 
-  const timenow = new Date();
   debug(
     LogStatus.INFO,
     'Image Upscale',
@@ -326,8 +321,6 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
 
     debug(
@@ -337,7 +330,6 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
     );
 
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };

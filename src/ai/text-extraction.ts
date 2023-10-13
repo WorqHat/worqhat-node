@@ -23,7 +23,6 @@ import { getImageAsBase64 } from '../uploads';
 
 export const webExtraction = async (params: WebExtractionParams) => {
   debug(LogStatus.INFO, `Web Extraction`, 'Starting Web Extraction Process');
-  const timenow = new Date();
 
   if (!appConfiguration) {
     debug(LogStatus.ERROR, `Web Extraction`, 'App Configuration is null');
@@ -63,11 +62,8 @@ export const webExtraction = async (params: WebExtractionParams) => {
       'Web Extraction Process completed successfully',
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error) {
@@ -93,7 +89,6 @@ export const PDFExtraction = async ({ file }: PDFExtractionParams) => {
 
   const form = new FormData();
 
-  const timenow = new Date();
   debug(LogStatus.INFO, 'PDF Extraction', `Received PDF data`);
   debug(LogStatus.INFO, 'PDF Extraction', `Converting PDF to base64`);
   let base64Data: string = await getImageAsBase64(file);
@@ -129,11 +124,8 @@ export const PDFExtraction = async ({ file }: PDFExtractionParams) => {
       'PDF Extraction',
       'PDF Extraction Process completed successfully',
     );
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error: any) {
@@ -168,7 +160,6 @@ export const imageExtraction = async ({
       throw new Error('App Configuration is null');
     }
 
-    const timenow = new Date();
     debug(LogStatus.INFO, 'Image Extraction', `Received Image data`);
     debug(LogStatus.INFO, 'Image Extraction', `Converting image to base64`);
     let base64Data: string = await getImageAsBase64(image);
@@ -199,8 +190,6 @@ export const imageExtraction = async ({
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
     debug(
       LogStatus.INFO,
@@ -208,7 +197,6 @@ export const imageExtraction = async ({
       `Image extraction process completed`,
     );
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
@@ -225,7 +213,6 @@ export const imageExtraction = async ({
 
 export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
   try {
-    let timenow = new Date();
     debug(
       LogStatus.INFO,
       'Speech Extraction',
@@ -280,11 +267,8 @@ export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
       'Speech Extraction',
       `Speech extraction process completed`,
     );
-    let timeafter = new Date();
-    let time = timeafter.getTime() - timenow.getTime();
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error: any) {

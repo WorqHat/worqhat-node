@@ -127,13 +127,24 @@ export const checkAuthentication = () => {
   var response = authenticate(appConfiguration.apiKey);
   return response;
 };
-
+/**
+ * Creates a new Database connection instance.
+ *
+ * @function
+ * @returns {Database} A new Database connection instance.
+ */
 export const database = (): Database => {
   console.log('Creating new Database Connection instance.');
   return new Database();
 };
 
-export const ai = () => {
+/**
+ * Creates a new AI connection instance.
+ *
+ * @function
+ * @returns {AI} A new AI connection instance.
+ */
+export const ai = (): AI => {
   console.log('Creating new AI Connection instance.');
   return new AI();
 };

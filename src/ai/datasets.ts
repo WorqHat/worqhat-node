@@ -10,7 +10,6 @@ export const viewTrainedDatasets = async () => {
     debug(LogStatus.ERROR, 'View Datasets', 'App Configuration is null');
     throw new Error('App Configuration is null');
   }
-  const timenow = new Date();
   try {
     debug(LogStatus.INFO, 'View Datasets', 'Sending request to View Datasets');
     const response = await axios.get(`${baseUrl}/api/list-datasets`, {
@@ -18,8 +17,6 @@ export const viewTrainedDatasets = async () => {
         Authorization: 'Bearer ' + appConfiguration.apiKey,
       },
     });
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     debug(
       LogStatus.INFO,
       'View Datasets',
@@ -28,7 +25,6 @@ export const viewTrainedDatasets = async () => {
 
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error) {
@@ -55,7 +51,6 @@ export const deleteTrainedDatasets = async ({
     debug(LogStatus.ERROR, 'Delete Datasets', 'Dataset ID is required');
     throw new Error('Dataset ID is required');
   }
-  const timenow = new Date();
 
   debug(
     LogStatus.INFO,
@@ -71,11 +66,9 @@ export const deleteTrainedDatasets = async ({
     })
     .then((response) => {
       debug(LogStatus.INFO, 'Delete Datasets', 'Dataset deleted successfully');
-      const timeafter = new Date();
-      const time = timeafter.getTime() - timenow.getTime();
       return {
         code: 200,
-        processingTime: time,
+        ...response.data,
       };
     })
     .catch((error) => {

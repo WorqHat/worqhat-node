@@ -22,7 +22,6 @@ export const v2Search = async ({ question, training_data }: searchV2Params) => {
     throw new Error('Question is required');
   }
 
-  const timenow = new Date();
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'Search V2', 'App Configuration is null');
     throw new Error('App Configuration is null');
@@ -47,13 +46,10 @@ export const v2Search = async ({ question, training_data }: searchV2Params) => {
 
     delete response.data.time_taken;
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
     debug(LogStatus.INFO, 'Search V2', 'Search V2 completed successfully');
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error) {
@@ -77,7 +73,6 @@ export const v3Search = async ({
     throw new Error('Question is required');
   }
 
-  const timenow = new Date();
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'Search V3', 'App Configuration is null');
     throw new Error('App Configuration is null');
@@ -103,13 +98,10 @@ export const v3Search = async ({
 
     delete response.data.time_taken;
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
     debug(LogStatus.INFO, 'Search V3', 'Search V3 completed successfully');
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error) {

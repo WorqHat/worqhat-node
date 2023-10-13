@@ -152,8 +152,6 @@ export const alphaContent = async ({
     throw new Error('Question is required');
   }
 
-  const timenow = new Date();
-
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'AiConV2 Alpha', 'App Configuration is null');
     throw new Error('App Configuration is null');
@@ -182,8 +180,6 @@ export const alphaContent = async ({
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     debug(
       LogStatus.INFO,
       'AiConV2 Alpha',
@@ -192,7 +188,6 @@ export const alphaContent = async ({
     stopProcessingLog();
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error: any) {
@@ -222,8 +217,6 @@ export const largeContent = async ({
     debug(LogStatus.ERROR, 'AiConV2 Large', 'Question is missing');
     throw new Error('Question is required');
   }
-
-  const timenow = new Date();
 
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'AiConV2 Large', 'App Configuration is null');
@@ -268,8 +261,6 @@ export const largeContent = async ({
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     debug(
       LogStatus.INFO,
       'AiConV2 Large',
@@ -278,7 +269,6 @@ export const largeContent = async ({
     stopProcessingLog();
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error: any) {
