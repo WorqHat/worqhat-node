@@ -135,7 +135,10 @@ export const v3Content = ({
   );
 };
 
-export const alphaContent = async ({ question }: AlphaParams) => {
+export const alphaContent = async ({
+  question,
+  conversation_history,
+}: AlphaParams) => {
   debug(
     LogStatus.INFO,
     'AiConV2 Alpha',
@@ -168,6 +171,7 @@ export const alphaContent = async ({ question }: AlphaParams) => {
       `${baseUrl}/api/ai/content/v2/new/alpha`,
       {
         question: question,
+        conversation_history: conversation_history || {},
       },
       {
         headers: {
@@ -198,8 +202,12 @@ export const alphaContent = async ({ question }: AlphaParams) => {
 
 export const largeContent = async ({
   datasetId,
+  history_object,
+  preserve_history,
   question,
+  training_data,
   randomness,
+  stream,
 }: LargeParams) => {
   debug(
     LogStatus.INFO,
@@ -245,6 +253,10 @@ export const largeContent = async ({
         datasetId: datasetId,
         question: question,
         randomness: randomness || 0.2,
+        history_object: history_object || {},
+        preserve_history: preserve_history || false,
+        training_data: training_data || '',
+        stream_data: stream || false,
       },
       {
         headers: {

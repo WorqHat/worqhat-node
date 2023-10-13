@@ -39,7 +39,8 @@ export class AI {
   moderation = {
     /**
      * Content Moderation AI Models. A powerful AI Model that can be used to detect and filter out inappropriate content from your website or app. Read more at https://docs.worqhat.com/ai-models/content-moderation/text-content-moderation
-     * @param text_content - The text content to be moderated.
+     * @param {string} text_content - The text content to be moderated.
+     * @link https://docs.worqhat.com/ai-models/content-moderation/text-content-moderation
      * @returns A Promise that resolves to the moderation results.
      * @example
      * ```javascript
@@ -66,7 +67,8 @@ export class AI {
     content: contentModeration,
     /**
      * Image Moderation AI Models. A powerful AI Model that can be used to detect and filter out inappropriate content from your website or app. Read more at https://docs.worqhat.com/ai-models/content-moderation/image-moderation
-     * @param image - The image to be moderated. It can be a `File object` or a `URL` or `base64` encoded image data.
+     * @param {string} image - The image to be moderated. It can be a `File object` or a `URL` or `base64` encoded image data.
+     * @link https://docs.worqhat.com/ai-models/content-moderation/image-moderation
      * @returns A Promise that resolves to the moderation results.
      * @example
      * ```javascript
@@ -105,13 +107,14 @@ export class AI {
   contentGeneration = {
     /**
      * Version 2 Content Generation AI focused only on Business Content Generation Purpose. It can be used to generate content for a variety of business use cases where the content is not too creative or complex. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-textgen
-     * @param options - An object containing the following  parameters:
-     * @param history_object: An object representing the history of the conversation. Default is undefined.
-     * @param preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
-     * @param question: A string representing the question to generate content for. Default is undefined.
-     * @param training_data: A string representing the training data to use for generating content. Default is undefined.
-     * @param randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
-     * @param stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {object} history_object: An object representing the history of the conversation. Default is undefined.
+     * @param {boolean} preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
+     * @param {string} question: A string representing the question to generate content for. Default is undefined.
+     * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
+     * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
+     * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-textgen
+     * @returns {Promise} A Promise that resolves to the generated content.
      * @example
      * ```javascript
      * const worqhat = require('worqhat');
@@ -140,79 +143,13 @@ export class AI {
     v2: v2Content,
     /**
      * Version 3 Advanced Generation AI focused for more creative and understanding capabilities. It can be used to generate content for a variety of use cases where the content is more creative or complex. It can run complex situational analysis and understand the context of the commands. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v3-textgen
-     * @param history_object: An object representing the history of the conversation. Default is undefined.
-     * @param preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
-     * @param question: A string representing the question to generate content for. Default is undefined.
-     * @param training_data: A string representing the training data to use for generating content. Default is undefined.
-     * @param randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
-     * @example
-     * ```javascript
-     * const worqhat = require('worqhat');
-     *
-     * var config = new worqhat.Configuration({
-     *   apiKey: "your-api-key",
-     *   debug: true,
-     * });
-     *
-     * worqhat.initializeApp(config);
-     *
-     * async function generateContent() {
-     *   try {
-     *     var result = await worqhat.contentGeneration.v3({
-     *       history_object: { "previous": "Previous conversation history" },
-     *       preserve_history: true,
-     *       question: "Your question here",
-     *       training_data: "your-training-data-id",
-     *       randomness: 0.3,
-     *     })
-     *     console.log(result);
-     *
-     *   } catch (error) {
-     *     console.error(error);
-     *   }
-     * }
-     *
-     * generateContent();
-     * ```
-     */
-    v3: v3Content,
-    /**
-     * Alpha version Content Generation AI with data upto 2023 which can be used to generate Current Data based content. The Alpha Channel of AiCon V2 is mostly dependent on the Data upto May 2023 which makes it relatively upto date and more accurate than the previous versions of AiCon. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
-     * @param question: A string representing the question to generate content for. Default is undefined.
-     * @example
-     * ```javascript
-     * const worqhat = require('worqhat');
-     *
-     * var config = new worqhat.Configuration({
-     *   apiKey: "your-api-key",
-     *   debug: true,
-     * });
-     *
-     * worqhat.initializeApp(config);
-     *
-     * async function generateAlphaContent() {
-     *   try {
-     *     var result = await worqhat.contentGeneration.alpha({
-     *       question: "Your question here",
-     *     })
-     *     console.log(result);
-     *
-     *   } catch (error) {
-     *     console.error(error);
-     *   }
-     * }
-     *
-     * generateAlphaContent();
-     * ```
-     */
-    alpha: alphaContent,
-    /**
-     * Large Content Generation AI Model. This model is designed to generate large amounts of content based on the provided parameters. You can provide a pre-trained model to generate content on top of it. This is mostly used for use-cases where you want to run a model based on your pre-trained dataset. It can be used to generate content for a variety of use cases where the content is more creative or complex.
-     *  Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-large-beta
-     * @param {string} datasetId - The id of the dataset to be used for content generation. This is a required parameter.
-     * @param {string} question - The question or prompt based on which the content will be generated. This is a required parameter.
-     * @param {number} randomness - A number representing the level of randomness to use for generating content. Default is 0.2.
-     * @param {array} instructions - An array of strings representing the instructions for the content generation. Default is undefined.
+     * @param {object} history_object: An object representing the history of the conversation. Default is undefined.
+     * @param {boolean} preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
+     * @param {string} question: A string representing the question to generate content for. Default is undefined.
+     * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
+     * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
+     * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v3-textgen
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
      * ```javascript
@@ -225,19 +162,85 @@ export class AI {
      *
      * worqhat.initializeApp(config);
      *
-     * async function generateLargeContent() {
-     *   try {
-     *     var result = await worqhat.contentGeneration.large({
-     *       datasetId: "your-dataset-id",
-     *       question: "Your question here",
-     *       randomness: 0.3,
-     *     })
-     *     console.log(result);
+     * let ai = worqhat.ai();
      *
-     *   } catch (error) {
-     *     console.error(error);
-     *   }
-     * }
+     * ai.contentGeneration.v3({
+     * history_object: { "previous": "Previous conversation history" },
+     * preserve_history: true,
+     * question: "Your question here",
+     * training_data: "your-training-data-id",
+     * randomness: 0.3,
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    v3: v3Content,
+    /**
+     * Alpha version Content Generation AI with data upto 2023 which can be used to generate Current Data based content. The Alpha Channel of AiCon V2 is mostly dependent on the Data upto May 2023 which makes it relatively upto date and more accurate than the previous versions of AiCon. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
+     * @param {string} question: A string representing the question to generate content for. Default is undefined.
+     * @param {object} conversation_history: An object representing the history of the conversation. Default is undefined.
+     * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
+     * @returns {Promise} A Promise that resolves to the generated content.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai();
+     *
+     * ai.contentGeneration.alpha({
+     * question: "Your question here",
+     * conversation_history: { "previous": "Previous conversation history" },
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    alpha: alphaContent,
+    /**
+     * Large Content Generation AI Model. This model is designed to generate large amounts of content based on the provided parameters. You can provide a pre-trained model to generate content on top of it. This is mostly used for use-cases where you want to run a model based on your pre-trained dataset. It can be used to generate content for a variety of use cases where the content is more creative or complex.
+     *  Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-large-beta
+     * @param {string} datasetId: A string representing the ID of the dataset to use for generating content. This is a required parameter.
+     * @param {object} history_object: An object representing the history of the conversation. Default is undefined.
+     * @param {boolean} preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
+     * @param {string} question: A string representing the question to generate content for. Default is undefined.
+     * @param {string} instructions: A string representing the instructions to use for generating content. Default is undefined.
+     * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
+     * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @returns {Promise} A Promise that resolves to the generated content.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai();
+     *
+     * ai.contentGeneration.large({
+     * history_object: { "previous": "Previous conversation history" },
+     * datasetId: "your-dataset-id",
+     * preserve_history: true,
+     * question: "Your question here",
+     * instructions: "your-instructions",
+     * randomness: 0.3,
+     * stream_data: true,
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
      *
      * generateLargeContent();
      * ```
