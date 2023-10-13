@@ -16,6 +16,7 @@ import { fetchCountData } from './fetch-data/fetch-count';
 import { fetchRowData } from './fetch-data/fetch-row';
 import { fetchNlpQuery } from './fetch-data/nlp-query';
 import { fetchWithCondition } from './fetch-data/run-queries';
+import { handleAxiosError } from '../error';
 
 export class Document {
   id: string;
@@ -36,7 +37,14 @@ export class Document {
   async update(data: any) {
     for (const key in data) {
       if (data[key].__op === 'arrayAdd') {
-        // Call the database function for array union operation
+        if (
+          !Array.isArray(data[key].elements) ||
+          data[key].elements.length !== 1
+        ) {
+          throw new Error(
+            'Only one element can be passed to the arrayAdd function. See the documentation for more details.',
+          );
+        }
         return await arrayUnionDb(
           this.collectionName,
           this.id,
@@ -44,7 +52,14 @@ export class Document {
           data[key].elements,
         );
       } else if (data[key].__op === 'arrayRemove') {
-        // Call the database function for array union operation
+        if (
+          !Array.isArray(data[key].elements) ||
+          data[key].elements.length !== 1
+        ) {
+          throw new Error(
+            'Only one element can be passed to the arrayRemove function. See the documentation for more details.',
+          );
+        }
         return await arrayRemoveDb(
           this.collectionName,
           this.id,
@@ -52,7 +67,11 @@ export class Document {
           data[key].elements,
         );
       } else if (data[key].__op === 'increment') {
-        // Call the database function for array union operation
+        if (typeof data[key].elements !== 'number') {
+          throw new Error(
+            'Increment value must be a number. You can pass in both Positive and Negative values .You can use the increment() function to increment a field. See the documentation for more details.',
+          );
+        }
         return await incrementFieldDb(
           this.collectionName,
           this.id,
@@ -96,13 +115,12 @@ export class Collection {
     this.limitCount = null;
   }
 
-  create(data?: any, orderByKey?: string) {
+  create(data: any, orderByKey?: string) {
     let response = {};
 
     if (!data || Object.keys(data).length === 0) {
       response = createCollectionWithoutSchema(this.name);
     } else {
-      // I want to check the data object to see that the values are among the allowed values
       let allowedValues = [
         'string',
         'number',
@@ -165,16 +183,42 @@ export class Collection {
   }
 
   where(field: string, operator: string, value: any) {
+    const validOperators = [
+      '==',
+      '!=',
+      '>',
+      '>=',
+      '<',
+      '<=',
+      'less than',
+      'less than or equal to',
+      'equal to',
+      'greater than',
+      'greater than or equal to',
+      'not equal to',
+    ];
+    if (!validOperators.includes(operator.toLowerCase())) {
+      throw new Error(
+        'Invalid operator. Valid operators are "==" (or "equal to"), "!=" (or "not equal to"), ">" (or "greater than"), ">=" (or "greater than or equal to"), "<" (or "less than"), "<=" (or "less than or equal to")',
+      );
+    }
     this.whereQuery.push({ field, operator, value });
     return this;
   }
 
   join(operator: string) {
+    const validOperators = ['and', 'or'];
+    if (!validOperators.includes(operator.toLowerCase())) {
+      throw new Error('Invalid operator. Valid operators are "and" and "or"');
+    }
     this.joinOperator = operator.toUpperCase();
     return this;
   }
 
   limit(limitCount: number) {
+    if (!Number.isInteger(limitCount)) {
+      throw new Error('Limit count must be an integer greater than 0.');
+    }
     this.limitCount = limitCount;
     return this;
   }
