@@ -37,8 +37,68 @@ export class AI {
    * @property {function} image - Function for moderating images.
    */
   moderation = {
-    image: (params: any) => imageModeration(params),
-    content: (params: any) => contentModeration(params),
+    /**
+     * Content Moderation AI Models. A powerful AI Model that can be used to detect and filter out inappropriate content from your website or app. Read more at https://docs.worqhat.com/ai-models/content-moderation/text-content-moderation
+     * @param text_content - The text content to be moderated.
+     * @returns A Promise that resolves to the moderation results.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * async function moderateContent() {
+     *   try {
+     *     var result = await worqhat.moderation.content({
+     *       text_content: "Your text content here"
+     *     })
+     *     console.log(result);
+     *
+     *   } catch (error) {
+     *     console.error(error);
+     *   }
+     * }
+     *
+     * moderateContent();
+     * ```
+     */
+    content: contentModeration,
+    /**
+     * Image Moderation AI Models. A powerful AI Model that can be used to detect and filter out inappropriate content from your website or app. Read more at https://docs.worqhat.com/ai-models/content-moderation/image-moderation
+     * @param image - The image to be moderated. It can be a `File object` or a `URL` or `base64` encoded image data.
+     * @returns A Promise that resolves to the moderation results.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * async function moderateImage() {
+     *   try {
+     *     var result = await worqhat.moderation.image({
+     *       image: "./path-to-your-image.png"
+     *     })
+     *     console.log(result);
+     *
+     *   } catch (error) {
+     *     console.error(error);
+     *   }
+     * }
+     *
+     * moderateImage();
+     * ```
+     */
+    image: imageModeration,
   };
 
   /**
