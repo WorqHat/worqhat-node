@@ -102,7 +102,7 @@ export interface CompareFacesParams {
 
 export interface ImageModificationParams {
   existing_image: File | string;
-  modifications: string;
+  modification: string;
   outputType?: 'url' | 'blob';
   similarity: number;
 }

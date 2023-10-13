@@ -23,7 +23,7 @@ const processImage = async (
   version: string,
   validateDimensions: (metadata: any) => void,
 ) => {
-  const { existing_image, modifications, outputType, similarity } = params;
+  const { existing_image, modification, outputType, similarity } = params;
 
   debug(
     LogStatus.INFO,
@@ -79,7 +79,7 @@ const processImage = async (
     filename: 'image.jpg',
     contentType: 'image/jpeg',
   });
-  form.append('modifications', modifications);
+  form.append('modifications', modification);
   form.append('outputType', outputType || 'url');
   form.append('similarity', similarity.toString());
 
@@ -88,7 +88,7 @@ const processImage = async (
       LogStatus.INFO,
       `Image Modification ${version}`,
       `Processing AI Model for Image Modification`,
-      modifications,
+      modification,
     );
     startProcessingLog(`Image Modification ${version}`, 'Processing Image');
 
@@ -111,7 +111,7 @@ const processImage = async (
       LogStatus.INFO,
       `Image Modification ${version}`,
       `Completed response from image modification API`,
-      modifications,
+      modification,
     );
 
     return {
