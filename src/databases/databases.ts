@@ -115,13 +115,12 @@ export class Collection {
     this.limitCount = null;
   }
 
-  create(data?: any, orderByKey?: string) {
+  create(data: any, orderByKey?: string) {
     let response = {};
 
     if (!data || Object.keys(data).length === 0) {
       response = createCollectionWithoutSchema(this.name);
     } else {
-      // I want to check the data object to see that the values are among the allowed values
       let allowedValues = [
         'string',
         'number',
@@ -184,6 +183,25 @@ export class Collection {
   }
 
   where(field: string, operator: string, value: any) {
+    const validOperators = [
+      '==',
+      '!=',
+      '>',
+      '>=',
+      '<',
+      '<=',
+      'less than',
+      'less than or equal to',
+      'equal to',
+      'greater than',
+      'greater than or equal to',
+      'not equal to',
+    ];
+    if (!validOperators.includes(operator.toLowerCase())) {
+      throw new Error(
+        'Invalid operator. Valid operators are "==" (or "equal to"), "!=" (or "not equal to"), ">" (or "greater than"), ">=" (or "greater than or equal to"), "<" (or "less than"), "<=" (or "less than or equal to")',
+      );
+    }
     this.whereQuery.push({ field, operator, value });
     return this;
   }
