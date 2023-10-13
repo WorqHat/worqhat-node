@@ -17,24 +17,64 @@ import { fetchRowData } from './fetch-data/fetch-row';
 import { fetchNlpQuery } from './fetch-data/nlp-query';
 import { fetchWithCondition } from './fetch-data/run-queries';
 
+/**
+ * The Document class represents a document within a collection in the database.
+ * It provides methods to interact with the data within the document.
+ */
 export class Document {
+  /**
+   * The unique identifier of the document.
+   */
   id: string;
+
+  /**
+   * The data contained within the document.
+   */
   data: any;
+
+  /**
+   * The name of the collection that the document belongs to.
+   */
   collectionName: string;
 
+  /**
+   * Creates a new Document instance.
+   * @param {string} collectionName - The name of the collection that the document belongs to.
+   * @param {string} id - The unique identifier of the document.
+   */
   constructor(collectionName: string, id: string) {
     this.collectionName = collectionName;
     this.id = id;
     this.data = {};
   }
 
+  /**
+   * Adds data to the document and updates the database.
+   * @param {any} data - The data to be added to the document.
+   * @returns {Promise} A promise that resolves with the result of the database operation.
+   */
   add(data: any) {
     this.data = data;
     return addDataDb(this.collectionName, this.id, data);
   }
 
+  /**
+   * Updates the document with the provided data and updates the database.
+   * This method supports special operations like array addition, removal, and increment.
+   * For these operations, the data should be an object with a '__op' property indicating the operation,
+   * and an 'elements' property containing the elements for the operation.
+   * @param {any} data - The data to be updated in the document.
+   * @returns {Promise} A promise that resolves with the result of the database operation.
+   * @throws {Error} If the data for a special operation is not in the correct format.
+   */
   async update(data: any) {
     for (const key in data) {
+      /**
+       * Handles the 'arrayAdd' operation.
+       * Adds an element to an array in the document.
+       * The data for this operation should be an object with a '__op' property of 'arrayAdd',
+       * and an 'elements' property containing the element to be added.
+       */
       if (data[key].__op === 'arrayAdd') {
         if (
           !Array.isArray(data[key].elements) ||
@@ -51,6 +91,12 @@ export class Document {
           data[key].elements,
         );
       } else if (data[key].__op === 'arrayRemove') {
+        /**
+         * Handles the 'arrayRemove' operation.
+         * Removes an element from an array in the document.
+         * The data for this operation should be an object with a '__op' property of 'arrayRemove',
+         * and an 'elements' property containing the element to be removed.
+         */
         if (
           !Array.isArray(data[key].elements) ||
           data[key].elements.length !== 1
@@ -66,6 +112,12 @@ export class Document {
           data[key].elements,
         );
       } else if (data[key].__op === 'increment') {
+        /**
+         * Handles the 'increment' operation.
+         * Increments a numeric field in the document.
+         * The data for this operation should be an object with a '__op' property of 'increment',
+         * and an 'elements' property containing the number to increment by.
+         */
         if (typeof data[key].elements !== 'number') {
           throw new Error(
             'Increment value must be a number. You can pass in both Positive and Negative values .You can use the increment() function to increment a field. See the documentation for more details.',
@@ -78,23 +130,41 @@ export class Document {
           data[key].elements,
         );
       } else {
+        /**
+         * Handles normal assignment.
+         * Assigns the provided value to the specified field in the document.
+         */
         // Normal assignment
         this.data[key] = data[key];
       }
     }
-
+    /**
+     * Updates the document in the database with the new data.
+     */
     return updateDataDb(this.collectionName, this.id, this.data);
   }
 
+  /**
+   * Deletes the data from the database.
+   * @returns {Promise} A promise that resolves when the data is deleted.
+   */
   delete() {
     return deleteDataDb(this.collectionName, this.id);
   }
 
+  /**
+   * Fetches the document from the database.
+   * @returns {Promise} A promise that resolves with the fetched document.
+   */
   get() {
     return fetchRowData(this.collectionName, this.id);
   }
 }
 
+/**
+ * The Collection class represents a collection within the database.
+ * It provides methods to interact with the documents within the collection.
+ */
 export class Collection {
   name: string;
   data: any[];
@@ -104,6 +174,10 @@ export class Collection {
   private joinOperator: string;
   private limitCount: number | null;
 
+  /**
+   * Creates a new Collection instance.
+   * @param {string} name - The name of the collection.
+   */
   constructor(name: string) {
     this.name = name;
     this.data = [];
@@ -114,6 +188,13 @@ export class Collection {
     this.limitCount = null;
   }
 
+  /**
+   * Creates a new collection in the database with or without a schema.
+   * @param {any} data - The schema for the collection. If not provided, a collection without a schema is created.
+   * @param {string} [orderByKey] - The key to order the documents in the collection by.
+   * @returns {Promise} A promise that resolves with the result of the database operation.
+   * @throws {Error} If a data type in the schema is not allowed.
+   */
   create(data: any, orderByKey?: string) {
     let response = {};
 
@@ -148,22 +229,45 @@ export class Collection {
     return response;
   }
 
+  /**
+   * Deletes the current collection from the database.
+   * @returns {Promise} A promise that resolves when the collection is deleted.
+   */
   delete() {
     return deleteCollection(this.name);
   }
 
+  /**
+   * Adds data to the current collection in the database.
+   * @param {any} data - The data to be added to the collection.
+   * @returns {Promise} A promise that resolves with the result of the database operation.
+   */
   add(data: any) {
     return addDataDb(this.name, '', data);
   }
 
+  /**
+   * Fetches all data from the current collection in the database.
+   * @returns {Promise} A promise that resolves with the fetched data.
+   */
   getAll() {
     return fetchAllData(this.name);
   }
 
+  /**
+   * Fetches the count of a specific column from the current collection in the database.
+   * @param {string} column - The column for which the count is to be fetched.
+   * @returns {Promise} A promise that resolves with the count of the specified column.
+   */
   getCount(column: string) {
     return fetchCountData(this.name, column);
   }
 
+  /**
+   * Sets the language query for the current collection.
+   * @param {string} query - The language query to be set.
+   * @returns {Collection} The current Collection instance.
+   */
   language(query: string) {
     this.languageQuery = query;
     return this;
@@ -175,12 +279,33 @@ export class Collection {
     orderDirection: null as 'asc' | 'desc' | null,
   };
 
+  /**
+   * The `orderBy` function sets the column and direction for ordering the query results.
+   * @param {string} orderByColumn - The orderByColumn parameter is a string that represents the column
+   * by which the data should be ordered.
+   * @param {'asc' | 'desc' | null} orderDirection - The `orderDirection` parameter is used to specify
+   * the order in which the results should be sorted. It can have three possible values:
+   * @returns The current instance of the object.
+   */
   orderBy(orderByColumn: string, orderDirection: 'asc' | 'desc' | null) {
     this.getUniqueQuery.orderByColumn = orderByColumn;
     this.getUniqueQuery.orderDirection = orderDirection;
     return this;
   }
 
+  /**
+   * The `where` function adds a condition to a query based on a field, operator, and value.
+   * @param {string} field - The "field" parameter represents the field or property on which you want to
+   * apply the condition. It could be a string representing the name of the field or property in your
+   * data.
+   * @param {string} operator - The `operator` parameter in the `where` method is used to specify the
+   * comparison operator to be used in the query. It determines how the `value` parameter will be
+   * compared to the field value.
+   * @param {any} value - The `value` parameter in the `where` method is used to specify the value that
+   * you want to compare against in the query. It can be of any type, depending on the field you are
+   * querying against. For example, if you are querying against a field of type string, the value can
+   * @returns The `where` method returns the current instance of the object it is called on (`this`).
+   */
   where(field: string, operator: string, value: any) {
     const validOperators = [
       '==',
@@ -205,6 +330,12 @@ export class Collection {
     return this;
   }
 
+  /**
+   * The join function sets the join operator for a query and throws an error if the operator is invalid.
+   * @param {string} operator - The `operator` parameter is a string that represents the join operator to
+   * be used.
+   * @returns The method is returning the current instance of the object.
+   */
   join(operator: string) {
     const validOperators = ['and', 'or'];
     if (!validOperators.includes(operator.toLowerCase())) {
@@ -214,6 +345,13 @@ export class Collection {
     return this;
   }
 
+  /**
+   * The `limit` function sets a limit count and throws an error if the count is not an integer greater
+   * than 0.
+   * @param {number} limitCount - The `limitCount` parameter is a number that represents the maximum
+   * number of items to be returned or processed.
+   * @returns The "this" keyword is being returned.
+   */
   limit(limitCount: number) {
     if (!Number.isInteger(limitCount)) {
       throw new Error('Limit count must be an integer greater than 0.');
@@ -222,6 +360,12 @@ export class Collection {
     return this;
   }
 
+  /**
+   * The function retrieves data based on different conditions such as language query, where query, and
+   * order by column.
+   * @returns The `get()` function returns a promise that resolves to the result of one of the following
+   * functions:
+   */
   async get() {
     if (this.languageQuery) {
       return fetchNlpQuery(this.name, this.languageQuery);
@@ -239,11 +383,22 @@ export class Collection {
     }
   }
 
+  /**
+   * The function sets the unique column for a query and returns the object itself.
+   * @param {string} uniqueColumn - A string representing the name of the column in a database table that
+   * contains unique values.
+   * @returns The `this` object is being returned.
+   */
   getUnique(uniqueColumn: string) {
     this.getUniqueQuery.uniqueColumn = uniqueColumn;
     return this;
   }
 
+  /**
+   * The function executes a query to fetch unique data based on a specified column, with optional
+   * sorting parameters.
+   * @returns The code is returning the result of the `fetchData` variable.
+   */
   async execute() {
     const { uniqueColumn, orderByColumn, orderDirection } = this.getUniqueQuery;
 
@@ -275,13 +430,29 @@ export class Collection {
   }
 }
 
+/**
+ * The Database class represents a database with collections.
+ * It provides methods to interact with collections and perform operations like array addition, removal, and increment.
+ */
 export class Database {
+  /**
+   * An object where keys are collection names and values are Collection instances.
+   */
   collections: { [key: string]: Collection };
 
+  /**
+   * Creates a new Database instance.
+   */
   constructor() {
     this.collections = {};
   }
 
+  /**
+   * Returns a Collection instance associated with the given name.
+   * If the collection does not exist, it creates a new one.
+   * @param {string} name - The name of the collection.
+   * @returns {Collection} The Collection instance.
+   */
   collection(name: string) {
     if (!this.collections[name]) {
       this.collections[name] = new Collection(name);
@@ -289,6 +460,11 @@ export class Database {
     return this.collections[name];
   }
 
+  /**
+   * Returns an object to be used for adding an array in a document.
+   * @param {string} elements - The elements to be added.
+   * @returns {Object} The operation object.
+   */
   arrayAdd(elements: string) {
     return {
       __op: 'arrayAdd',
@@ -296,12 +472,23 @@ export class Database {
     };
   }
 
+  /**
+   * Returns an object to be used for removing an array from a document.
+   * @param {string} elements - The elements to be removed.
+   * @returns {Object} The operation object.
+   */
   arrayRemove(elements: string) {
     return {
       __op: 'arrayRemove',
       elements: elements,
     };
   }
+
+  /**
+   * Returns an object to be used for incrementing a value in a document.
+   * @param {number} elements - The value to be incremented.
+   * @returns {Object} The operation object.
+   */
   increment(elements: number) {
     return {
       __op: 'increment',
