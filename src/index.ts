@@ -28,6 +28,7 @@ import {
   imageUpscaler,
 } from './ai/img2img';
 import { Database } from './databases/databases';
+import { AI } from './ai/ai';
 
 /* The Configuration class is used to store and validate an API key. */
 export class Configuration {
@@ -153,9 +154,15 @@ export const checkAuthentication = () => {
 };
 
 export const database = (): Database => {
-  console.log('Creating new database instance.');
+  console.log('Creating new Database Connection instance.');
   return new Database();
 };
+
+export const ai = () => {
+  console.log('Creating new AI Connection instance.');
+  return new AI();
+};
+
 /**
  * These functions can be used to generate text content using different AI models. The available versions include v2, v3, and alpha.
  * It has access to the following functions:
