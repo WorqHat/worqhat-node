@@ -13,14 +13,11 @@ export const viewTrainedDatasets = async () => {
   const timenow = new Date();
   try {
     debug(LogStatus.INFO, 'View Datasets', 'Sending request to View Datasets');
-    const response = await axios.get(
-      'https://api.worqhat.com/api/list-datasets',
-      {
-        headers: {
-          Authorization: 'Bearer ' + appConfiguration.apiKey,
-        },
+    const response = await axios.get(`${baseUrl}/api/list-datasets`, {
+      headers: {
+        Authorization: 'Bearer ' + appConfiguration.apiKey,
       },
-    );
+    });
     const timeafter = new Date();
     const time = timeafter.getTime() - timenow.getTime();
     debug(
