@@ -85,6 +85,7 @@ const generateContent = async (
       };
     }
   } catch (error: any) {
+    stopProcessingLog();
     debug(LogStatus.ERROR, `AiCon${version}`, 'Error:', error);
     return handleAxiosError(error);
   }
@@ -195,6 +196,7 @@ export const alphaContent = async ({
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(LogStatus.ERROR, 'AiConV2 Alpha', 'Error:', error);
     return handleAxiosError(error);
   }
@@ -280,6 +282,7 @@ export const largeContent = async ({
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(LogStatus.ERROR, 'AiConV2 Large', 'Error:', error);
     return handleAxiosError(error);
   }

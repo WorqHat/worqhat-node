@@ -137,6 +137,7 @@ export const PDFExtraction = async ({ file }: PDFExtractionParams) => {
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'PDF Extraction',
@@ -212,6 +213,7 @@ export const imageExtraction = async ({
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Image Extraction',
@@ -286,6 +288,7 @@ export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Speech Extraction',

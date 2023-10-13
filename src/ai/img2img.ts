@@ -120,6 +120,7 @@ const processImage = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       `Image Modification ${version}`,
@@ -341,6 +342,7 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Image Upscale',

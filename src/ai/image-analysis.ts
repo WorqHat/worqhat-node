@@ -82,6 +82,7 @@ export const analyseImagesProcess = async (params: ImageAnalysisParams) => {
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Image Analysis',
@@ -154,6 +155,7 @@ export const detectFaces = async (params: DetectFacesParams) => {
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Detect Faces',
@@ -244,6 +246,7 @@ export const compareFaces = async (params: CompareFacesParams) => {
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Compare Faces',

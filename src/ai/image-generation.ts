@@ -118,6 +118,7 @@ const generateImage = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       `Image Generation ${version}`,
