@@ -27,7 +27,6 @@ export const contentModeration = async ({
     throw new Error('Text Content is required');
   }
 
-  const timenow = new Date();
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'Content Moderation', `App Configuration is null`);
     throw new Error('App Configuration is null');
@@ -53,8 +52,6 @@ export const contentModeration = async ({
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
     debug(
       LogStatus.INFO,
@@ -62,11 +59,11 @@ export const contentModeration = async ({
       `Completed Processing from Content Moderation AI Model`,
     );
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Content Moderation',
@@ -91,7 +88,6 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
     debug(LogStatus.ERROR, 'Image Moderation', `App Configuration is null`);
     throw new Error('App Configuration is null');
   }
-  const timenow = new Date();
   debug(LogStatus.INFO, 'Image Moderation', `Received Image data ${image}`);
   debug(LogStatus.INFO, 'Image Moderation', `Converting image to base64`);
   let base64Data: string = await getImageAsBase64(image);
@@ -122,20 +118,18 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
     debug(
       LogStatus.INFO,
       'Image Moderation',
-      `Completed response from image moderation API`,
+      `Completed response from Image Moderation AI Model`,
     );
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Image Moderation',

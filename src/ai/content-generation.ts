@@ -20,6 +20,7 @@ const generateContent = async (
   question: string | undefined,
   training_data: string | undefined,
   randomness: number | undefined,
+  stream?: boolean,
 ): Promise<Readable | object> => {
   debug(
     LogStatus.INFO,
@@ -32,7 +33,6 @@ const generateContent = async (
     throw new Error('Question is required');
   }
 
-  const timenow = new Date();
   if (!appConfiguration) {
     debug(LogStatus.ERROR, `AiCon${version}`, 'App Configuration is null');
     throw new Error('App Configuration is null');
@@ -58,26 +58,32 @@ const generateContent = async (
         question: question,
         training_data: training_data || '',
         randomness: randomness || 0.2,
+        stream_data: stream || false,
       },
       headers: {
         Authorization: 'Bearer ' + appConfiguration.apiKey,
         'Content-Type': 'application/json',
       },
+      responseType: stream ? 'stream' : 'json', // set responseType based on stream flag
     });
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     debug(
       LogStatus.INFO,
       `AiCon${version}`,
       'Completed Processing from Content Generation AI Model',
     );
     stopProcessingLog();
-    return {
-      code: 200,
-      processingTime: time,
-      ...response.data,
-    };
+
+    if (stream) {
+      // handle stream data
+      response.data.pipe(process.stdout);
+      return response.data; // return the stream
+    } else {
+      return {
+        code: 200,
+        ...response.data,
+      };
+    }
   } catch (error: any) {
     debug(LogStatus.ERROR, `AiCon${version}`, 'Error:', error);
     return handleAxiosError(error);
@@ -90,6 +96,7 @@ export const v2Content = ({
   question,
   training_data,
   randomness,
+  stream,
 }: ContentGenerationParams) => {
   debug(LogStatus.INFO, 'AiConV2', 'Function called with question:', question);
   return generateContent(
@@ -99,6 +106,7 @@ export const v2Content = ({
     question,
     training_data,
     randomness,
+    stream,
   );
 };
 
@@ -108,6 +116,7 @@ export const v3Content = ({
   question,
   training_data,
   randomness,
+  stream,
 }: ContentGenerationParams) => {
   debug(
     LogStatus.INFO,
@@ -122,6 +131,7 @@ export const v3Content = ({
     question,
     training_data,
     randomness,
+    stream,
   );
 };
 

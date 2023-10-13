@@ -11,6 +11,7 @@ export interface ContentGenerationParams {
   question?: string;
   training_data?: string;
   randomness?: number;
+  stream?: boolean;
 }
 
 export interface AlphaParams {

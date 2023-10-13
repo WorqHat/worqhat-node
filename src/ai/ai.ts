@@ -52,19 +52,15 @@ export class AI {
      *
      * worqhat.initializeApp(config);
      *
-     * async function moderateContent() {
-     *   try {
-     *     var result = await worqhat.moderation.content({
-     *       text_content: "Your text content here"
-     *     })
-     *     console.log(result);
+     * let ai = worqhat.ai();
      *
-     *   } catch (error) {
-     *     console.error(error);
-     *   }
-     * }
+     * ai.moderation.content({
+     *  text_content: "Your text content here"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
      *
-     * moderateContent();
+     *
      * ```
      */
     content: contentModeration,
@@ -83,19 +79,15 @@ export class AI {
      *
      * worqhat.initializeApp(config);
      *
-     * async function moderateImage() {
-     *   try {
-     *     var result = await worqhat.moderation.image({
-     *       image: "./path-to-your-image.png"
-     *     })
-     *     console.log(result);
+     * let ai = worqhat.ai();
      *
-     *   } catch (error) {
-     *     console.error(error);
-     *   }
-     * }
+     * ai.moderation.image({
+     * image: "./path-to-your-image.png"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
      *
-     * moderateImage();
+     *
      * ```
      */
     image: imageModeration,
@@ -107,6 +99,7 @@ export class AI {
    * - v2: Version 2 Content Generation AI focused only on Business Content Generation Purpose.
    * - v3: Version 3 Advanced Generation AI focused for more creative and understanding capabilities.
    * - alpha: Alpha version Content Generation AI with data upto 2023 which can be used to generate Current Data based content.
+   * - large: The Large Content Models are the Custom Trained Content Models that depend on the User's Training Data. You can provide a pre-trained model to generate content on top of it. This is mostly used for use-cases where you want to run a model based on your pre-trained dataset.
    * Object containing different versions of Content Generation AI.
    */
   contentGeneration = {
@@ -118,6 +111,7 @@ export class AI {
      * @param question: A string representing the question to generate content for. Default is undefined.
      * @param training_data: A string representing the training data to use for generating content. Default is undefined.
      * @param randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
+     * @param stream_data: A boolean indicating whether to stream the data. Default is false.
      * @example
      * ```javascript
      * const worqhat = require('worqhat');
@@ -129,23 +123,18 @@ export class AI {
      *
      * worqhat.initializeApp(config);
      *
-     * async function generateContent() {
-     *   try {
-     *     var result = await worqhat.contentGeneration.v2({
-     *       history_object: { "previous": "Previous conversation history" },
-     *       preserve_history: true,
-     *       question: "Your question here",
-     *       training_data: "your-training-data-id",
-     *       randomness: 0.3,
-     *     })
-     *     console.log(result);
+     * let ai = worqhat.ai();
      *
-     *   } catch (error) {
-     *     console.error(error);
-     *   }
-     * }
-     *
-     * generateContent();
+     * ai.contentGeneration.v2({
+     * history_object: { "previous": "Previous conversation history" },
+     * preserve_history: true,
+     * question: "Your question here",
+     * training_data: "your-training-data-id",
+     * randomness: 0.3,
+     * stream_data: true,
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
      * ```
      */
     v2: v2Content,
