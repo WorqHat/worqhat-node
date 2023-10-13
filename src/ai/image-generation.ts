@@ -70,7 +70,6 @@ const generateImage = async (
     throw new Error('Orientation is invalid');
   }
 
-  const timenow = new Date();
   if (!appConfiguration) {
     debug(
       LogStatus.ERROR,
@@ -104,8 +103,6 @@ const generateImage = async (
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
     debug(
       LogStatus.INFO,
@@ -114,10 +111,10 @@ const generateImage = async (
     );
     return {
       code: 200,
-      processingTime: time,
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       `Image Generation ${version}`,

@@ -16,7 +16,6 @@ import { fetchCountData } from './fetch-data/fetch-count';
 import { fetchRowData } from './fetch-data/fetch-row';
 import { fetchNlpQuery } from './fetch-data/nlp-query';
 import { fetchWithCondition } from './fetch-data/run-queries';
-import { handleAxiosError } from '../error';
 
 export class Document {
   id: string;

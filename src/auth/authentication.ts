@@ -11,7 +11,6 @@ export const authenticate = function (
     debug(LogStatus.ERROR, 'Authentication', 'API Key is required');
     throw new Error('API Key is required');
   }
-  var timenow = new Date();
   return new Promise((resolve, reject) => {
     debug(
       LogStatus.INFO,
@@ -29,8 +28,6 @@ export const authenticate = function (
         },
       )
       .then((response) => {
-        var timeafter = new Date();
-        var time = timeafter.getTime() - timenow.getTime();
         debug(
           LogStatus.INFO,
           'Authentication',
@@ -38,7 +35,6 @@ export const authenticate = function (
         );
         resolve({
           code: 200,
-          processingTime: time,
           ...response.data,
         });
       })

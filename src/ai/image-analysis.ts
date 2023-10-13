@@ -33,7 +33,6 @@ export const analyseImagesProcess = async (params: ImageAnalysisParams) => {
     throw new Error('App Configuration is null');
   }
 
-  const timenow = new Date();
   debug(LogStatus.INFO, 'Image Analysis', `Received Image data ${image}`);
   debug(LogStatus.INFO, 'Image Analysis', `Converting image to base64`);
 
@@ -66,8 +65,6 @@ export const analyseImagesProcess = async (params: ImageAnalysisParams) => {
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
 
     debug(
@@ -77,11 +74,11 @@ export const analyseImagesProcess = async (params: ImageAnalysisParams) => {
     );
 
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Image Analysis',
@@ -105,7 +102,6 @@ export const detectFaces = async (params: DetectFacesParams) => {
     throw new Error('App Configuration is null');
   }
 
-  const timenow = new Date();
   debug(LogStatus.INFO, 'Detect Faces', `Received Image data ${image}`);
   debug(LogStatus.INFO, 'Detect Faces', `Converting image to base64`);
 
@@ -138,8 +134,6 @@ export const detectFaces = async (params: DetectFacesParams) => {
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
 
     debug(
@@ -149,11 +143,11 @@ export const detectFaces = async (params: DetectFacesParams) => {
     );
 
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Detect Faces',
@@ -182,7 +176,6 @@ export const compareFaces = async (params: CompareFacesParams) => {
     throw new Error('App Configuration is null');
   }
 
-  const timenow = new Date();
   debug(
     LogStatus.INFO,
     'Compare Faces',
@@ -228,8 +221,6 @@ export const compareFaces = async (params: CompareFacesParams) => {
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
 
     debug(
@@ -239,11 +230,11 @@ export const compareFaces = async (params: CompareFacesParams) => {
     );
 
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Compare Faces',

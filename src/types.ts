@@ -11,10 +11,12 @@ export interface ContentGenerationParams {
   question?: string;
   training_data?: string;
   randomness?: number;
+  stream?: boolean;
 }
 
 export interface AlphaParams {
   question: string;
+  conversation_history?: object;
 }
 
 export interface searchV2Params {
@@ -56,8 +58,12 @@ export interface deleteDatasetParam {
 
 export interface LargeParams {
   datasetId: string;
-  question: string;
+  history_object?: object;
+  preserve_history?: boolean;
+  question?: string;
+  training_data?: string;
   randomness?: number;
+  stream?: boolean;
 }
 
 export interface WebExtractionParams {
@@ -96,7 +102,7 @@ export interface CompareFacesParams {
 
 export interface ImageModificationParams {
   existing_image: File | string;
-  modifications: string;
+  modification: string;
   outputType?: 'url' | 'blob';
   similarity: number;
 }

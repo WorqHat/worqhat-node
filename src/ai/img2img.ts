@@ -23,7 +23,7 @@ const processImage = async (
   version: string,
   validateDimensions: (metadata: any) => void,
 ) => {
-  const { existing_image, modifications, outputType, similarity } = params;
+  const { existing_image, modification, outputType, similarity } = params;
 
   debug(
     LogStatus.INFO,
@@ -48,7 +48,6 @@ const processImage = async (
     throw new Error('App Configuration is null');
   }
 
-  const timenow = new Date();
   debug(
     LogStatus.INFO,
     `Image Modification ${version}`,
@@ -79,7 +78,7 @@ const processImage = async (
     filename: 'image.jpg',
     contentType: 'image/jpeg',
   });
-  form.append('modifications', modifications);
+  form.append('modifications', modification);
   form.append('outputType', outputType || 'url');
   form.append('similarity', similarity.toString());
 
@@ -88,7 +87,7 @@ const processImage = async (
       LogStatus.INFO,
       `Image Modification ${version}`,
       `Processing AI Model for Image Modification`,
-      modifications,
+      modification,
     );
     startProcessingLog(`Image Modification ${version}`, 'Processing Image');
 
@@ -103,23 +102,21 @@ const processImage = async (
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
 
     debug(
       LogStatus.INFO,
       `Image Modification ${version}`,
       `Completed response from image modification API`,
-      modifications,
+      modification,
     );
 
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       `Image Modification ${version}`,
@@ -245,7 +242,6 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
     throw new Error('App Configuration is null');
   }
 
-  const timenow = new Date();
   debug(
     LogStatus.INFO,
     'Image Upscale',
@@ -325,8 +321,6 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
       },
     );
 
-    const timeafter = new Date();
-    const time = timeafter.getTime() - timenow.getTime();
     stopProcessingLog();
 
     debug(
@@ -336,11 +330,11 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
     );
 
     return {
-      processingTime: time,
       code: 200,
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     debug(
       LogStatus.ERROR,
       'Image Upscale',
