@@ -40,7 +40,7 @@ export const contentModeration = async ({
     );
     startProcessingLog('Content Moderation', 'AI Models processing text');
     const response = await axios.post(
-      `${baseUrl}/api/ai/content-moderation/v1`,
+      `${baseUrl}/api/ai/moderation`,
       {
         text_content: text_content || '',
       },
