@@ -182,6 +182,7 @@ export class AI {
      * Alpha version Content Generation AI with data upto 2023 which can be used to generate Current Data based content. The Alpha Channel of AiCon V2 is mostly dependent on the Data upto May 2023 which makes it relatively upto date and more accurate than the previous versions of AiCon. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
      * @param {string} question: A string representing the question to generate content for. Default is undefined.
      * @param {object} conversation_history: An object representing the history of the conversation. Default is undefined.
+     * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
      * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example

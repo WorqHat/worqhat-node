@@ -139,6 +139,7 @@ export const v3Content = ({
 export const alphaContent = async ({
   question,
   conversation_history,
+  training_data,
 }: AlphaParams) => {
   debug(
     LogStatus.INFO,
@@ -170,7 +171,8 @@ export const alphaContent = async ({
       `${baseUrl}/api/ai/content/v2/new/alpha`,
       {
         question: question,
-        conversation_history: conversation_history || {},
+        conversation_history: conversation_history || [],
+        training_data: training_data || '',
       },
       {
         headers: {

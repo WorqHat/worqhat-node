@@ -17,6 +17,7 @@ export interface ContentGenerationParams {
 export interface AlphaParams {
   question: string;
   conversation_history?: object;
+  training_data?: string;
 }
 
 export interface searchV2Params {

@@ -171,7 +171,7 @@ export const imageExtraction = async ({
       filename: 'image.jpg',
       contentType: 'image/jpeg',
     });
-    form.append('output_format', output_format || 'json');
+    form.append('output_type', output_format || 'json');
 
     debug(
       LogStatus.INFO,
