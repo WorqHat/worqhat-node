@@ -17,6 +17,7 @@ export const fetchWithCondition = async (
   orderBy?: string,
   order?: 'asc' | 'desc' | null,
   limit?: number | null,
+  startAfter?: number | null,
 ) => {
   debug(
     LogStatus.INFO,
@@ -52,6 +53,7 @@ export const fetchWithCondition = async (
         orderType: order || null,
         orderBy: orderBy || null,
         limit: limit || null,
+        startAfter: startAfter || null,
       },
       {
         headers: {

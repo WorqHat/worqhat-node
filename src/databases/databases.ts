@@ -173,6 +173,7 @@ export class Collection {
   private whereQuery: { field: string; operator: string; value: any }[] = [];
   private joinOperator: string;
   private limitCount: number | null;
+  private startAtCount: number | null;
 
   /**
    * Creates a new Collection instance.
@@ -186,6 +187,7 @@ export class Collection {
     this.whereQuery = [];
     this.joinOperator = 'AND';
     this.limitCount = null;
+    this.startAtCount = null;
   }
 
   /**
@@ -360,6 +362,14 @@ export class Collection {
     return this;
   }
 
+  startAt(startAt: number) {
+    if (!Number.isInteger(startAt)) {
+      throw new Error('StartAt count must be an integer greater than 0.');
+    }
+    this.startAtCount = startAt;
+    return this;
+  }
+
   /**
    * The function retrieves data based on different conditions such as language query, where query, and
    * order by column.
@@ -377,6 +387,7 @@ export class Collection {
         this.getUniqueQuery.orderByColumn,
         this.getUniqueQuery.orderDirection,
         this.limitCount,
+        this.startAtCount,
       );
     } else {
       return fetchAllData(this.name);

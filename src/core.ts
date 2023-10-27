@@ -3,8 +3,8 @@ import * as Success from './success';
 import * as Errors from './error';
 import { appConfiguration } from './index';
 
-// export const baseUrl = "https://api-prod.worqhat.com";
-export const baseUrl = 'http://localhost:3000';
+export const baseUrl = "https://api.worqhat.com";
+// export const baseUrl = 'http://localhost:3000';
 
 const MAX_RETRIES = 2;
 export const MAX_PIXEL_COUNT = 4194304;
