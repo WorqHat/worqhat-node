@@ -814,4 +814,41 @@ export class AI {
      */
     v3: v3ImageGen,
   };
+
+  upscaleImage = {
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image. Read more about the Model at https://docs.worqhat.com/ai-models/image-generation/image-image-v3
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {number} scale - The scale percentage for the image upscaling. This is default to 2.
+     * @link http://localhost:3000/node-js-sdk/ai-models/image-generation/image-upscale
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.upscale.v2({
+     * existing_image: existing_image,
+     * scale: 3
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    v2: imageUpscaler,
+  };
 }

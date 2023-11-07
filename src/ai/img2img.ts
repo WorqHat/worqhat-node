@@ -326,7 +326,7 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
     debug(
       LogStatus.INFO,
       'Image Upscale',
-      `Completed response from image upscale API`,
+      `Completed response from Image Upscale AI Model`,
     );
 
     return {
