@@ -32,7 +32,7 @@ export const viewTrainedDatasets = async () => {
       LogStatus.ERROR,
       'View Datasets',
       'Dataset View Process failed',
-      error,
+      "There is a network error, please check your network and try again, or try checking your API Key if it's correct",
     );
     throw handleAxiosError(error);
   }
@@ -76,7 +76,7 @@ export const deleteTrainedDatasets = async ({
         LogStatus.ERROR,
         'Delete Datasets',
         'Dataset deletion failed',
-        error,
+        "There is a network error, please check your network and try again, or try checking your API Key if it's correct",
       );
       throw handleAxiosError(error);
     });

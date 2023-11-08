@@ -43,7 +43,7 @@ export const authenticate = function (
           LogStatus.ERROR,
           'Authentication',
           'Authentication failed',
-          error,
+          "There is a network error, please check your network and try again, or try checking your API Key if it's correct",
         );
         const errorResponse = handleAxiosError(error);
         reject(errorResponse);

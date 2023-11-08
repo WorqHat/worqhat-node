@@ -119,7 +119,6 @@ const generateImage = async (
       LogStatus.ERROR,
       `Image Generation ${version}`,
       'Image Generation process failed',
-      error,
     );
     throw handleAxiosError(error);
   }

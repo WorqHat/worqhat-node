@@ -238,7 +238,7 @@ export const compareFaces = async (params: CompareFacesParams) => {
     debug(
       LogStatus.ERROR,
       'Compare Faces',
-      `Error occurred during compare faces: ${error}`,
+      `Error occurred while comparing faces`,
     );
     throw handleAxiosError(error);
   }
