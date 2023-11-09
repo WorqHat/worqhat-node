@@ -108,7 +108,7 @@ export class AI {
   contentGeneration = {
     /**
      * Version 2 Content Generation AI focused only on Business Content Generation Purpose. It can be used to generate content for a variety of business use cases where the content is not too creative or complex. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-textgen
-     * @param {object} history_object: An object representing the history of the conversation. Default is undefined.
+     * @param {object} conversation_history: An array of object representing the history of the conversation. Default is undefined.
      * @param {boolean} preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
      * @param {string} question: A string representing the question to generate content for. Default is undefined.
      * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
@@ -130,7 +130,7 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.v2({
-     * history_object: { "previous": "Previous conversation history" },
+     * conversation_history: [{ "previous": "Previous conversation history" }, { "current": "Current conversation history" }],
      * preserve_history: true,
      * question: "Your question here",
      * training_data: "your-training-data-id",
@@ -144,7 +144,7 @@ export class AI {
     v2: v2Content,
     /**
      * Version 3 Advanced Generation AI focused for more creative and understanding capabilities. It can be used to generate content for a variety of use cases where the content is more creative or complex. It can run complex situational analysis and understand the context of the commands. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v3-textgen
-     * @param {object} history_object: An object representing the history of the conversation. Default is undefined.
+     * @param {object} conversation_history: An array of object representing the history of the conversation. Default is undefined.
      * @param {boolean} preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
      * @param {string} question: A string representing the question to generate content for. Default is undefined.
      * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
@@ -166,7 +166,7 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.v3({
-     * history_object: { "previous": "Previous conversation history" },
+     * conversation_history: [{ "previous": "Previous conversation history" }, { "current": "Current conversation history" }],
      * preserve_history: true,
      * question: "Your question here",
      * training_data: "your-training-data-id",
@@ -212,7 +212,7 @@ export class AI {
      * Large Content Generation AI Model. This model is designed to generate large amounts of content based on the provided parameters. You can provide a pre-trained model to generate content on top of it. This is mostly used for use-cases where you want to run a model based on your pre-trained dataset. It can be used to generate content for a variety of use cases where the content is more creative or complex.
      *  Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-large-beta
      * @param {string} datasetId: A string representing the ID of the dataset to use for generating content. This is a required parameter.
-     * @param {object} history_object: An object representing the history of the conversation. Default is undefined.
+     * @param {object} conversation_history: An array object representing the history of the conversation. Default is undefined.
      * @param {boolean} preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
      * @param {string} question: A string representing the question to generate content for. Default is undefined.
      * @param {string} instructions: A string representing the instructions to use for generating content. Default is undefined.
@@ -233,7 +233,7 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.large({
-     * history_object: { "previous": "Previous conversation history" },
+     * conversation_history: [{ "previous": "Previous conversation history" }, { "current": "Current conversation history" }],
      * datasetId: "your-dataset-id",
      * preserve_history: true,
      * question: "Your question here",

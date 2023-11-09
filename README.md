@@ -16,14 +16,14 @@ To learn how to use the WorqHat APIs, check out our [API Reference](https://docs
 ### Table of Contents
 
 - [Worqhat Node SDK](#worqhat-node-sdk)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [TypeScript support](#typescript-support)
-    - [Verify User Profile](#verify-user-profile)
-  - [Sample Functions](#sample-functions)
-    - [AiCon V2](#aicon-v2)
-    - [AiCon V3](#aicon-v3)
+    - [Table of Contents](#table-of-contents)
+    - [Installation](#installation)
+    - [Usage](#usage)
+    - [TypeScript support](#typescript-support)
+      - [Verify User Profile](#verify-user-profile)
+    - [Sample Functions](#sample-functions)
+        - [AiCon V2](#aicon-v2)
+        - [AiCon V3](#aicon-v3)
   - [Documentations](#documentations)
   - [License](#license)
   - [Contributing](#contributing)
@@ -120,7 +120,7 @@ Version 2 Content Generation AI focused only on Business Content Generation Purp
    async function generateContent() {
      try {
        var result = await worqhat.contentGeneration.v2({
-         history_object: { "previous question": "answer to your previous question" },
+         conversation_history: [{ "previous question": "answer to your previous question" }, { "previous question": "answer to your previous question" }],
          preserve_history: true,
          question: "Your question here",
          training_data: "your-training-data-id",
@@ -140,13 +140,13 @@ Here are the parameters that can be passed to the `contentGeneration` method:
 
 | Parameter          | Description                                                                         | Required |
 | ------------------ | ----------------------------------------------------------------------------------- | -------- |
-| `history_object`   | An object representing the history of the conversation.                             | No       |
+| `conversation_history`   | An object representing the history of the conversation.                             | No       |
 | `preserve_history` | A boolean indicating whether to preserve the conversation history.                  | No       |
 | `question`         | A string representing the question to generate content for.                         | Yes      |
 | `training_data`    | A string representing the training data to use for generating content.              | No       |
 | `randomness`       | A float representing the randomness or hallucinating factor for content generation. | No       |
 
-Note: If `history_object` is not provided, the default value is `undefined`. If `preserve_history` is not provided, the default value is `false`. If `training_data` is not provided, the default value is `undefined`. If `randomness` is not provided, the default value is `0.2`.
+Note: If `conversation_history` is not provided, the default value is `undefined`. If `preserve_history` is not provided, the default value is `false`. If `training_data` is not provided, the default value is `undefined`. If `randomness` is not provided, the default value is `0.2`.
 
 ---
 
@@ -167,7 +167,7 @@ Version 3 Advanced Generation AI focused for more creative and understanding cap
    async function generateContent() {
      try {
        var result = await worqhat.contentGeneration.v3({
-         history_object: { "previous question": "answer to your previous question" },
+         conversation_history: [{ "previous question": "answer to your previous question" }, { "previous question": "answer to your previous question" }],
          preserve_history: true,
          question: "Your question here",
          training_data: "your-training-data-id",
@@ -187,13 +187,13 @@ Here are the parameters that can be passed to the `contentGeneration` method:
 
 | Parameter          | Description                                                                         | Required |
 | ------------------ | ----------------------------------------------------------------------------------- | -------- |
-| `history_object`   | An object representing the history of the conversation.                             | No       |
+| `conversation_history`   | An object representing the history of the conversation.                             | No       |
 | `preserve_history` | A boolean indicating whether to preserve the conversation history.                  | No       |
 | `question`         | A string representing the question to generate content for.                         | Yes      |
 | `training_data`    | A string representing the training data to use for generating content.              | No       |
 | `randomness`       | A float representing the randomness or hallucinating factor for content generation. | No       |
 
-Note: If `history_object` is not provided, the default value is `undefined`. If `preserve_history` is not provided, the default value is `false`. If `training_data` is not provided, the default value is `undefined`. If `randomness` is not provided, the default value is `0.2`.
+Note: If `conversation_history` is not provided, the default value is `undefined`. If `preserve_history` is not provided, the default value is `false`. If `training_data` is not provided, the default value is `undefined`. If `randomness` is not provided, the default value is `0.2`.
 
 ## Documentations
 

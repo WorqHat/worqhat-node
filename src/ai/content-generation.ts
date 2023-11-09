@@ -15,7 +15,7 @@ import { Readable } from 'stream';
 
 const generateContent = async (
   version: string,
-  history_object: object | undefined,
+  conversation_history: object | undefined,
   preserve_history: boolean | undefined,
   question: string | undefined,
   training_data: string | undefined,
@@ -53,7 +53,7 @@ const generateContent = async (
       method: 'post',
       url: `${baseUrl}/api/ai/content/${version}`,
       data: {
-        history_object: history_object || {},
+        conversation_history: conversation_history || [],
         preserve_history: preserve_history || false,
         question: question,
         training_data: training_data || '',
@@ -92,7 +92,7 @@ const generateContent = async (
 };
 
 export const v2Content = ({
-  history_object,
+  conversation_history,
   preserve_history,
   question,
   training_data,
@@ -102,7 +102,7 @@ export const v2Content = ({
   debug(LogStatus.INFO, 'AiConV2', 'Function called with question:', question);
   return generateContent(
     'v2',
-    history_object,
+    conversation_history,
     preserve_history,
     question,
     training_data,
@@ -112,7 +112,7 @@ export const v2Content = ({
 };
 
 export const v3Content = ({
-  history_object,
+  conversation_history,
   preserve_history,
   question,
   training_data,
@@ -127,7 +127,7 @@ export const v3Content = ({
   );
   return generateContent(
     'v3',
-    history_object,
+    conversation_history,
     preserve_history,
     question,
     training_data,
@@ -201,10 +201,10 @@ export const alphaContent = async ({
 
 export const largeContent = async ({
   datasetId,
-  history_object,
+  conversation_history,
   preserve_history,
   question,
-  training_data,
+  instructions,
   randomness,
   stream,
 }: LargeParams) => {
@@ -250,9 +250,9 @@ export const largeContent = async ({
         datasetId: datasetId,
         question: question,
         randomness: randomness || 0.2,
-        history_object: history_object || {},
+        conversation_history: conversation_history || [],
         preserve_history: preserve_history || false,
-        training_data: training_data || '',
+        instructions: instructions || '',
         stream_data: stream || false,
       },
       {

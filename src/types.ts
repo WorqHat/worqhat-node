@@ -6,7 +6,7 @@ export interface Configuration {
 
 export interface ContentGenerationParams {
   apiKey: string;
-  history_object?: object;
+  conversation_history?: object[];
   preserve_history?: boolean;
   question?: string;
   training_data?: string;
@@ -16,7 +16,7 @@ export interface ContentGenerationParams {
 
 export interface AlphaParams {
   question: string;
-  conversation_history?: object;
+  conversation_history?: object[];
   training_data?: string;
 }
 
@@ -59,10 +59,10 @@ export interface deleteDatasetParam {
 
 export interface LargeParams {
   datasetId: string;
-  history_object?: object;
+  conversation_history?: object[];
   preserve_history?: boolean;
   question?: string;
-  training_data?: string;
+  instructions?: string;
   randomness?: number;
   stream?: boolean;
 }
