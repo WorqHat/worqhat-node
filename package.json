@@ -1,6 +1,6 @@
 {
   "name": "worqhat",
-  "version": "2.1.1",
+  "version": "2.1.6",
   "description": "NodeJS SDK for WorqHat Endpoints",
   "exports": {
     ".": {
