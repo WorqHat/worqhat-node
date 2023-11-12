@@ -211,7 +211,7 @@ export const compareFaces = async (params: CompareFacesParams) => {
     startProcessingLog('Compare Faces', 'AI Models processing images');
 
     const response = await axios.post(
-      `${baseUrl}/api/ai/images/v2/face-comparison`,
+      `${baseUrl}/api/ai/images/v2/facial-comparison`,
       form,
       {
         headers: {
