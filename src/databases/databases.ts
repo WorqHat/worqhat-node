@@ -70,18 +70,18 @@ export class Document {
   async update(data: any) {
     for (const key in data) {
       /**
-       * Handles the 'arrayAdd' operation.
+       * Handles the 'arrayUnion' operation.
        * Adds an element to an array in the document.
-       * The data for this operation should be an object with a '__op' property of 'arrayAdd',
+       * The data for this operation should be an object with a '__op' property of 'arrayUnion',
        * and an 'elements' property containing the element to be added.
        */
-      if (data[key].__op === 'arrayAdd') {
+      if (data[key].__op === 'arrayUnion') {
         if (
           !Array.isArray(data[key].elements) ||
           data[key].elements.length !== 1
         ) {
           throw new Error(
-            'Only one element can be passed to the arrayAdd function. See the documentation for more details.',
+            'Only one element can be passed to the arrayUnion function. See the documentation for more details.',
           );
         }
         return await arrayUnionDb(
@@ -476,9 +476,9 @@ export class Database {
    * @param {string} elements - The elements to be added.
    * @returns {Object} The operation object.
    */
-  arrayAdd(elements: string) {
+  arrayUnion(elements: string) {
     return {
-      __op: 'arrayAdd',
+      __op: 'arrayUnion',
       elements: elements,
     };
   }
