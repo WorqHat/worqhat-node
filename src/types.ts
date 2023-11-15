@@ -118,6 +118,7 @@ export interface ImageUpscaleParams {
   existing_image: File | string;
   scale?: number;
   output_type?: 'url' | 'blob';
+  retries?: number;
 }
 
 export interface getUniqueQuery {
