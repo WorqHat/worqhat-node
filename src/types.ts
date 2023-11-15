@@ -24,12 +24,14 @@ export interface AlphaParams {
 export interface searchV2Params {
   question: string;
   training_data?: string;
+  retries?: number;
 }
 
 export interface searchV3Params {
   question: string;
   training_data?: string;
   search_count?: number;
+  retries?: number;
 }
 
 export interface ImageGenV3Params {
