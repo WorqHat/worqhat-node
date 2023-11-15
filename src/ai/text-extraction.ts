@@ -70,6 +70,7 @@ export const webExtraction = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -144,6 +145,7 @@ export const PDFExtraction = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,

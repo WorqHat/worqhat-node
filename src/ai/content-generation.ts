@@ -86,6 +86,8 @@ const generateContent = async (
       };
     }
   } catch (error: any) {
+    stopProcessingLog();
+
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -103,7 +105,6 @@ const generateContent = async (
         retries + 1,
       );
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         `AiCon${version}`,
@@ -217,6 +218,8 @@ export const alphaContent = async ({
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
+
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -230,7 +233,6 @@ export const alphaContent = async ({
         retries: retries + 1,
       });
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         'AiConV2 Alpha',
@@ -317,6 +319,8 @@ export const largeContent = async ({
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
+
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -334,7 +338,6 @@ export const largeContent = async ({
         retries: retries + 1,
       });
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         'AiConV2 Large',

@@ -115,6 +115,7 @@ const generateImage = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -130,7 +131,6 @@ const generateImage = async (
         retries + 1,
       );
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         `Image Generation ${version}`,

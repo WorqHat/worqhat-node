@@ -81,6 +81,7 @@ export const analyseImagesProcess = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -89,7 +90,6 @@ export const analyseImagesProcess = async (
       );
       return analyseImagesProcess(params, retries + 1);
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         'Image Analysis',
@@ -159,6 +159,7 @@ export const detectFaces = async (params: DetectFacesParams, retries = 0) => {
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -167,7 +168,6 @@ export const detectFaces = async (params: DetectFacesParams, retries = 0) => {
       );
       return detectFaces(params, retries + 1);
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         'Detect Faces',
@@ -255,6 +255,8 @@ export const compareFaces = async (params: CompareFacesParams, retries = 0) => {
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
+
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -263,7 +265,6 @@ export const compareFaces = async (params: CompareFacesParams, retries = 0) => {
       );
       return compareFaces(params, retries + 1);
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         'Compare Faces',

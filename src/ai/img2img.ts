@@ -117,6 +117,7 @@ const processImage = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -125,7 +126,6 @@ const processImage = async (
       );
       return processImage(params, version, validateDimensions, retries + 1);
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         `Image Modification ${version}`,
@@ -347,6 +347,7 @@ export const imageUpscaler = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -355,7 +356,6 @@ export const imageUpscaler = async (
       );
       return imageUpscaler(params, retries + 1);
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         'Image Upscale',

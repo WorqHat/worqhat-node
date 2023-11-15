@@ -56,6 +56,7 @@ export const v2Search = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -122,6 +123,7 @@ export const v3Search = async ({
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
