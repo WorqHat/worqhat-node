@@ -48,10 +48,12 @@ export interface ImageGenV2Params {
 
 export interface ContentModerationParams {
   text_content: string;
+  retries?: number;
 }
 
 export interface ImageModerationParams {
   image: File | string;
+  retries?: number;
 }
 
 export interface deleteDatasetParam {
