@@ -10,7 +10,12 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-export const addDataDb = async (name: string, docId: any, data: any) => {
+export const addDataDb = async (
+  name: string,
+  docId: any,
+  data: any,
+  retries: number = 0,
+) => {
   debug(LogStatus.INFO, `Update Database`, `Adding data to collection ${name}`);
   if (!name) {
     debug(LogStatus.ERROR, 'Update Database', `Collection Name is missing`);
@@ -56,11 +61,21 @@ export const addDataDb = async (name: string, docId: any, data: any) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      `Update Database`,
-      `Error adding data to collection ${name}`,
-    );
-    throw handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Update Database`,
+        `Error adding data to collection ${name}, retrying (${retries + 1})`,
+      );
+      return addDataDb(name, docId, data, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Update Database`,
+        `Error adding data to collection ${name} after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
