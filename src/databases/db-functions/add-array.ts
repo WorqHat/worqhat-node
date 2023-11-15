@@ -67,20 +67,20 @@ export const arrayUnionDb = async (
   } catch (error: any) {
     stopProcessingLog();
 
-      if (retries < appConfiguration.max_retries) {
-        debug(
-          LogStatus.INFO,
-          'Document Function',
-          `Error adding Array to Document ${docId}, retrying (${retries + 1})`,
-        );
-        return arrayUnionDb(name, docId, key, elements, retries + 1);
-      } else {
-        debug(
-          LogStatus.ERROR,
-          'Document Function',
-          `Error adding Array to Document ${docId} after maximum retries`,
-        );
-        throw handleAxiosError(error);
-      }
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Document Function',
+        `Error adding Array to Document ${docId}, retrying (${retries + 1})`,
+      );
+      return arrayUnionDb(name, docId, key, elements, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Document Function',
+        `Error adding Array to Document ${docId} after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };

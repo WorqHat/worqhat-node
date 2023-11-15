@@ -241,13 +241,13 @@ export const imageExtraction = async ({
       );
       return imageExtraction({ image, output_format, retries: retries + 1 });
     } else {
-  debug(
-    LogStatus.ERROR,
-    'Image Extraction',
-    `Error occurred during Image Extraction after maximum retries.`,
-  );
-  throw handleAxiosError(error);
-}
+      debug(
+        LogStatus.ERROR,
+        'Image Extraction',
+        `Error occurred during Image Extraction after maximum retries.`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 

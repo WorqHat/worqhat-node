@@ -3,7 +3,7 @@ import * as Success from './success';
 import * as Errors from './error';
 import { appConfiguration } from './index';
 
-export const baseUrl = "https://api.worqhat.com";
+export const baseUrl = 'https://api.worqhat.com';
 // export const baseUrl = 'http://localhost:3000';
 
 export let MAX_RETRIES = 2;

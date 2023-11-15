@@ -16,14 +16,14 @@ To learn how to use the WorqHat APIs, check out our [API Reference](https://docs
 ### Table of Contents
 
 - [Worqhat Node SDK](#worqhat-node-sdk)
-    - [Table of Contents](#table-of-contents)
-    - [Installation](#installation)
-    - [Usage](#usage)
-    - [TypeScript support](#typescript-support)
-      - [Verify User Profile](#verify-user-profile)
-    - [Sample Functions](#sample-functions)
-        - [AiCon V2](#aicon-v2)
-        - [AiCon V3](#aicon-v3)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [TypeScript support](#typescript-support)
+    - [Verify User Profile](#verify-user-profile)
+  - [Sample Functions](#sample-functions)
+    - [AiCon V2](#aicon-v2)
+    - [AiCon V3](#aicon-v3)
   - [Documentations](#documentations)
   - [License](#license)
   - [Contributing](#contributing)
@@ -138,13 +138,13 @@ Version 2 Content Generation AI focused only on Business Content Generation Purp
 
 Here are the parameters that can be passed to the `contentGeneration` method:
 
-| Parameter          | Description                                                                         | Required |
-| ------------------ | ----------------------------------------------------------------------------------- | -------- |
-| `conversation_history`   | An object representing the history of the conversation.                             | No       |
-| `preserve_history` | A boolean indicating whether to preserve the conversation history.                  | No       |
-| `question`         | A string representing the question to generate content for.                         | Yes      |
-| `training_data`    | A string representing the training data to use for generating content.              | No       |
-| `randomness`       | A float representing the randomness or hallucinating factor for content generation. | No       |
+| Parameter              | Description                                                                         | Required |
+| ---------------------- | ----------------------------------------------------------------------------------- | -------- |
+| `conversation_history` | An object representing the history of the conversation.                             | No       |
+| `preserve_history`     | A boolean indicating whether to preserve the conversation history.                  | No       |
+| `question`             | A string representing the question to generate content for.                         | Yes      |
+| `training_data`        | A string representing the training data to use for generating content.              | No       |
+| `randomness`           | A float representing the randomness or hallucinating factor for content generation. | No       |
 
 Note: If `conversation_history` is not provided, the default value is `undefined`. If `preserve_history` is not provided, the default value is `false`. If `training_data` is not provided, the default value is `undefined`. If `randomness` is not provided, the default value is `0.2`.
 
@@ -185,13 +185,13 @@ Version 3 Advanced Generation AI focused for more creative and understanding cap
 
 Here are the parameters that can be passed to the `contentGeneration` method:
 
-| Parameter          | Description                                                                         | Required |
-| ------------------ | ----------------------------------------------------------------------------------- | -------- |
-| `conversation_history`   | An object representing the history of the conversation.                             | No       |
-| `preserve_history` | A boolean indicating whether to preserve the conversation history.                  | No       |
-| `question`         | A string representing the question to generate content for.                         | Yes      |
-| `training_data`    | A string representing the training data to use for generating content.              | No       |
-| `randomness`       | A float representing the randomness or hallucinating factor for content generation. | No       |
+| Parameter              | Description                                                                         | Required |
+| ---------------------- | ----------------------------------------------------------------------------------- | -------- |
+| `conversation_history` | An object representing the history of the conversation.                             | No       |
+| `preserve_history`     | A boolean indicating whether to preserve the conversation history.                  | No       |
+| `question`             | A string representing the question to generate content for.                         | Yes      |
+| `training_data`        | A string representing the training data to use for generating content.              | No       |
+| `randomness`           | A float representing the randomness or hallucinating factor for content generation. | No       |
 
 Note: If `conversation_history` is not provided, the default value is `undefined`. If `preserve_history` is not provided, the default value is `false`. If `training_data` is not provided, the default value is `undefined`. If `randomness` is not provided, the default value is `0.2`.
 
