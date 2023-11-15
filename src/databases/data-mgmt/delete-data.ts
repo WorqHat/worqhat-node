@@ -10,7 +10,11 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-export const deleteDataDb = async (name: string, docId: any) => {
+export const deleteDataDb = async (
+  name: string,
+  docId: any,
+  retries: number = 0,
+) => {
   debug(
     LogStatus.INFO,
     `Update Database`,
@@ -66,11 +70,23 @@ export const deleteDataDb = async (name: string, docId: any) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      `Update Database`,
-      `Error deleting document ${docId} from collection ${name}`,
-    );
-    throw handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Update Database`,
+        `Error deleting document ${docId} from collection ${name}, retrying (${
+          retries + 1
+        })`,
+      );
+      return deleteDataDb(name, docId, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Update Database`,
+        `Error deleting document ${docId} from collection ${name} after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
