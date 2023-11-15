@@ -80,19 +80,23 @@ export interface WebExtractionParams {
   inline_code?: boolean;
   references?: boolean;
   url_path: string;
+  retries?: number;
 }
 
 export interface PDFExtractionParams {
   file: File | string;
+  retries?: number;
 }
 
 export interface ImageExtractionParams {
   image: File | string;
   output_format: 'text' | 'json';
+  retries?: number;
 }
 
 export interface SpeechExtractionParams {
   audio: File | string;
+  retries?: number;
 }
 
 export interface ImageAnalysisParams {

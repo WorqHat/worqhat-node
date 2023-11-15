@@ -21,7 +21,10 @@ import {
 } from '../core';
 import { getImageAsBase64 } from '../uploads';
 
-export const webExtraction = async (params: WebExtractionParams) => {
+export const webExtraction = async (
+  params: WebExtractionParams,
+  retries = 0,
+) => {
   debug(LogStatus.INFO, `Web Extraction`, 'Starting Web Extraction Process');
 
   if (!appConfiguration) {
@@ -66,18 +69,30 @@ export const webExtraction = async (params: WebExtractionParams) => {
       code: 200,
       ...response.data,
     };
-  } catch (error) {
-    debug(
-      LogStatus.ERROR,
-      `Web Extraction`,
-      `Error occurred during Web Extraction: ${error}`,
-    );
-    const errorResponse = handleAxiosError(error);
-    return errorResponse;
+  } catch (error: any) {
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Web Extraction`,
+        `Error occurred during Web Extraction, retrying (${retries + 1})`,
+      );
+      return webExtraction(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Web Extraction`,
+        `Error occurred during Web Extraction after maximum retries.`,
+      );
+      const errorResponse = handleAxiosError(error);
+      return errorResponse;
+    }
   }
 };
 
-export const PDFExtraction = async ({ file }: PDFExtractionParams) => {
+export const PDFExtraction = async (
+  { file }: PDFExtractionParams,
+  retries = 0,
+) => {
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'PDF Extraction', 'App Configuration is null');
     throw new Error('App Configuration is null');
@@ -129,19 +144,28 @@ export const PDFExtraction = async ({ file }: PDFExtractionParams) => {
       ...response.data,
     };
   } catch (error: any) {
-    stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'PDF Extraction',
-      `Error occurred during PDF Extraction: ${error}`,
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'PDF Extraction',
+        `Error occurred during PDF Extraction, retrying (${retries + 1})`,
+      );
+      return PDFExtraction({ file }, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'PDF Extraction',
+        `Error occurred during PDF Extraction after maximum retries: ${error}`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 
 export const imageExtraction = async ({
   image,
   output_format,
+  retries = 0,
 }: ImageExtractionParams) => {
   try {
     debug(
@@ -205,13 +229,30 @@ export const imageExtraction = async ({
     debug(
       LogStatus.ERROR,
       'Image Extraction',
-      `Error occurred during image extraction: ${error.message}`,
+      `Error occurred during image extraction.`,
     );
-    throw handleAxiosError(error);
+    if (retries < (appConfiguration?.max_retries || 0)) {
+      debug(
+        LogStatus.INFO,
+        'Image Extraction',
+        `Error occurred during Image Extraction, retrying (${retries + 1})`,
+      );
+      return imageExtraction({ image, output_format, retries: retries + 1 });
+    } else {
+  debug(
+    LogStatus.ERROR,
+    'Image Extraction',
+    `Error occurred during Image Extraction after maximum retries.`,
+  );
+  throw handleAxiosError(error);
+}
   }
 };
 
-export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
+export const speechExtraction = async (
+  { audio }: SpeechExtractionParams,
+  retries = 0,
+) => {
   try {
     debug(
       LogStatus.INFO,
@@ -278,6 +319,20 @@ export const speechExtraction = async ({ audio }: SpeechExtractionParams) => {
       'Speech Extraction',
       `Error occurred during speech extraction: ${error.message}`,
     );
-    throw handleAxiosError(error);
+    if (retries < (appConfiguration?.max_retries || 0)) {
+      debug(
+        LogStatus.INFO,
+        'Speech Extraction',
+        `Error occurred during Speech Extraction, retrying (${retries + 1})`,
+      );
+      return speechExtraction({ audio }, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Speech Extraction',
+        `Error occurred during Speech Extraction after maximum retries.`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
