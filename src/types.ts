@@ -66,6 +66,7 @@ export interface LargeParams {
   instructions?: string;
   randomness?: number;
   stream?: boolean;
+  retries?: number;
 }
 
 export interface WebExtractionParams {

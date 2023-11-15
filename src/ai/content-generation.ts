@@ -250,6 +250,7 @@ export const largeContent = async ({
   instructions,
   randomness,
   stream,
+  retries = 0,
 }: LargeParams) => {
   debug(
     LogStatus.INFO,
@@ -317,8 +318,30 @@ export const largeContent = async ({
       ...response.data,
     };
   } catch (error: any) {
-    stopProcessingLog();
-    debug(LogStatus.ERROR, 'AiConV2 Large', 'Error:', error);
-    return handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'AiConV2 Large',
+        `Error generating content, retrying (${retries + 1})`,
+      );
+      return largeContent({
+        datasetId,
+        conversation_history,
+        preserve_history,
+        question,
+        instructions,
+        randomness,
+        stream,
+        retries: retries + 1,
+      });
+    } else {
+      stopProcessingLog();
+      debug(
+        LogStatus.ERROR,
+        'AiConV2 Large',
+        'Error generating content after maximum retries',
+      );
+      return handleAxiosError(error);
+    }
   }
 };
