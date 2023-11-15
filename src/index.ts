@@ -32,6 +32,7 @@ export class Configuration {
    * @param options - An object containing the configuration options.
    * @param options.apiKey - The API key used for authentication. This key is required to access the API services.
    * @param options.debug - Optional. A boolean value that controls the logging of detailed process steps. If true, the application will log detailed process steps. If false or not provided, the application will not log these details.
+   * @param options.max_retries - Optional. The maximum number of retries to attempt for a request. If not provided, the default value is 3. Maximum value is 5.
    *
    * @throws {Error} Will throw an error if the apiKey is not provided or if it is not a string.
    */
