@@ -157,7 +157,7 @@ export const PDFExtraction = async (
       debug(
         LogStatus.ERROR,
         'PDF Extraction',
-        `Error occurred during PDF Extraction after maximum retries: ${error}`,
+        `Error occurred during PDF Extraction after maximum retries.`,
       );
       throw handleAxiosError(error);
     }

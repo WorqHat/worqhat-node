@@ -154,7 +154,7 @@ export const imageModeration = async (
         debug(
           LogStatus.ERROR,
           'Image Moderation',
-          `Error occurred during image moderation after maximum retries: ${error}`,
+          `Error occurred during image moderation after maximum retries.`,
         );
         throw handleAxiosError(error);
       }

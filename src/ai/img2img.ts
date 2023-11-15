@@ -359,7 +359,7 @@ export const imageUpscaler = async (
       debug(
         LogStatus.ERROR,
         'Image Upscale',
-        `Error occurred during image upscale after maximum retries: ${error}`,
+        `Error occurred during image upscale after maximum retries.`,
       );
       throw handleAxiosError(error);
     }
