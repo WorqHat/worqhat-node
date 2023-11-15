@@ -165,7 +165,7 @@ export const alphaContent = async ({
   conversation_history,
   training_data,
   retries = 0,
-}: AlphaParams) => {
+}: AlphaParams): Promise<Readable | object> => {
   debug(
     LogStatus.INFO,
     'AiConV2 Alpha',
@@ -252,7 +252,7 @@ export const largeContent = async ({
   randomness,
   stream,
   retries = 0,
-}: LargeParams) => {
+}: LargeParams): Promise<Readable | object> => {
   debug(
     LogStatus.INFO,
     'AiConV2 Large',
