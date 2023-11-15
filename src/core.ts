@@ -6,7 +6,7 @@ import { appConfiguration } from './index';
 export const baseUrl = "https://api.worqhat.com";
 // export const baseUrl = 'http://localhost:3000';
 
-const MAX_RETRIES = 2;
+export let MAX_RETRIES = 2;
 export const MAX_PIXEL_COUNT = 4194304;
 export const MIN_UPSCALED_DIMENSION = 512;
 

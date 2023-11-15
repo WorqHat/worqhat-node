@@ -15,6 +15,7 @@ export const arrayRemoveDb = async (
   docId: string,
   key: string,
   elements: string,
+  retries: number = 0,
 ) => {
   debug(LogStatus.INFO, 'Document Function', `Starting Array Remove operation`);
   if (!name) {
@@ -65,11 +66,23 @@ export const arrayRemoveDb = async (
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Document Function',
-      `Error removing Array from Document ${docId}`,
-    );
-    throw handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Document Function',
+        `Error removing Array from Document ${docId}, retrying (${
+          retries + 1
+        })`,
+      );
+      return arrayRemoveDb(name, docId, key, elements, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Document Function',
+        `Error removing Array from Document ${docId} after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };

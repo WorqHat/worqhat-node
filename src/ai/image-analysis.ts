@@ -19,7 +19,10 @@ import { getImageAsBase64 } from '../uploads';
 import { appConfiguration } from '../index';
 import { handleAxiosError } from '../error';
 
-export const analyseImagesProcess = async (params: ImageAnalysisParams) => {
+export const analyseImagesProcess = async (
+  params: ImageAnalysisParams,
+  retries = 0,
+) => {
   const { image } = params;
 
   debug(LogStatus.INFO, 'Image Analysis', `Starting image analysis process`);
@@ -79,16 +82,25 @@ export const analyseImagesProcess = async (params: ImageAnalysisParams) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Image Analysis',
-      `Error occurred during image analysis: ${error}`,
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Image Analysis',
+        `Error occurred during image analysis, retrying (${retries + 1})`,
+      );
+      return analyseImagesProcess(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Image Analysis',
+        `Error occurred during image analysis after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 
-export const detectFaces = async (params: DetectFacesParams) => {
+export const detectFaces = async (params: DetectFacesParams, retries = 0) => {
   const { image } = params;
 
   debug(LogStatus.INFO, 'Detect Faces', `Starting detect faces process`);
@@ -148,16 +160,25 @@ export const detectFaces = async (params: DetectFacesParams) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Detect Faces',
-      `Error occurred during detect faces: ${error}`,
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Detect Faces',
+        `Error occurred during detect faces, retrying (${retries + 1})`,
+      );
+      return detectFaces(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Detect Faces',
+        `Error occurred during detect faces after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 
-export const compareFaces = async (params: CompareFacesParams) => {
+export const compareFaces = async (params: CompareFacesParams, retries = 0) => {
   const { source_image, target_image } = params;
 
   debug(LogStatus.INFO, 'Compare Faces', `Starting compare faces process`);
@@ -235,11 +256,21 @@ export const compareFaces = async (params: CompareFacesParams) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Compare Faces',
-      `Error occurred while comparing faces`,
-    );
-    throw handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Compare Faces',
+        `Error occurred while comparing faces, retrying (${retries + 1})`,
+      );
+      return compareFaces(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Compare Faces',
+        `Error occurred while comparing faces after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };

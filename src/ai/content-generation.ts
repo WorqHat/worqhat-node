@@ -21,6 +21,7 @@ const generateContent = async (
   training_data: string | undefined,
   randomness: number | undefined,
   stream?: boolean,
+  retries: number = 0,
 ): Promise<Readable | object> => {
   debug(
     LogStatus.INFO,
@@ -86,8 +87,31 @@ const generateContent = async (
     }
   } catch (error: any) {
     stopProcessingLog();
-    debug(LogStatus.ERROR, `AiCon${version}`, 'Error:', error);
-    return handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `AiCon${version}`,
+        `Error generating content, retrying (${retries + 1})`,
+      );
+      return generateContent(
+        version,
+        conversation_history,
+        preserve_history,
+        question,
+        training_data,
+        randomness,
+        stream,
+        retries + 1,
+      );
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `AiCon${version}`,
+        'Error generating content after maximum retries',
+      );
+      return handleAxiosError(error);
+    }
   }
 };
 
@@ -140,6 +164,7 @@ export const alphaContent = async ({
   question,
   conversation_history,
   training_data,
+  retries = 0,
 }: AlphaParams) => {
   debug(
     LogStatus.INFO,
@@ -194,8 +219,27 @@ export const alphaContent = async ({
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(LogStatus.ERROR, 'AiConV2 Alpha', 'Error:', error);
-    return handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'AiConV2 Alpha',
+        `Error generating content, retrying (${retries + 1})`,
+      );
+      return alphaContent({
+        question,
+        conversation_history,
+        training_data,
+        retries: retries + 1,
+      });
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'AiConV2 Alpha',
+        'Error generating content after maximum retries',
+      );
+      return handleAxiosError(error);
+    }
   }
 };
 
@@ -207,6 +251,7 @@ export const largeContent = async ({
   instructions,
   randomness,
   stream,
+  retries = 0,
 }: LargeParams) => {
   debug(
     LogStatus.INFO,
@@ -275,7 +320,30 @@ export const largeContent = async ({
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(LogStatus.ERROR, 'AiConV2 Large', 'Error:', error);
-    return handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'AiConV2 Large',
+        `Error generating content, retrying (${retries + 1})`,
+      );
+      return largeContent({
+        datasetId,
+        conversation_history,
+        preserve_history,
+        question,
+        instructions,
+        randomness,
+        stream,
+        retries: retries + 1,
+      });
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'AiConV2 Large',
+        'Error generating content after maximum retries',
+      );
+      return handleAxiosError(error);
+    }
   }
 };

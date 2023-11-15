@@ -10,7 +10,7 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-export const fetchAllData = async (name: string) => {
+export const fetchAllData = async (name: string, retries: number = 0) => {
   debug(
     LogStatus.INFO,
     `Database Fetch`,
@@ -60,12 +60,23 @@ export const fetchAllData = async (name: string) => {
       ...response.data,
     };
   } catch (error: any) {
-    stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      `Database Fetch`,
-      `Error retrieving data from collection ${name}`,
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Database Fetch`,
+        `Error retrieving data from collection ${name}, retrying (${
+          retries + 1
+        })`,
+      );
+      return fetchAllData(name, retries + 1);
+    } else {
+      stopProcessingLog();
+      debug(
+        LogStatus.ERROR,
+        `Database Fetch`,
+        `Error retrieving data from collection ${name} after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };

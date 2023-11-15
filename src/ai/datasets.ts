@@ -4,7 +4,9 @@ import { appConfiguration } from '../index';
 import { deleteDatasetParam } from '../types';
 import { handleAxiosError } from '../error';
 
-export const viewTrainedDatasets = async () => {
+export const viewTrainedDatasets = async ({
+  retries = 0,
+}: { retries?: number } = {}) => {
   debug(LogStatus.INFO, 'View Datasets', 'Starting Dataset View Process');
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'View Datasets', 'App Configuration is null');
@@ -27,19 +29,28 @@ export const viewTrainedDatasets = async () => {
       code: 200,
       ...response.data,
     };
-  } catch (error) {
-    debug(
-      LogStatus.ERROR,
-      'View Datasets',
-      'Dataset View Process failed',
-      "There is a network error, please check your network and try again, or try checking your API Key if it's correct",
-    );
-    throw handleAxiosError(error);
+  } catch (error: any) {
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'View Datasets',
+        `Dataset View Process failed, retrying (${retries + 1})`,
+      );
+      return viewTrainedDatasets({ retries: retries + 1 });
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'View Datasets',
+        "Dataset View Process failed after maximum retries. There is a network error, please check your network and try again, or try checking your API Key if it's correct",
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 
 export const deleteTrainedDatasets = async ({
   datasetId,
+  retries = 0,
 }: deleteDatasetParam) => {
   debug(LogStatus.INFO, 'Delete Datasets', 'Starting Dataset Deletion Process');
   if (!appConfiguration) {
@@ -58,26 +69,40 @@ export const deleteTrainedDatasets = async ({
     'Deleting dataset with ID:',
     datasetId,
   );
-  axios
-    .delete(`${baseUrl}/api/delete-datasets/${datasetId}`, {
-      headers: {
-        Authorization: 'Bearer ' + appConfiguration.apiKey,
+
+  try {
+    const response = await axios.delete(
+      `${baseUrl}/api/delete-datasets/${datasetId}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+        },
       },
-    })
-    .then((response) => {
-      debug(LogStatus.INFO, 'Delete Datasets', 'Dataset deleted successfully');
-      return {
-        code: 200,
-        ...response.data,
-      };
-    })
-    .catch((error) => {
+    );
+
+    debug(LogStatus.INFO, 'Delete Datasets', 'Dataset deleted successfully');
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Delete Datasets',
+        `Dataset deletion failed, retrying (${retries + 1})`,
+      );
+      return deleteTrainedDatasets({
+        datasetId,
+        retries: retries + 1,
+      });
+    } else {
       debug(
         LogStatus.ERROR,
         'Delete Datasets',
-        'Dataset deletion failed',
-        "There is a network error, please check your network and try again, or try checking your API Key if it's correct",
+        "Dataset deletion failed after maximum retries. There is a network error, please check your network and try again, or try checking your API Key if it's correct",
       );
       throw handleAxiosError(error);
-    });
+    }
+  }
 };

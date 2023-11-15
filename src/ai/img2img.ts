@@ -22,6 +22,7 @@ const processImage = async (
   params: ImageModificationParams,
   version: string,
   validateDimensions: (metadata: any) => void,
+  retries: number = 0,
 ) => {
   const { existing_image, modification, outputType, similarity } = params;
 
@@ -117,12 +118,21 @@ const processImage = async (
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      `Image Modification ${version}`,
-      `Error occurred during image modification: ${error}`,
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Image Modification ${version}`,
+        `Error occurred during image modification, retrying (${retries + 1})`,
+      );
+      return processImage(params, version, validateDimensions, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Image Modification ${version}`,
+        `Error occurred during image modification after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 
@@ -228,7 +238,10 @@ export const imageModificationV3 = async (params: ImageModificationParams) => {
   });
 };
 
-export const imageUpscaler = async (params: ImageUpscaleParams) => {
+export const imageUpscaler = async (
+  params: ImageUpscaleParams,
+  retries = 0,
+) => {
   const { existing_image } = params;
 
   debug(LogStatus.INFO, 'Image Upscale', `Starting image upscale process`);
@@ -335,11 +348,20 @@ export const imageUpscaler = async (params: ImageUpscaleParams) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Image Upscale',
-      `Error occurred during image upscale: ${error}`,
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Image Upscale',
+        `Error occurred during image upscale, retrying (${retries + 1})`,
+      );
+      return imageUpscaler(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Image Upscale',
+        `Error occurred during image upscale after maximum retries.`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };

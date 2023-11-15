@@ -20,6 +20,7 @@ const generateImage = async (
   image_style: string,
   output_type: string,
   prompt: any[],
+  retries: number = 0,
 ) => {
   debug(
     LogStatus.INFO,
@@ -115,12 +116,28 @@ const generateImage = async (
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      `Image Generation ${version}`,
-      'Image Generation process failed',
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Image Generation ${version}`,
+        `Error occurred during image generation, retrying (${retries + 1})`,
+      );
+      return generateImage(
+        version,
+        orientation,
+        image_style,
+        output_type,
+        prompt,
+        retries + 1,
+      );
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Image Generation ${version}`,
+        `Error occurred during image generation after maximum retries: ${error}`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 

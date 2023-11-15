@@ -18,6 +18,7 @@ export const fetchWithCondition = async (
   order?: 'asc' | 'desc' | null,
   limit?: number | null,
   startAfter?: number | null,
+  retries: number = 0,
 ) => {
   debug(
     LogStatus.INFO,
@@ -75,17 +76,38 @@ export const fetchWithCondition = async (
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      `Database Query`,
-      `Error retrieving data from collection ${name}`,
-    );
-    throw handleAxiosError({
-      response: {
-        status: 400,
-        data: `Error retrieving data from collection ${name}`,
-        statusText: `Error retrieving data from collection ${name}. This happens because of an improper query or a invalid parameter passed to the query.`,
-      },
-    });
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Database Query`,
+        `Error retrieving data from collection ${name}, retrying (${
+          retries + 1
+        })`,
+      );
+      return fetchWithCondition(
+        name,
+        whereQuery,
+        joinStatement,
+        orderBy,
+        order,
+        limit,
+        startAfter,
+        retries + 1,
+      );
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Database Query`,
+        `Error retrieving data from collection ${name} after maximum retries`,
+      );
+      throw handleAxiosError({
+        response: {
+          status: 400,
+          data: `Error retrieving data from collection ${name}`,
+          statusText: `Error retrieving data from collection ${name}. This happens because of an improper query or a invalid parameter passed to the query.`,
+        },
+      });
+    }
   }
 };

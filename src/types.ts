@@ -18,17 +18,20 @@ export interface AlphaParams {
   question: string;
   conversation_history?: object[];
   training_data?: string;
+  retries?: number;
 }
 
 export interface searchV2Params {
   question: string;
   training_data?: string;
+  retries?: number;
 }
 
 export interface searchV3Params {
   question: string;
   training_data?: string;
   search_count?: number;
+  retries?: number;
 }
 
 export interface ImageGenV3Params {
@@ -47,14 +50,17 @@ export interface ImageGenV2Params {
 
 export interface ContentModerationParams {
   text_content: string;
+  retries?: number;
 }
 
 export interface ImageModerationParams {
   image: File | string;
+  retries?: number;
 }
 
 export interface deleteDatasetParam {
   datasetId: string;
+  retries?: number;
 }
 
 export interface LargeParams {
@@ -65,6 +71,7 @@ export interface LargeParams {
   instructions?: string;
   randomness?: number;
   stream?: boolean;
+  retries?: number;
 }
 
 export interface WebExtractionParams {
@@ -73,32 +80,39 @@ export interface WebExtractionParams {
   inline_code?: boolean;
   references?: boolean;
   url_path: string;
+  retries?: number;
 }
 
 export interface PDFExtractionParams {
   file: File | string;
+  retries?: number;
 }
 
 export interface ImageExtractionParams {
   image: File | string;
   output_format: 'text' | 'json';
+  retries?: number;
 }
 
 export interface SpeechExtractionParams {
   audio: File | string;
+  retries?: number;
 }
 
 export interface ImageAnalysisParams {
   image: File | string;
+  retries?: number;
 }
 
 export interface DetectFacesParams {
   image: File | string;
+  retries?: number;
 }
 
 export interface CompareFacesParams {
   source_image: File | string;
   target_image: File | string;
+  retries?: number;
 }
 
 export interface ImageModificationParams {
@@ -112,6 +126,7 @@ export interface ImageUpscaleParams {
   existing_image: File | string;
   scale?: number;
   output_type?: 'url' | 'blob';
+  retries?: number;
 }
 
 export interface getUniqueQuery {

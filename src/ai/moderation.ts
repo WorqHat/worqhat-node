@@ -16,6 +16,7 @@ import {
 
 export const contentModeration = async ({
   text_content,
+  retries = 0,
 }: ContentModerationParams) => {
   debug(
     LogStatus.INFO,
@@ -63,17 +64,29 @@ export const contentModeration = async ({
       ...response.data,
     };
   } catch (error: any) {
-    stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Content Moderation',
-      `Error occurred during Content Moderation: ${error}`,
-    );
-    throw handleAxiosError(error);
+      stopProcessingLog();
+      if (retries < appConfiguration.max_retries) {
+        debug(
+          LogStatus.INFO,
+          'Content Moderation',
+          `Error occurred during content moderation, retrying (${retries + 1})`,
+        );
+        return contentModeration({ text_content, retries: retries + 1 });
+      } else {
+        debug(
+          LogStatus.ERROR,
+          'Content Moderation',
+          `Error occurred during content moderation after maximum retries`,
+        );
+        throw handleAxiosError(error);
+      }
   }
 };
 
-export const imageModeration = async ({ image }: ImageModerationParams) => {
+export const imageModeration = async (
+  { image }: ImageModerationParams,
+  retries = 0,
+) => {
   debug(
     LogStatus.INFO,
     'Image Moderation',
@@ -129,12 +142,21 @@ export const imageModeration = async ({ image }: ImageModerationParams) => {
       ...response.data,
     };
   } catch (error: any) {
-    stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Image Moderation',
-      `Error occurred during image moderation: ${error}`,
-    );
-    throw handleAxiosError(error);
+      stopProcessingLog();
+      if (retries < appConfiguration.max_retries) {
+        debug(
+          LogStatus.INFO,
+          'Image Moderation',
+          `Error occurred during image moderation, retrying (${retries + 1})`,
+        );
+        return imageModeration({ image }, retries + 1);
+      } else {
+        debug(
+          LogStatus.ERROR,
+          'Image Moderation',
+          `Error occurred during image moderation after maximum retries.`,
+        );
+        throw handleAxiosError(error);
+      }
   }
 };
