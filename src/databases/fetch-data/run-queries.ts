@@ -75,6 +75,8 @@ export const fetchWithCondition = async (
       ...response.data,
     };
   } catch (error: any) {
+    stopProcessingLog();
+
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
@@ -94,7 +96,6 @@ export const fetchWithCondition = async (
         retries + 1,
       );
     } else {
-      stopProcessingLog();
       debug(
         LogStatus.ERROR,
         `Database Query`,
