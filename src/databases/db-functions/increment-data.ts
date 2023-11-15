@@ -15,6 +15,7 @@ export const incrementFieldDb = async (
   docId: string,
   key: string,
   elements: number,
+  retries: number = 0,
 ) => {
   debug(
     LogStatus.INFO,
@@ -71,11 +72,23 @@ export const incrementFieldDb = async (
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Document Function',
-      `Error while incrementing field in Document ${docId}`,
-    );
-    throw handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Document Function',
+        `Error while incrementing field in Document ${docId}, retrying (${
+          retries + 1
+        })`,
+      );
+      return incrementFieldDb(name, docId, key, elements, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Document Function',
+        `Error while incrementing field in Document ${docId} after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
