@@ -18,6 +18,7 @@ export interface AlphaParams {
   question: string;
   conversation_history?: object[];
   training_data?: string;
+  retries?: number;
 }
 
 export interface searchV2Params {

@@ -42,7 +42,8 @@ export class Configuration {
   }) {
     this.apiKey = options.apiKey || process.env.WORQHAT_API_KEY || '';
     this.debug = options.debug || false;
-    this.max_retries = 2;
+    this.max_retries =
+      options.max_retries && options.max_retries <= 5 ? options.max_retries : 5;
 
     if (!this.apiKey) {
       throw new Error('API Key is required');

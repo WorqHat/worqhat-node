@@ -6,6 +6,7 @@ import {
   LogStatus,
   startProcessingLog,
   stopProcessingLog,
+  MAX_RETRIES,
 } from '../core';
 import { appConfiguration } from '../index';
 import { ContentGenerationParams, AlphaParams, LargeParams } from '../types';
@@ -21,6 +22,7 @@ const generateContent = async (
   training_data: string | undefined,
   randomness: number | undefined,
   stream?: boolean,
+  retries: number = 0,
 ): Promise<Readable | object> => {
   debug(
     LogStatus.INFO,
@@ -85,9 +87,31 @@ const generateContent = async (
       };
     }
   } catch (error: any) {
-    stopProcessingLog();
-    debug(LogStatus.ERROR, `AiCon${version}`, 'Error:', error);
-    return handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `AiCon${version}`,
+        `Error generating content, retrying (${retries + 1})`,
+      );
+      return generateContent(
+        version,
+        conversation_history,
+        preserve_history,
+        question,
+        training_data,
+        randomness,
+        stream,
+        retries + 1,
+      );
+    } else {
+      stopProcessingLog();
+      debug(
+        LogStatus.ERROR,
+        `AiCon${version}`,
+        'Error generating content after maximum retries',
+      );
+      return handleAxiosError(error);
+    }
   }
 };
 
@@ -140,6 +164,7 @@ export const alphaContent = async ({
   question,
   conversation_history,
   training_data,
+  retries = 0,
 }: AlphaParams) => {
   debug(
     LogStatus.INFO,
@@ -193,9 +218,27 @@ export const alphaContent = async ({
       ...response.data,
     };
   } catch (error: any) {
-    stopProcessingLog();
-    debug(LogStatus.ERROR, 'AiConV2 Alpha', 'Error:', error);
-    return handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'AiConV2 Alpha',
+        `Error generating content, retrying (${retries + 1})`,
+      );
+      return alphaContent({
+        question,
+        conversation_history,
+        training_data,
+        retries: retries + 1,
+      });
+    } else {
+      stopProcessingLog();
+      debug(
+        LogStatus.ERROR,
+        'AiConV2 Alpha',
+        'Error generating content after maximum retries',
+      );
+      return handleAxiosError(error);
+    }
   }
 };
 
