@@ -14,6 +14,7 @@ export const createCollectionWithSchema = async (
   name: string,
   schema: any,
   sortBy: string,
+  retries: number = 0,
 ) => {
   debug(
     LogStatus.INFO,
@@ -67,16 +68,30 @@ export const createCollectionWithSchema = async (
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Create Collection',
-      `Error occurred during Database Collection creation with schema`,
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Create Collection',
+        `Error occurred during Database Collection creation with schema, retrying (${
+          retries + 1
+        })`,
+      );
+      return createCollectionWithSchema(name, schema, sortBy, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Create Collection',
+        `Error occurred during Database Collection creation with schema after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 
-export const createCollectionWithoutSchema = async (name: string) => {
+export const createCollectionWithoutSchema = async (
+  name: string,
+  retries: number = 0,
+) => {
   debug(
     LogStatus.INFO,
     'Create Collection',
@@ -120,11 +135,23 @@ export const createCollectionWithoutSchema = async (name: string) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Create Collection',
-      `Error occurred during Database Collection creation`,
-    );
-    throw handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Create Collection',
+        `Error occurred during Database Collection creation, retrying (${
+          retries + 1
+        })`,
+      );
+      return createCollectionWithoutSchema(name, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Create Collection',
+        `Error occurred during Database Collection creation after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };

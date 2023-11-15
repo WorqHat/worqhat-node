@@ -10,7 +10,7 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-export const deleteCollection = async (name: string) => {
+export const deleteCollection = async (name: string, retries: number = 0) => {
   debug(
     LogStatus.INFO,
     'Delete Collection',
@@ -54,11 +54,23 @@ export const deleteCollection = async (name: string) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      'Delete Collection',
-      `Error deleting Database Collection`,
-    );
-    throw handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Delete Collection',
+        `Error occurred during Database Collection deletion, retrying (${
+          retries + 1
+        })`,
+      );
+      return deleteCollection(name, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Delete Collection',
+        `Error occurred during Database Collection deletion after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
