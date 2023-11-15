@@ -56,6 +56,7 @@ export interface ImageModerationParams {
 
 export interface deleteDatasetParam {
   datasetId: string;
+  retries?: number;
 }
 
 export interface LargeParams {
