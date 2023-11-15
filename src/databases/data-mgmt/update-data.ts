@@ -10,7 +10,12 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-export const updateDataDb = async (name: string, docId: any, data: any) => {
+export const updateDataDb = async (
+  name: string,
+  docId: any,
+  data: any,
+  retries: number = 0,
+) => {
   debug(
     LogStatus.INFO,
     `Update Database`,
@@ -62,12 +67,23 @@ export const updateDataDb = async (name: string, docId: any, data: any) => {
       ...response.data,
     };
   } catch (error: any) {
-    stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      `Update Database`,
-      `Error updating data to collection ${name} with docId ${docId}`,
-    );
-    throw handleAxiosError(error);
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Update Database`,
+        `Error updating data to collection ${name} with docId ${docId}, retrying (${
+          retries + 1
+        })`,
+      );
+      return updateDataDb(name, docId, data, retries + 1);
+    } else {
+      stopProcessingLog();
+      debug(
+        LogStatus.ERROR,
+        `Update Database`,
+        `Error updating data to collection ${name} with docId ${docId} after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
