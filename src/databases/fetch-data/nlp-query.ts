@@ -10,7 +10,11 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-export const fetchNlpQuery = async (name: string, query: string) => {
+export const fetchNlpQuery = async (
+  name: string,
+  query: string,
+  retries: number = 0,
+) => {
   debug(
     LogStatus.INFO,
     `Database Query`,
@@ -62,11 +66,23 @@ export const fetchNlpQuery = async (name: string, query: string) => {
     };
   } catch (error: any) {
     stopProcessingLog();
-    debug(
-      LogStatus.ERROR,
-      `Database Query`,
-      `Error retrieving data from collection ${name}`,
-    );
-    throw handleAxiosError(error);
+
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Database Query`,
+        `Error retrieving data from collection ${name}, retrying (${
+          retries + 1
+        })`,
+      );
+      return fetchNlpQuery(name, query, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Database Query`,
+        `Error retrieving data from collection ${name} after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
