@@ -184,7 +184,7 @@ export function handleAxiosError(error: any) {
   } else {
     return {
       error: {
-        message: `Netwok Error. This might happen because of Network Connectivity, Socket Connectivity Mismatch or Unable to connect with the Cloud Servers.`,
+        message: `Network Error. This might happen because of Network Connectivity, Socket Connectivity Mismatch or Unable to connect with the Cloud Servers.`,
         headers: {
           'X-WorqHat-Lang': 'js',
           'X-WorqHat-Package-Version': VERSION,
