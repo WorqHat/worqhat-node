@@ -81,9 +81,11 @@ export const fetchWithCondition = async (
       `Error retrieving data from collection ${name}`,
     );
     throw handleAxiosError({
-      response: 400,
-      data: `Error retrieving data from collection ${name}`,
-      statusText: `Error retrieving data from collection ${name}. This happens because of an improper query or a invalid parameter passed to the query.`,
+      response: {
+        status: 400,
+        data: `Error retrieving data from collection ${name}`,
+        statusText: `Error retrieving data from collection ${name}. This happens because of an improper query or a invalid parameter passed to the query.`,
+      },
     });
   }
 };

@@ -8,6 +8,10 @@ function getArchitecture() {
   return os.arch();
 }
 
+function getNetwork() {
+  return os.networkInterfaces();
+}
+
 function createRequestId() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
@@ -175,6 +179,7 @@ export function handleAxiosError(error: any) {
         'X-WorqHat-Timestamp': new Date().toISOString(),
         'X-WorqHat-Runtime': process.release.name,
         'X-WorqHat-Runtime-Version': process.version,
+        'X-WorqHat-Network': getNetwork(),
       },
     };
 
@@ -194,6 +199,7 @@ export function handleAxiosError(error: any) {
           'X-WorqHat-Timestamp': new Date().toISOString(),
           'X-WorqHat-Runtime': process.release.name,
           'X-WorqHat-Runtime-Version': process.version,
+          'X-WorqHat-Network': getNetwork(),
         },
       },
     };
