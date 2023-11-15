@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createLogger, baseUrl, debug, LogStatus, MAX_RETRIES } from '../core';
+import { createLogger, baseUrl, debug, LogStatus } from '../core';
 import { appConfiguration } from '../index';
 import { deleteDatasetParam } from '../types';
 import { handleAxiosError } from '../error';

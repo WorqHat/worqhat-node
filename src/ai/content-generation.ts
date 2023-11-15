@@ -6,7 +6,6 @@ import {
   LogStatus,
   startProcessingLog,
   stopProcessingLog,
-  MAX_RETRIES,
 } from '../core';
 import { appConfiguration } from '../index';
 import { ContentGenerationParams, AlphaParams, LargeParams } from '../types';

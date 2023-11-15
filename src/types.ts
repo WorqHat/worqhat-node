@@ -93,15 +93,18 @@ export interface SpeechExtractionParams {
 
 export interface ImageAnalysisParams {
   image: File | string;
+  retries?: number;
 }
 
 export interface DetectFacesParams {
   image: File | string;
+  retries?: number;
 }
 
 export interface CompareFacesParams {
   source_image: File | string;
   target_image: File | string;
+  retries?: number;
 }
 
 export interface ImageModificationParams {
