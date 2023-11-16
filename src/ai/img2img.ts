@@ -23,7 +23,7 @@ const processImage = async (
   version: string,
   validateDimensions: (metadata: any) => void,
   retries: number = 0,
-) => {
+): Promise<object> => {
   const { existing_image, modification, outputType, similarity } = params;
 
   debug(
@@ -241,7 +241,7 @@ export const imageModificationV3 = async (params: ImageModificationParams) => {
 export const imageUpscaler = async (
   params: ImageUpscaleParams,
   retries = 0,
-) => {
+): Promise<object> => {
   const { existing_image } = params;
 
   debug(LogStatus.INFO, 'Image Upscale', `Starting image upscale process`);

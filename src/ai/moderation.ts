@@ -17,7 +17,7 @@ import {
 export const contentModeration = async ({
   text_content,
   retries = 0,
-}: ContentModerationParams) => {
+}: ContentModerationParams): Promise<object> => {
   debug(
     LogStatus.INFO,
     'Content Moderation',
@@ -86,7 +86,7 @@ export const contentModeration = async ({
 export const imageModeration = async (
   { image }: ImageModerationParams,
   retries = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     'Image Moderation',
