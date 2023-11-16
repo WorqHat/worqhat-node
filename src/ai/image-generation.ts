@@ -21,7 +21,7 @@ const generateImage = async (
   output_type: string,
   prompt: any[],
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Image Generation ${version}`,

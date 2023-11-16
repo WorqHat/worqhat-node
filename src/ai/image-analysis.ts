@@ -22,7 +22,7 @@ import { handleAxiosError } from '../error';
 export const analyseImagesProcess = async (
   params: ImageAnalysisParams,
   retries = 0,
-) => {
+): Promise<object> => {
   const { image } = params;
 
   debug(LogStatus.INFO, 'Image Analysis', `Starting image analysis process`);
@@ -100,7 +100,10 @@ export const analyseImagesProcess = async (
   }
 };
 
-export const detectFaces = async (params: DetectFacesParams, retries = 0) => {
+export const detectFaces = async (
+  params: DetectFacesParams,
+  retries = 0,
+): Promise<object> => {
   const { image } = params;
 
   debug(LogStatus.INFO, 'Detect Faces', `Starting detect faces process`);
@@ -178,7 +181,10 @@ export const detectFaces = async (params: DetectFacesParams, retries = 0) => {
   }
 };
 
-export const compareFaces = async (params: CompareFacesParams, retries = 0) => {
+export const compareFaces = async (
+  params: CompareFacesParams,
+  retries = 0,
+): Promise<object> => {
   const { source_image, target_image } = params;
 
   debug(LogStatus.INFO, 'Compare Faces', `Starting compare faces process`);
