@@ -15,7 +15,7 @@ import {
 export const v2Search = async (
   { question, training_data }: searchV2Params,
   retries = 0,
-) => {
+): Promise<object> => {
   debug(LogStatus.INFO, 'Search V2', 'Starting search v2:', {
     question,
     training_data,
@@ -80,7 +80,7 @@ export const v3Search = async ({
   training_data,
   search_count,
   retries = 0,
-}: searchV3Params) => {
+}: searchV3Params): Promise<object> => {
   debug(LogStatus.INFO, 'Search V3', 'Starting search v3:', {
     question,
     training_data,

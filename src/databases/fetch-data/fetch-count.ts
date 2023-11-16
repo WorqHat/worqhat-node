@@ -14,7 +14,7 @@ export const fetchCountData = async (
   name: string,
   column: string,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Database Query`,

@@ -14,7 +14,7 @@ export const deleteDataDb = async (
   name: string,
   docId: any,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Update Database`,

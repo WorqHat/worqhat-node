@@ -15,7 +15,7 @@ export const updateDataDb = async (
   docId: any,
   data: any,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Update Database`,

@@ -16,7 +16,7 @@ export const arrayUnionDb = async (
   key: string,
   elements: string,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(LogStatus.INFO, 'Document Function', `Starting Array Union operation`);
   if (!name) {
     debug(LogStatus.ERROR, 'Document Function', `Collection Name is missing`);

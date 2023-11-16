@@ -19,7 +19,7 @@ export const fetchWithCondition = async (
   limit?: number | null,
   startAfter?: number | null,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Database Query`,

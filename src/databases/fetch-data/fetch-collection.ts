@@ -10,7 +10,10 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-export const fetchAllData = async (name: string, retries: number = 0) => {
+export const fetchAllData = async (
+  name: string,
+  retries: number = 0,
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Database Fetch`,

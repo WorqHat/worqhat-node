@@ -14,7 +14,7 @@ export const fetchNlpQuery = async (
   name: string,
   query: string,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Database Query`,

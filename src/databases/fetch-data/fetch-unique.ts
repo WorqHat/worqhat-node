@@ -16,7 +16,7 @@ export const fetchUniqueData = async (
   orderBy?: string,
   order?: 'asc' | 'desc' | null,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Database Query`,
