@@ -6,7 +6,7 @@ import { handleAxiosError } from '../error';
 
 export const viewTrainedDatasets = async ({
   retries = 0,
-}: { retries?: number } = {}) => {
+}: { retries?: number } = {}): Promise<object> => {
   debug(LogStatus.INFO, 'View Datasets', 'Starting Dataset View Process');
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'View Datasets', 'App Configuration is null');
@@ -51,7 +51,7 @@ export const viewTrainedDatasets = async ({
 export const deleteTrainedDatasets = async ({
   datasetId,
   retries = 0,
-}: deleteDatasetParam) => {
+}: deleteDatasetParam): Promise<object> => {
   debug(LogStatus.INFO, 'Delete Datasets', 'Starting Dataset Deletion Process');
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'Delete Datasets', 'App Configuration is null');

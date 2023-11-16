@@ -17,7 +17,7 @@ import {
 export const contentModeration = async ({
   text_content,
   retries = 0,
-}: ContentModerationParams) => {
+}: ContentModerationParams): Promise<object> => {
   debug(
     LogStatus.INFO,
     'Content Moderation',
@@ -64,29 +64,29 @@ export const contentModeration = async ({
       ...response.data,
     };
   } catch (error: any) {
-      stopProcessingLog();
-      if (retries < appConfiguration.max_retries) {
-        debug(
-          LogStatus.INFO,
-          'Content Moderation',
-          `Error occurred during content moderation, retrying (${retries + 1})`,
-        );
-        return contentModeration({ text_content, retries: retries + 1 });
-      } else {
-        debug(
-          LogStatus.ERROR,
-          'Content Moderation',
-          `Error occurred during content moderation after maximum retries`,
-        );
-        throw handleAxiosError(error);
-      }
+    stopProcessingLog();
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Content Moderation',
+        `Error occurred during content moderation, retrying (${retries + 1})`,
+      );
+      return contentModeration({ text_content, retries: retries + 1 });
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Content Moderation',
+        `Error occurred during content moderation after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 
 export const imageModeration = async (
   { image }: ImageModerationParams,
   retries = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     'Image Moderation',
@@ -142,21 +142,21 @@ export const imageModeration = async (
       ...response.data,
     };
   } catch (error: any) {
-      stopProcessingLog();
-      if (retries < appConfiguration.max_retries) {
-        debug(
-          LogStatus.INFO,
-          'Image Moderation',
-          `Error occurred during image moderation, retrying (${retries + 1})`,
-        );
-        return imageModeration({ image }, retries + 1);
-      } else {
-        debug(
-          LogStatus.ERROR,
-          'Image Moderation',
-          `Error occurred during image moderation after maximum retries.`,
-        );
-        throw handleAxiosError(error);
-      }
+    stopProcessingLog();
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        'Image Moderation',
+        `Error occurred during image moderation, retrying (${retries + 1})`,
+      );
+      return imageModeration({ image }, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        'Image Moderation',
+        `Error occurred during image moderation after maximum retries.`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };

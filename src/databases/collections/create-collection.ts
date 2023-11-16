@@ -15,7 +15,7 @@ export const createCollectionWithSchema = async (
   schema: any,
   sortBy: string,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     'Create Collection',
@@ -91,7 +91,7 @@ export const createCollectionWithSchema = async (
 export const createCollectionWithoutSchema = async (
   name: string,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     'Create Collection',

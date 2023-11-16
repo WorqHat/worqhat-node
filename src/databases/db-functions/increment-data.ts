@@ -16,7 +16,7 @@ export const incrementFieldDb = async (
   key: string,
   elements: number,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     'Document Function',

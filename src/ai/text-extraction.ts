@@ -24,7 +24,7 @@ import { getImageAsBase64 } from '../uploads';
 export const webExtraction = async (
   params: WebExtractionParams,
   retries = 0,
-) => {
+): Promise<object> => {
   debug(LogStatus.INFO, `Web Extraction`, 'Starting Web Extraction Process');
 
   if (!appConfiguration) {
@@ -93,7 +93,7 @@ export const webExtraction = async (
 export const PDFExtraction = async (
   { file }: PDFExtractionParams,
   retries = 0,
-) => {
+): Promise<object> => {
   if (!appConfiguration) {
     debug(LogStatus.ERROR, 'PDF Extraction', 'App Configuration is null');
     throw new Error('App Configuration is null');
@@ -168,7 +168,7 @@ export const imageExtraction = async ({
   image,
   output_format,
   retries = 0,
-}: ImageExtractionParams) => {
+}: ImageExtractionParams): Promise<object> => {
   try {
     debug(
       LogStatus.INFO,
@@ -241,20 +241,20 @@ export const imageExtraction = async ({
       );
       return imageExtraction({ image, output_format, retries: retries + 1 });
     } else {
-  debug(
-    LogStatus.ERROR,
-    'Image Extraction',
-    `Error occurred during Image Extraction after maximum retries.`,
-  );
-  throw handleAxiosError(error);
-}
+      debug(
+        LogStatus.ERROR,
+        'Image Extraction',
+        `Error occurred during Image Extraction after maximum retries.`,
+      );
+      throw handleAxiosError(error);
+    }
   }
 };
 
 export const speechExtraction = async (
   { audio }: SpeechExtractionParams,
   retries = 0,
-) => {
+): Promise<object> => {
   try {
     debug(
       LogStatus.INFO,

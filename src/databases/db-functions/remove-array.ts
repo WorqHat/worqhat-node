@@ -16,7 +16,7 @@ export const arrayRemoveDb = async (
   key: string,
   elements: string,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(LogStatus.INFO, 'Document Function', `Starting Array Remove operation`);
   if (!name) {
     debug(LogStatus.ERROR, 'Document Function', `Collection Name is missing`);

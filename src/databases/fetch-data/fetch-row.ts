@@ -14,7 +14,7 @@ export const fetchRowData = async (
   name: string,
   documentId: string,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     `Database Query`,

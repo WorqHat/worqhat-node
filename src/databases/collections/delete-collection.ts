@@ -10,7 +10,10 @@ import {
   stopProcessingLog,
 } from '../../core';
 
-export const deleteCollection = async (name: string, retries: number = 0) => {
+export const deleteCollection = async (
+  name: string,
+  retries: number = 0,
+): Promise<object> => {
   debug(
     LogStatus.INFO,
     'Delete Collection',

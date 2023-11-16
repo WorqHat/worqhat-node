@@ -15,7 +15,7 @@ export const addDataDb = async (
   docId: any,
   data: any,
   retries: number = 0,
-) => {
+): Promise<object> => {
   debug(LogStatus.INFO, `Update Database`, `Adding data to collection ${name}`);
   if (!name) {
     debug(LogStatus.ERROR, 'Update Database', `Collection Name is missing`);
