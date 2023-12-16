@@ -23,7 +23,7 @@ export const analyseImagesProcess = async (
   params: ImageAnalysisParams,
   retries = 0,
 ): Promise<object> => {
-  const { image } = params;
+  const { image, output_format = 'json', question } = params;
 
   debug(LogStatus.INFO, 'Image Analysis', `Starting image analysis process`);
   if (!image) {
@@ -48,6 +48,11 @@ export const analyseImagesProcess = async (
     filename: 'image.jpg',
     contentType: 'image/jpeg',
   });
+  form.append('output_type', output_format);
+
+  if (question) {
+    form.append('question', question);
+  }
 
   try {
     debug(

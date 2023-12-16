@@ -101,6 +101,8 @@ export interface SpeechExtractionParams {
 
 export interface ImageAnalysisParams {
   image: File | string;
+  output_format: 'json' | 'text';
+  question?: string;
   retries?: number;
 }
 
