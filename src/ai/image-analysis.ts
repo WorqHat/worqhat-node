@@ -23,7 +23,13 @@ export const analyseImagesProcess = async (
   params: ImageAnalysisParams,
   retries = 0,
 ): Promise<object> => {
-  const { image, output_format = 'json', question } = params;
+  const {
+    image,
+    output_type = 'json',
+    question,
+    training_data,
+    stream_data = false,
+  } = params;
 
   debug(LogStatus.INFO, 'Image Analysis', `Starting image analysis process`);
   if (!image) {
@@ -39,20 +45,56 @@ export const analyseImagesProcess = async (
   debug(LogStatus.INFO, 'Image Analysis', `Received Image data ${image}`);
   debug(LogStatus.INFO, 'Image Analysis', `Converting image to base64`);
 
-  let base64Data: string = await getImageAsBase64(image);
-
+  function isArray(input: any): input is Array<any> {
+    return Array.isArray(input);
+  }
   const form = new FormData();
-  // Append the image as a file
-  debug(LogStatus.INFO, 'Image Analysis', `AI Models processing image`);
-  form.append('image', Buffer.from(base64Data, 'base64'), {
-    filename: 'image.jpg',
-    contentType: 'image/jpeg',
-  });
-  form.append('output_type', output_format);
+  // Check if the input is an array of images
+  if (isArray(image)) {
+    // Log debug information
+    debug(
+      LogStatus.INFO,
+      'Image Analysis',
+      `AI Models processing multiple images`,
+    );
+
+    // Process each image in the array
+    for (const singleImage of image) {
+      const base64Data = await getImageAsBase64(singleImage);
+      form.append('image', Buffer.from(base64Data, 'base64'), {
+        filename: `image-${image.indexOf(singleImage)}.jpg`,
+        contentType: 'image/jpeg',
+      });
+    }
+  } else {
+    // Log debug information
+    debug(
+      LogStatus.INFO,
+      'Image Analysis',
+      `AI Models processing single image`,
+    );
+
+    // Process a single image
+    const base64Data = await getImageAsBase64(image);
+    form.append('image', Buffer.from(base64Data, 'base64'), {
+      filename: 'image.jpg',
+      contentType: 'image/jpeg',
+    });
+  }
+  // identify content type, make filename random if user not explicity specify it
+  // this option should change to array
+
+  form.append('output_type', output_type);
 
   if (question) {
     form.append('question', question);
   }
+
+  if (training_data) {
+    form.append('training_data', training_data);
+  }
+
+  form.append('stream_data', stream_data);
 
   try {
     debug(
@@ -81,17 +123,25 @@ export const analyseImagesProcess = async (
       `Completed response from image analysis API`,
     );
 
-    return {
-      code: 200,
-      ...response.data,
-    };
+    if (stream_data) {
+      // handle stream data
+      response.data.pipe(process.stdout);
+      return response.data; // return the stream
+    } else {
+      return {
+        code: 200,
+        ...response.data,
+      };
+    }
   } catch (error: any) {
+    
     stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
         'Image Analysis',
         `Error occurred during image analysis, retrying (${retries + 1})`,
+        error.message,
       );
       return analyseImagesProcess(params, retries + 1);
     } else {

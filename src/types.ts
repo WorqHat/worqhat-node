@@ -13,6 +13,7 @@ export interface ContentGenerationParams {
   randomness?: number;
   stream?: boolean;
   response_type?: string;
+  retries?: number;
 }
 
 export interface AlphaParams {
@@ -44,6 +45,7 @@ export interface ImageGenV3Params {
   image_style?: string;
   output_type?: 'url' | 'blob';
   prompt: any[];
+  retries?: number;
 }
 
 export interface ImageGenV2Params {
@@ -51,6 +53,7 @@ export interface ImageGenV2Params {
   image_style?: string;
   output_type?: 'url' | 'blob';
   prompt: any[];
+  retries?: number;
 }
 
 export interface ContentModerationParams {
@@ -65,6 +68,15 @@ export interface ImageModerationParams {
 
 export interface deleteDatasetParam {
   datasetId: string;
+  retries?: number;
+}
+
+export interface trainDatasetParam {
+  datasetId: string;
+  dataset_name: string;
+  dataset_type: string;
+  json_data: string;
+  training_file: string | File;
   retries?: number;
 }
 
@@ -105,9 +117,11 @@ export interface SpeechExtractionParams {
 }
 
 export interface ImageAnalysisParams {
-  image: File | string;
-  output_format: 'json' | 'text';
+  image: File | string | string[];
+  output_type: 'json' | 'text';
   question?: string;
+  training_data?: string;
+  stream_data?: boolean;
   retries?: number;
 }
 
@@ -127,6 +141,7 @@ export interface ImageModificationParams {
   modification: string;
   outputType?: 'url' | 'blob';
   similarity: number;
+  retries?: number;
 }
 
 export interface ImageUpscaleParams {
@@ -140,4 +155,5 @@ export interface getUniqueQuery {
   uniqueColumn: string;
   orderByColumn: string;
   orderDirection: 'asc' | 'desc' | null;
+  retries?: number;
 }

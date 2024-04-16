@@ -6,7 +6,11 @@ import {
   largeContent,
 } from '../ai/content-generation';
 import { v2ImageGen, v3ImageGen } from '../ai/image-generation';
-import { deleteTrainedDatasets, viewTrainedDatasets } from '../ai/datasets';
+import {
+  deleteTrainedDatasets,
+  viewTrainedDatasets,
+  trainCustomDatasets,
+} from '../ai/datasets';
 import { v2Search, v3Search } from '../ai/search';
 import {
   webExtraction,
@@ -339,12 +343,14 @@ export class AI {
    * @namespace datasets
    * @property {function} delete - Function for deleting trained datasets.
    * @property {function} list - Function for viewing all trained datasets.
+   * @property {function} train - Function for training models with datasets.
    */
   datasets = {
     /**
      * Function for deleting trained datasets. It can access the Datasets API to delete a dataset that you have trained for both AI and Search Interfaces. However, you will only be able to delete datasets that you have created or have access to.
      *
      * @param {string} datasetId - The ID of the dataset to be deleted. This is a required parameter.
+     * @link https://docs.worqhat.com/api-reference/ai-models/model-training/delete-datasets
      * @returns {Promise} A Promise that resolves to the deletion result.
      * @example
      * ```javascript
@@ -372,6 +378,7 @@ export class AI {
      * Function for viewing all trained datasets. It can access the Datasets API to retrieve a list of all datasets that you have trained for both AI and Search Interfaces. However, you will only be able to view datasets that you have created or have access to.
      *
      * @function list
+     * @link https://docs.worqhat.com/api-reference/ai-models/model-training/view-datasets
      * @returns {Promise} A Promise that resolves to an array of dataset objects.
      * @example
      * ```javascript
@@ -393,6 +400,42 @@ export class AI {
      * ```
      */
     list: viewTrainedDatasets,
+    /**
+     * Function for training custom models using datasets. It can access the Datasets API to train a dataset that you have to train for both AI and Search Interfaces. However, you will only be able to train models with datasets that you have opted for.
+     *
+     * @param {string} datasetId - The ID of the Dataset that you want to train. This is optional. If you don't pass a Dataset ID, we will generate a random ID for you. Make sure this is unique. You can pass in a old id if you want to add in more data to your existing Trained Dataset.
+     * @param {string} dataset_name - The Name of the Dataset that you want to train.
+     * @param {string} dataset_type - The Type of the Training Dataset after Saving. It can be either self or org.
+     * @param {string} json_data - The JSON Data that you want to train. You can pass in the JSON Data in the form of a stringified JSON.
+     * @param {string | File} training_file - The Training File that you want to train. You can pass in the Training File in the form of a CSV or a PDF file.
+     * @link https://docs.worqhat.com/api-reference/ai-models/model-training/train-datasets
+     * @returns {Promise} A Promise that resolves to the training result.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai();
+     *
+     * ai.datasets.train({
+     * datasetId: "your-dataset-id"
+     * dataset_name: "your-dataset-name"
+     * dataset_type: "dataset-type"
+     * json_data: "training-json-data"
+     * training_file: "training-file"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    train: trainCustomDatasets,
   };
 
   /**
@@ -403,6 +446,7 @@ export class AI {
    * @property {function} web - Function for extracting text from web pages.
    * @property {function} pdf - Function for extracting text from PDF files.
    * @property {function} image - Function for extracting text from images.
+   * @property {function} speech - Function for extracting text from speech.
    */
 
   textExtraction = {
@@ -412,6 +456,7 @@ export class AI {
      * @param {boolean} headline - A boolean indicating whether to extract headlines. Default is false.
      * @param {boolean} inline_code - A boolean indicating whether to extract inline code. Default is false.
      * @param {boolean} references - A boolean indicating whether to extract references. Default is false.
+     * @param {boolean} tables - Whether to extract the tables in the web page.
      * @param {string} url_path - A string representing the URL of the web page to extract text from. This is a required parameter.
      * @link https://docs.worqhat.com/ai-models/text-extraction/web-extraction
      * @returns {Promise} A Promise that resolves to the extracted text.
@@ -477,7 +522,7 @@ export class AI {
     /**
      * Function for extracting text from images. It sends a request to the Image Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/text-extraction/image-extraction
      * @param {object} image - The image to extract text from. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
-     * @param {string} output_format - A string representing the output format of the extracted text. You can choose between ``text`` or ``json``. This is a required parameter. It defaults to ``json``.
+     * @param {string} output_type - The type of output to be generated. You can choose between json and text. json will return the text detection results as a JSON object with the scan words marked and positional information. text will return the text detection results as a plain text string.
      * @link https://docs.worqhat.com/ai-models/text-extraction/image-extraction
      * @returns {Promise} A Promise that resolves to the extracted text.
      * @example
@@ -557,7 +602,11 @@ export class AI {
   analyseImages = {
     /**
      * Function for analysing images. It sends a request to the Image Analysis AI Model and returns the analysis results. they can detect a wide range of labels, numbering in the thousands. These labels encompass objects such as “Palm Tree,” scenes like “Beach,” actions such as “Running,” and concepts like “Outdoors”. Also analyze various image properties using computer vision techniques. These properties include foreground and background colors, sharpness, brightness, and contrast. By analyzing these properties, the models gain further insights into the visual characteristics and qualities of the image. Read more at https://docs.worqhat.com/ai-models/image-analysis/image-analysis-v2
-     * @param {object} image - The image to be analysed. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {string | File | string[]} image - The image to be analysed. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {string} output_type - The type of output to be generated. You can choose between json and text. json will return the text detection results as a JSON object with the scan words marked and positional information. text will return the text detection results as a plain text string with a proper description of the image and what it contains.
+     * @param {string} question - The question to be answered by the AI or any specific command you would like the Model to take into consideration while analysing the image. This is an optional parameter. If not provided, the AI will only send a description of the image and what it contains.
+     * @param {string} training_data - The training data to be used for the AI. This is an optional parameter. If not provided, the AI will use the default training data. It is only applicable for Image Analysis process with Text as output_type.
+     * @param {boolean} stream_data - Whether to stream the data as it is being generated. If set to true, the response will be streamed as the data is being generated. This is useful when you want to generate a lot of content and want to save the data as it is being generated. You need to handle Server Sent Events for this use case.
      * @link https://docs.worqhat.com/ai-models/image-analysis/image-analysis-v2
      * @returns {Promise} A Promise that resolves to the analysis results.
      * @example
@@ -579,7 +628,11 @@ export class AI {
      * }
      *
      * ai.analyseImages.analyse({
-     * image: image
+     * image: image,
+     * output_type: 'text' | 'json',
+     * question: "your-question",
+     * training_data: "training_data",
+     * stram_data: true | false
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));

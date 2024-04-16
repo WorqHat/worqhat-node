@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createLogger, baseUrl, debug, LogStatus } from '../core';
 import { appConfiguration } from '../index';
-import { deleteDatasetParam } from '../types';
+import { deleteDatasetParam, trainDatasetParam } from '../types';
 import { handleAxiosError } from '../error';
 
 export const viewTrainedDatasets = async ({
@@ -106,3 +106,12 @@ export const deleteTrainedDatasets = async ({
     }
   }
 };
+
+export const trainCustomDatasets = async ({
+  datasetId,
+  dataset_name,
+  dataset_type,
+  json_data,
+  training_file,
+  retries = 0,
+}: trainDatasetParam) => {};

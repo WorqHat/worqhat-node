@@ -46,7 +46,7 @@ export const readFileAsBase64 = (file: File): Promise<string> => {
 };
 
 export const getImageAsBase64 = async (
-  image: string | File,
+  image: string | File | string[],
 ): Promise<string> => {
   try {
     let base64Data: string;
@@ -59,69 +59,57 @@ export const getImageAsBase64 = async (
       if (image.startsWith('http://') || image.startsWith('https://')) {
         debug(
           LogStatus.INFO,
-          'Processing Input File',
-          `Processing Input File of type URL: ${image}`,
+          'Download Image',
+          `Downloading image from URL: ${image}`,
         );
         const response = await axios.get(image, {
           responseType: 'arraybuffer',
         });
-        debug(
-          LogStatus.INFO,
-          'Processing Input File',
-          `Received response from URL: ${image}`,
-        );
         base64Data = Buffer.from(response.data, 'binary').toString('base64');
-        debug(
-          LogStatus.INFO,
-          'Processing Input File',
-          `Converted response data to base64`,
-        );
+        debug(LogStatus.INFO, 'Convert to Base64', `Converted image to base64`);
       } else if (image.startsWith('data:image')) {
         debug(
           LogStatus.INFO,
-          'Processing Input File',
-          `Processing Input File of type data URL: ${image}`,
+          'Extract Base64',
+          `Extracting base64 from data URL`,
         );
         base64Data = image.split(',')[1];
-        debug(
-          LogStatus.INFO,
-          'Processing Input File',
-          `Extracted base64 data from data URL`,
-        );
       } else {
         debug(
           LogStatus.INFO,
-          'Processing Input File',
-          `Processing Input File of type file path: ${image}`,
+          'Read File',
+          `Reading image file from path: ${image}`,
         );
         const fileData = await fs.promises.readFile(image);
         base64Data = fileData.toString('base64');
-        debug(
-          LogStatus.INFO,
-          'Processing Input File',
-          `Read file and converted to base64`,
-        );
+        debug(LogStatus.INFO, 'Convert to Base64', `Converted file to base64`);
       }
-    } else {
+    } else if (image instanceof File) {
       debug(
         LogStatus.INFO,
-        'Processing Input File',
+        'Process File Object',
         `Processing image of type File object`,
       );
-      base64Data = await readFileAsBase64(image);
+      const reader = new FileReader();
+      const fileReadPromise = new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+      });
+      reader.readAsDataURL(image);
+      const dataUrl = await fileReadPromise;
+      base64Data = dataUrl.split(',')[1];
       debug(
         LogStatus.INFO,
-        'Processing Input File',
-        `Read File object and converted to base64`,
+        'Convert to Base64',
+        `Converted File object to base64`,
       );
+    } else {
+      throw new Error('Unsupported image type provided');
     }
     return base64Data;
   } catch (error: any) {
-    debug(
-      LogStatus.ERROR,
-      'Processing Input File',
-      `Unexpected error occurred: ${error.message}`,
-    );
-    throw new Error(`Unexpected error occurred: ${error.message}`);
+    const errMsg = `Unexpected error occurred: ${error.message}`;
+    debug(LogStatus.ERROR, 'Image Processing Error', errMsg);
+    throw new Error(errMsg);
   }
 };
