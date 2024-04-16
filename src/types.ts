@@ -12,12 +12,17 @@ export interface ContentGenerationParams {
   training_data?: string;
   randomness?: number;
   stream?: boolean;
+  response_type?: string;
 }
 
 export interface AlphaParams {
   question: string;
   conversation_history?: object[];
   training_data?: string;
+  preserve_history?: boolean;
+  randomness?: number;
+  stream?: boolean;
+  response_type?: string;
   retries?: number;
 }
 

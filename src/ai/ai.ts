@@ -114,6 +114,7 @@ export class AI {
      * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
      * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
      * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {string} response_type: A string representing the response type that can be text or JSON, expected from the function. Default is JSON.
      * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-textgen
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
@@ -150,6 +151,7 @@ export class AI {
      * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
      * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
      * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {string} response_type: A string representing the response type that can be text or JSON, expected from the function. Default is JSON.
      * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v3-textgen
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
@@ -182,8 +184,12 @@ export class AI {
      * Alpha version Content Generation AI with data upto 2023 which can be used to generate Current Data based content. The Alpha Channel of AiCon V2 is mostly dependent on the Data upto May 2023 which makes it relatively upto date and more accurate than the previous versions of AiCon. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
      * @param {string} question: A string representing the question to generate content for. Default is undefined.
      * @param {object} conversation_history: An object representing the history of the conversation. Default is undefined.
+     * @param {boolean} preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
      * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
-     * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
+     * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
+     * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {string} response_type: A string representing the response type that can be text or JSON, expected from the function. Default is JSON.
+     * @link https://docs.worqhat.com/api-reference/ai-models/text-generation-ai/aicon-v3-alpha
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
      * ```javascript
@@ -218,6 +224,8 @@ export class AI {
      * @param {string} instructions: A string representing the instructions to use for generating content. Default is undefined.
      * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
      * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {string} response_type: A string representing the response type that can be text or JSON, expected from the function. Default is JSON.
+     * @link https://docs.worqhat.com/api-reference/ai-models/text-generation-ai/aicon-v3-alpha
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
      * ```javascript

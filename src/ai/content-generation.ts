@@ -21,6 +21,7 @@ const generateContent = async (
   training_data: string | undefined,
   randomness: number | undefined,
   stream?: boolean,
+  response_type?: string,
   retries: number = 0,
 ): Promise<Readable | object> => {
   debug(
@@ -60,6 +61,7 @@ const generateContent = async (
         training_data: training_data || '',
         randomness: randomness || 0.2,
         stream_data: stream || false,
+        response_type: response_type || 'json',
       },
       headers: {
         Authorization: 'Bearer ' + appConfiguration.apiKey,
@@ -102,6 +104,7 @@ const generateContent = async (
         training_data,
         randomness,
         stream,
+        response_type,
         retries + 1,
       );
     } else {
@@ -122,6 +125,7 @@ export const v2Content = ({
   training_data,
   randomness,
   stream,
+  response_type,
 }: ContentGenerationParams) => {
   debug(LogStatus.INFO, 'AiConV2', 'Function called with question:', question);
   return generateContent(
@@ -132,6 +136,7 @@ export const v2Content = ({
     training_data,
     randomness,
     stream,
+    response_type,
   );
 };
 
@@ -142,6 +147,7 @@ export const v3Content = ({
   training_data,
   randomness,
   stream,
+  response_type,
 }: ContentGenerationParams) => {
   debug(
     LogStatus.INFO,
@@ -157,85 +163,105 @@ export const v3Content = ({
     training_data,
     randomness,
     stream,
+    response_type,
   );
 };
 
 export const alphaContent = async ({
-  question,
   conversation_history,
+  preserve_history,
+  question,
   training_data,
+  randomness,
+  stream,
+  response_type,
   retries = 0,
 }: AlphaParams): Promise<Readable | object> => {
   debug(
     LogStatus.INFO,
-    'AiConV2 Alpha',
+    'AiConV3 Alpha',
     'Function called with question:',
     question,
   );
 
   if (!question) {
-    debug(LogStatus.ERROR, 'AiConV2 Alpha', 'Question is missing');
+    debug(LogStatus.ERROR, 'AiConV3 Alpha', 'Question is missing');
     throw new Error('Question is required');
   }
 
   if (!appConfiguration) {
-    debug(LogStatus.ERROR, 'AiConV2 Alpha', 'App Configuration is null');
+    debug(LogStatus.ERROR, 'AiConV3 Alpha', 'App Configuration is null');
     throw new Error('App Configuration is null');
   }
   startProcessingLog(
-    `AiConV2 Alpha`,
+    `AiConV3 Alpha`,
     'Processing AI Model for Content Generation',
   );
   try {
     debug(
       LogStatus.INFO,
-      'AiConV2 Alpha',
+      'AiConV3 Alpha',
       'Processing AI Model for Content Generation',
     );
     const response = await axios.post(
-      `${baseUrl}/api/ai/content/v2/new/alpha`,
+      `${baseUrl}/api/ai/content/v3/alpha`,
       {
-        question: question,
         conversation_history: conversation_history || [],
+        preserve_history: preserve_history || false,
+        question: question,
         training_data: training_data || '',
+        randomness: randomness || 0.2,
+        stream_data: stream || false,
+        response_type: response_type || 'text',
       },
       {
         headers: {
           Authorization: 'Bearer ' + appConfiguration.apiKey,
           'Content-Type': 'application/json',
         },
+        responseType: stream ? 'stream' : 'json',
       },
     );
 
     debug(
       LogStatus.INFO,
-      'AiConV2 Alpha',
+      'AiConV3 Alpha',
       'Completed Processing from Content Generation AI Model',
     );
     stopProcessingLog();
-    return {
-      code: 200,
-      ...response.data,
-    };
+    if (stream) {
+      // handle stream data
+      response.data.pipe(process.stdout);
+      return response.data; // return the stream
+    } else {
+      return {
+        code: 200,
+        ...response.data,
+      };
+    }
   } catch (error: any) {
     stopProcessingLog();
 
     if (retries < appConfiguration.max_retries) {
       debug(
         LogStatus.INFO,
-        'AiConV2 Alpha',
+        'AiConV3 Alpha',
         `Error generating content, retrying (${retries + 1})`,
       );
       return alphaContent({
-        question,
         conversation_history,
+        preserve_history,
+        question,
         training_data,
+        randomness,
+        stream,
+        response_type,
         retries: retries + 1,
       });
     } else {
       debug(
         LogStatus.ERROR,
-        'AiConV2 Alpha',
+        'AiConV3 Alpha',
         'Error generating content after maximum retries',
       );
       return handleAxiosError(error);
