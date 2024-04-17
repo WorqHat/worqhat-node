@@ -139,7 +139,7 @@ export interface CompareFacesParams {
 export interface ImageModificationParams {
   existing_image: File | string;
   modification: string;
-  outputType?: 'url' | 'blob';
+  output_type?: 'url' | 'blob';
   similarity: number;
   retries?: number;
 }
@@ -156,4 +156,9 @@ export interface getUniqueQuery {
   orderByColumn: string;
   orderDirection: 'asc' | 'desc' | null;
   retries?: number;
+}
+
+export interface RemoveImagePartsParams {
+  existing_image: string;
+  output_type: string;
 }

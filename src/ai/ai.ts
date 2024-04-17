@@ -27,6 +27,8 @@ import {
   imageModificationV2,
   imageModificationV3,
   imageUpscaler,
+  removeBackground,
+  removeText,
 } from '../ai/img2img';
 
 export class AI {
@@ -270,7 +272,6 @@ export class AI {
    *@property {function} - v2: Search function for API v2. AI assisted Text Based Search Engine.
    *@property {function} - v3: Search function for API v3. Meaning and Context Based Search experience powered by AI
    */
-
   search = {
     /**
      * Search function for API v2. AI assisted Text Based Search Engine. Read more at https://docs.worqhat.com/ai-models/ai-for-search/search-v2
@@ -448,7 +449,6 @@ export class AI {
    * @property {function} image - Function for extracting text from images.
    * @property {function} speech - Function for extracting text from speech.
    */
-
   textExtraction = {
     /**
      * Function for extracting text from web pages. It sends a request to the Web Extraction AI Model and returns the extracted text. Key components such as headlines, paragraphs, images, and tables are identified, and the algorithm extracts them in a structured format like JSON. Additionally, the extracted data is cleaned and normalized to enhance its usability for analysis and processing purposes. Read more at: https://docs.worqhat.com/ai-models/text-extraction/web-extraction
@@ -598,11 +598,10 @@ export class AI {
    * @property {function} compareFaces - Function for comparing faces in images.
    *
    **/
-
   analyseImages = {
     /**
      * Function for analysing images. It sends a request to the Image Analysis AI Model and returns the analysis results. they can detect a wide range of labels, numbering in the thousands. These labels encompass objects such as “Palm Tree,” scenes like “Beach,” actions such as “Running,” and concepts like “Outdoors”. Also analyze various image properties using computer vision techniques. These properties include foreground and background colors, sharpness, brightness, and contrast. By analyzing these properties, the models gain further insights into the visual characteristics and qualities of the image. Read more at https://docs.worqhat.com/ai-models/image-analysis/image-analysis-v2
-     * @param {string | File | string[]} image - The image to be analysed. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {string | File | string[]| object} image - The image to be analysed. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
      * @param {string} output_type - The type of output to be generated. You can choose between json and text. json will return the text detection results as a JSON object with the scan words marked and positional information. text will return the text detection results as a plain text string with a proper description of the image and what it contains.
      * @param {string} question - The question to be answered by the AI or any specific command you would like the Model to take into consideration while analysing the image. This is an optional parameter. If not provided, the AI will only send a description of the image and what it contains.
      * @param {string} training_data - The training data to be used for the AI. This is an optional parameter. If not provided, the AI will use the default training data. It is only applicable for Image Analysis process with Text as output_type.
@@ -719,14 +718,20 @@ export class AI {
    *@namespace imageVariations
    *@property {function} - v2: Function for modifying images using version 2 of the AI Image Model and it carries the inherent features of the model.
    *@property {function} - v3: Function for modifying images using version 3 of the API and it carries the inherent features of the model.
+   *@property {function} - removeText: Function removes all textual content from an image through a single API call, providing a clean and text-free version of the original image.
+   *@property {function} - removeBackground: Function removes background from images in a single API call, delivering a clear and focused foreground subject without the original backdrop.
+   *@property {function} - replaceBackground: Function replaces an image background with a new one in a single API call, seamlessly integrating the foreground subject with a new backdrop of your choice.
+   *@property {function} - searchReplaceImage: Function searches and replaces specific objects within an image with alternative imagery in a single API call. It facilitates creative and dynamic transformations, making it ideal for a variety of applications such as updating product images for e-commerce, altering elements in marketing materials, or personalizing photos.
+   *@property {function} - extendImage: Function extends the boundaries of an image by inserting additional content, minimizing artifacts and maintaining the quality of the original image.
+  // Search and Replace Objects in Image
+  // Extend Image Boundaries
    */
-
   imageVariations = {
     /**
      * Function for modifying images using version 2 of the API. It sends a request to the Image Modification V2 AI Model and returns the new image. Read more at https://docs.worqhat.com/ai-models/image-generation/image-image-v2
      * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
      * @param {string} modification - The modifications to be made to the image. This is a required parameter.
-     * @param {"url" | "blob"} outputType - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
      * @param {number} similarity - The similarity percentage for the image modification. This is a required parameter.
      * @link https://docs.worqhat.com/ai-models/image-generation/image-image-v2
      * @returns {Promise} A Promise that resolves to the modified image.
@@ -764,7 +769,7 @@ export class AI {
      * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image. Read more about the Model at https://docs.worqhat.com/ai-models/image-generation/image-image-v3
      * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
      * @param {string} modification - The modifications to be made to the image. This is a required parameter.
-     * @param {"url" | "blob"} outputType - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
      * @param {number} similarity - The similarity percentage for the image modification. This is a required parameter.
      * @link https://docs.worqhat.com/ai-models/image-generation/image-image-v3
      * @returns {Promise} A Promise that resolves to the modified image.
@@ -798,6 +803,44 @@ export class AI {
      * ```
      */
     v3: imageModificationV3,
+    /**
+     * Function for modifying images using version 2 of the API. It sends a request to the Image Modification V2 AI Model and returns the new image. Read more at https://docs.worqhat.com/ai-models/image-generation/image-image-v2
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {string} modification - The modifications to be made to the image. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {number} similarity - The similarity percentage for the image modification. This is a required parameter.
+     * @link https://docs.worqhat.com/ai-models/image-generation/image-image-v2
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.v2({
+     * existing_image: existing_image,
+     * modification: "your modifications",
+     * outputType: "url",
+     * similarity: 80
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    removeText: removeTextFromImage,
   };
 
   /**
@@ -808,7 +851,6 @@ export class AI {
    *@property {function} - v3: 1344px Max Width Upscaled Image Models Version 3 Advanced Image Generation AI focused on more creative capabilities and complex realistic images.
    * Object containing different versions of Image Generation AI.
    */
-
   imageGeneration = {
     /**
      * Version 2 Image Generation AI focused on generating images based on provided parameters. It is the smaller image model with squares of max 512px and rectangles of max 768px on the longest side. It is faster and suitable for most use cases. Read more at https://docs.worqhat.com/ai-models/image-generation/imagecon-v2
@@ -876,11 +918,18 @@ export class AI {
     v3: v3ImageGen,
   };
 
+  /**
+   * This function can be used to upscale images using AI model.
+   * It has access to the following function:
+   *@namespace upscaleImage
+   *@property {function} - v2: 768px Max Width Image Models Version 2 Image Upscale AI focused on upscaling images based on provided parameters.
+   */
   upscaleImage = {
     /**
-     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image. Read more about the Model at https://docs.worqhat.com/ai-models/image-generation/image-image-v3
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
      * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
      * @param {number} scale - The scale percentage for the image upscaling. This is default to 2.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
      * @link http://localhost:3000/node-js-sdk/ai-models/image-generation/image-upscale
      * @returns {Promise} A Promise that resolves to the modified image.
      * @example
@@ -901,7 +950,7 @@ export class AI {
      * name: "your-image-name.png"
      * }
      *
-     * ai.upscale.v2({
+     * ai.upscaleImage.v2({
      * existing_image: existing_image,
      * scale: 3
      * })

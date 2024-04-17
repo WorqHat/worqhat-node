@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as Errors from '../error';
 import FormData from 'form-data';
+import { promises as fs } from 'fs';
 import * as Success from '../success';
 import {
   createLogger,
@@ -31,6 +32,10 @@ export const analyseImagesProcess = async (
     stream_data = false,
   } = params;
 
+  function isArray(input: any): input is Array<any> {
+    return Array.isArray(input);
+  }
+
   debug(LogStatus.INFO, 'Image Analysis', `Starting image analysis process`);
   if (!image) {
     debug(LogStatus.ERROR, 'Image Analysis', `Image data is missing`);
@@ -42,45 +47,39 @@ export const analyseImagesProcess = async (
     throw new Error('App Configuration is null');
   }
 
-  debug(LogStatus.INFO, 'Image Analysis', `Received Image data ${image}`);
+  debug(
+    LogStatus.INFO,
+    'Image Analysis',
+    `Received Image data ${image}`,
+    typeof image,
+  );
   debug(LogStatus.INFO, 'Image Analysis', `Converting image to base64`);
-
-  function isArray(input: any): input is Array<any> {
-    return Array.isArray(input);
-  }
   const form = new FormData();
   // Check if the input is an array of images
   if (isArray(image)) {
-    // Log debug information
     debug(
       LogStatus.INFO,
       'Image Analysis',
-      `AI Models processing multiple images`,
+      `Processing Image Array`,
+      typeof image,
     );
-
-    // Process each image in the array
     for (const singleImage of image) {
-      const base64Data = await getImageAsBase64(singleImage);
-      form.append('image', Buffer.from(base64Data, 'base64'), {
-        filename: `image-${image.indexOf(singleImage)}.jpg`,
+      let base64Data: string = await getImageAsBase64(singleImage);
+      form.append('images', Buffer.from(base64Data, 'base64'), {
+        filename: `image.jpg`,
         contentType: 'image/jpeg',
       });
     }
+    debug(LogStatus.INFO, 'Image Analysis', `Processing Image Array`, form);
   } else {
-    // Log debug information
-    debug(
-      LogStatus.INFO,
-      'Image Analysis',
-      `AI Models processing single image`,
-    );
-
-    // Process a single image
-    const base64Data = await getImageAsBase64(image);
-    form.append('image', Buffer.from(base64Data, 'base64'), {
-      filename: 'image.jpg',
+    debug(LogStatus.INFO, 'Image Analysis', `Processing single image`);
+    let base64Data: string = await getImageAsBase64(image);
+    form.append('images', Buffer.from(base64Data, 'base64'), {
+      filename: `image.jpg`,
       contentType: 'image/jpeg',
     });
   }
+
   // identify content type, make filename random if user not explicity specify it
   // this option should change to array
 
@@ -94,7 +93,7 @@ export const analyseImagesProcess = async (
     form.append('training_data', training_data);
   }
 
-  form.append('stream_data', stream_data);
+  form.append('stream_data', stream_data.toString());
 
   try {
     debug(
@@ -107,11 +106,13 @@ export const analyseImagesProcess = async (
     const response = await axios.post(
       `${baseUrl}/api/ai/images/v2/image-analysis`,
       form,
+
       {
         headers: {
           ...form.getHeaders(),
           Authorization: 'Bearer ' + appConfiguration.apiKey,
         },
+        responseType: stream_data ? 'stream' : 'json',
       },
     );
 
@@ -134,7 +135,6 @@ export const analyseImagesProcess = async (
       };
     }
   } catch (error: any) {
-    
     stopProcessingLog();
     if (retries < appConfiguration.max_retries) {
       debug(

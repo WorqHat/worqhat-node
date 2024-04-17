@@ -13,7 +13,11 @@ import {
   MAX_PIXEL_COUNT,
   MIN_UPSCALED_DIMENSION,
 } from '../core';
-import { ImageModificationParams, ImageUpscaleParams } from '../types';
+import {
+  ImageModificationParams,
+  ImageUpscaleParams,
+  RemoveImagePartsParams,
+} from '../types';
 import { getImageAsBase64 } from '../uploads';
 import { appConfiguration } from '../index';
 import { handleAxiosError } from '../error';
@@ -24,7 +28,7 @@ const processImage = async (
   validateDimensions: (metadata: any) => void,
   retries: number = 0,
 ): Promise<object> => {
-  const { existing_image, modification, outputType, similarity } = params;
+  const { existing_image, modification, output_type, similarity } = params;
 
   debug(
     LogStatus.INFO,
@@ -80,7 +84,7 @@ const processImage = async (
     contentType: 'image/jpeg',
   });
   form.append('modifications', modification);
-  form.append('outputType', outputType || 'url');
+  form.append('output_type', output_type || 'url');
   form.append('similarity', similarity.toString());
 
   try {
@@ -365,3 +369,8 @@ export const imageUpscaler = async (
     }
   }
 };
+
+const removeImageParts = async () => {};
+
+export const removeText = async (params: RemoveImagePartsParams) => {};
+export const removeBackground = async (params: RemoveImagePartsParams) => {};
