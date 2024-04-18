@@ -12,6 +12,7 @@ import {
 
 export const fetchAllData = async (
   name: string,
+  outputType: string,
   retries: number = 0,
 ): Promise<object> => {
   debug(
@@ -49,6 +50,7 @@ export const fetchAllData = async (
           Authorization: 'Bearer ' + appConfiguration.apiKey,
           'Content-Type': 'application/json',
         },
+        responseType: outputType === 'stream' ? 'stream' : 'json',
       },
     );
 
@@ -58,10 +60,16 @@ export const fetchAllData = async (
       `Database Fetch`,
       `Retrieving data from collection ${name}`,
     );
-    return {
-      code: 200,
-      ...response.data,
-    };
+    if (outputType === 'stream') {
+      // handle stream data
+      response.data.pipe(process.stdout);
+      return response.data; // return the stream
+    } else {
+      return {
+        code: 200,
+        ...response.data,
+      };
+    }
   } catch (error: any) {
     if (retries < appConfiguration.max_retries) {
       debug(
@@ -71,7 +79,7 @@ export const fetchAllData = async (
           retries + 1
         })`,
       );
-      return fetchAllData(name, retries + 1);
+      return fetchAllData(name, outputType, retries + 1);
     } else {
       stopProcessingLog();
       debug(

@@ -167,6 +167,7 @@ export class Document {
  */
 export class Collection {
   name: string;
+  outputType: string;
   data: any[];
   documents: { [key: string]: Document };
   private languageQuery: string;
@@ -253,7 +254,7 @@ export class Collection {
    * @returns {Promise} A promise that resolves with the fetched data.
    */
   getAll() {
-    return fetchAllData(this.name);
+    return fetchAllData(this.name, this.outputType);
   }
 
   /**
@@ -390,7 +391,7 @@ export class Collection {
         this.startAtCount,
       );
     } else {
-      return fetchAllData(this.name);
+      return fetchAllData(this.name, this.outputType);
     }
   }
 
