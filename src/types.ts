@@ -158,7 +158,34 @@ export interface getUniqueQuery {
   retries?: number;
 }
 
-export interface RemoveImagePartsParams {
+export interface RemoveImageObjParams {
   existing_image: string;
   output_type: string;
+  retries?: number;
+}
+
+export interface ReplaceImageBgParams {
+  existing_image: string;
+  output_type: string;
+  modification: string;
+  retries?: number;
+}
+
+export interface searchObjReplaceImageParams {
+  existing_image: string;
+  output_type: string;
+  modification: string;
+  search_object: string;
+  retries?: number;
+}
+
+export interface extendBoundariesParams {
+  existing_image: string;
+  output_type: string;
+  leftExtend: number;
+  rightExtend: number;
+  topExtend: number;
+  bottomExtend: number;
+  description: string;
+  retries?: number;
 }

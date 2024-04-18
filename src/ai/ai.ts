@@ -27,8 +27,11 @@ import {
   imageModificationV2,
   imageModificationV3,
   imageUpscaler,
-  removeBackground,
-  removeText,
+  removeBackgroundFromImage,
+  removeTextFromImage,
+  replaceImageBackground,
+  searchObjReplaceImage,
+  extendImageBoundaries,
 } from '../ai/img2img';
 
 export class AI {
@@ -806,10 +809,8 @@ export class AI {
     /**
      * Function for modifying images using version 2 of the API. It sends a request to the Image Modification V2 AI Model and returns the new image. Read more at https://docs.worqhat.com/ai-models/image-generation/image-image-v2
      * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
-     * @param {string} modification - The modifications to be made to the image. This is a required parameter.
      * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
-     * @param {number} similarity - The similarity percentage for the image modification. This is a required parameter.
-     * @link https://docs.worqhat.com/ai-models/image-generation/image-image-v2
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/remove-text-image
      * @returns {Promise} A Promise that resolves to the modified image.
      * @example
      * ```javascript
@@ -829,11 +830,9 @@ export class AI {
      * name: "your-image-name.png"
      * }
      *
-     * ai.imageVariations.v2({
+     * ai.imageVariations.removeText({
      * existing_image: existing_image,
-     * modification: "your modifications",
      * outputType: "url",
-     * similarity: 80
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -841,6 +840,158 @@ export class AI {
      * ```
      */
     removeText: removeTextFromImage,
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/remove-text-image
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.removeBackground({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    removeBackground: removeBackgroundFromImage,
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {string} modification - The description of the modification to be applied to the image. This can include instructions or desired outcomes for the image modification process.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/replace-image-background
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.replaceBackground({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * modification: "Change the image background with classic background"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    replaceBackground: replaceImageBackground,
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {string} modification - The description of the modification to be applied to the image. This can include instructions or desired outcomes for the image modification process.
+     * @param {string} search_object - The object or element you want to replace the searched object with.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/search-to-replace
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.searchReplaceImage({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * modification: "Replace the cat"
+     * search_object: "bag"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    searchReplaceImage: searchObjReplaceImage,
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {number} leftExtend - Percentage to extend the image on the left side. If the percentage value results in a number that is greater than 512px, it will default to 512px.
+     * @param {number} rightExtend - Percentage to extend the image on the right side. If the percentage value results in a number that is greater than 512px, it will default to 512px.
+     * @param {number} topExtend - Percentage to extend the image on the top. If the percentage value results in a number that is greater than 512px, it will default to 512px.
+     * @param {number} bottomExtend - Percentage to extend the image on the bottom. If the percentage value results in a number that is greater than 512px, it will default to 512px.
+     * @param {string} description - The description of the modification to be applied to the image. You can add in the modification parameters as a string based description.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/extend-image
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.extendImage({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * leftExtend: 10,
+     * rightExtend: 10,
+     * topExtend: 10,
+     * bottomExtend: 10,
+     * description: "Create a scenic background",
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    extendImage: extendImageBoundaries,
   };
 
   /**
