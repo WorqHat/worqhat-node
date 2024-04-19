@@ -171,6 +171,13 @@ export interface ReplaceImageBgParams {
   retries?: number;
 }
 
+export interface SketchImageParams {
+  existing_image: string;
+  output_type: string;
+  description: string;
+  retries?: number;
+}
+
 export interface searchObjReplaceImageParams {
   existing_image: string;
   output_type: string;

@@ -32,6 +32,8 @@ import {
   replaceImageBackground,
   searchObjReplaceImage,
   extendImageBoundaries,
+  sketchToImageV3,
+  reCreateImageV3,
 } from '../ai/img2img';
 
 export class AI {
@@ -992,6 +994,45 @@ export class AI {
      * ```
      */
     extendImage: extendImageBoundaries,
+
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {string} description - The description of the sketch to be considered for generating the ourput image. This can include instructions or desired outcomes for the image modification process.
+     * @link {{baseUrl}}/api/ai/images/modify/v3/replace-background
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.replaceBackground({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * modification: "Change the image background with classic background"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    sketchToImage: sketchToImageV3,
+
+    reCreate: reCreateImageV3,
   };
 
   /**

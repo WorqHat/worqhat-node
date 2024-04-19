@@ -20,6 +20,7 @@ import {
   ReplaceImageBgParams,
   searchObjReplaceImageParams,
   extendBoundariesParams,
+  SketchImageParams,
 } from '../types';
 import { getImageAsBase64 } from '../uploads';
 import { appConfiguration } from '../index';
@@ -534,6 +535,121 @@ export const removeBackgroundFromImage = async (
   });
 };
 
+export const sketchToImageV3 = async (
+  params: SketchImageParams,
+  retries: number = 0,
+): Promise<object> => {
+  const { existing_image, output_type, description } = params;
+  const version = 'sketch-image';
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Starting image modification process`,
+  );
+  if (!existing_image) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `Image data is missing`,
+    );
+    throw new Error('Image data is required');
+  }
+
+  if (!appConfiguration) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `App Configuration is null`,
+    );
+    throw new Error('App Configuration is null');
+  }
+
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Received Image data ${existing_image}`,
+  );
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Converting image to base64`,
+  );
+
+  let base64Data: string = await getImageAsBase64(existing_image);
+
+  let imageBuffer = Buffer.from(base64Data, 'base64');
+
+  // Get the dimensions of the image
+  const metadata = await sharp(imageBuffer).metadata();
+  // validateDimensions(metadata);
+
+  const form = new FormData();
+  // Append the image as a file
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `AI Models processing image`,
+  );
+  form.append('existing_image', Buffer.from(base64Data, 'base64'), {
+    filename: 'image.jpg',
+    contentType: 'image/jpeg',
+  });
+
+  form.append('output_type', output_type || 'url');
+  form.append('description', description);
+
+  try {
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Processing AI Model for Image Modification`,
+    );
+    startProcessingLog(`Image Modification ${version}`, 'Processing Image');
+
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/modify/v3/${version}`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    stopProcessingLog();
+
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Completed response from image modification API`,
+    );
+
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    stopProcessingLog();
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Image Modification ${version}`,
+        `Error occurred during image modification, retrying (${retries + 1})`,
+        error.message,
+      );
+      return sketchToImageV3(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Image Modification ${version}`,
+        `Error occurred during image modification after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
+  }
+};
+
 export const replaceImageBackground = async (
   params: ReplaceImageBgParams,
   retries: number = 0,
@@ -890,4 +1006,26 @@ export const extendImageBoundaries = async (
       throw handleAxiosError(error);
     }
   }
+};
+
+export const reCreateImageV3 = async (params: RemoveImageObjParams) => {
+  return removeImageParts(params, 'recreate', (metadata) => {
+    if (metadata.width === undefined) {
+      debug(
+        LogStatus.ERROR,
+        'Image Modification V3',
+        `Width metadata is missing from the image.`,
+      );
+      throw new Error('Width metadata is missing from the image.');
+    }
+
+    if (metadata.height === undefined) {
+      debug(
+        LogStatus.ERROR,
+        'Image Modification V3',
+        `Height metadata is missing from the image.`,
+      );
+      throw new Error('Height metadata is missing from the image.');
+    }
+  });
 };
