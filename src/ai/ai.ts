@@ -71,8 +71,6 @@ export class AI {
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
-     *
-     *
      * ```
      */
     content: contentModeration,
@@ -142,12 +140,12 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.v2({
-     * conversation_history: [{ "previous": "Previous conversation history" }, { "current": "Current conversation history" }],
+     * conversation_history: [{ "previous question": "model answer" }, { "current question": "Current conversation answer" }],
      * preserve_history: true,
      * question: "Your question here",
-     * training_data: "your-training-data-id",
+     * training_data: "your-training-data",
      * randomness: 0.3,
-     * stream_data: true,
+     * stream: true,
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -179,11 +177,12 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.v3({
-     * conversation_history: [{ "previous": "Previous conversation history" }, { "current": "Current conversation history" }],
+     * conversation_history: [{ "previous question": "model answer" }, { "current question": "Current conversation answer" }],
      * preserve_history: true,
      * question: "Your question here",
-     * training_data: "your-training-data-id",
+     * training_data: "your-training-data",
      * randomness: 0.3,
+     * stream: true,
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -216,8 +215,12 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.alpha({
+     * conversation_history: [{ "previous question": "model answer" }, { "current question": "Current conversation answer" }],
+     * preserve_history: true,
      * question: "Your question here",
-     * conversation_history: { "previous": "Previous conversation history" },
+     * training_data: "your-training-data",
+     * randomness: 0.3,
+     * stream: true,
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -550,7 +553,7 @@ export class AI {
      *
      * ai.textExtraction.image({
      * image: image,
-     * output_format: "json"
+     * output_type: "json"
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -580,7 +583,7 @@ export class AI {
      * }
      *
      * ai.textExtraction.speech({
-     * audio: audio
+     *  audio: audio
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -636,7 +639,7 @@ export class AI {
      * output_type: 'text' | 'json',
      * question: "your-question",
      * training_data: "training_data",
-     * stram_data: true | false
+     * stream: true | false
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -1032,6 +1035,41 @@ export class AI {
      */
     sketchToImage: sketchToImageV3,
 
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {string} description - The description of the sketch to be considered for generating the ourput image. This can include instructions or desired outcomes for the image modification process.
+     * @link {{baseUrl}}/api/ai/images/modify/v3/replace-background
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.replaceBackground({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * description: "Change the image background with classic background"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
     reCreate: reCreateImageV3,
   };
 

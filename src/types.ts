@@ -121,7 +121,7 @@ export interface ImageAnalysisParams {
   output_type: 'json' | 'text';
   question?: string;
   training_data?: string;
-  stream_data?: boolean;
+  stream?: boolean;
   retries?: number;
 }
 

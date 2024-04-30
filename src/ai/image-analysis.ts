@@ -29,7 +29,7 @@ export const analyseImagesProcess = async (
     output_type = 'json',
     question,
     training_data,
-    stream_data = false,
+    stream = false,
   } = params;
 
   function isArray(input: any): input is Array<any> {
@@ -93,7 +93,7 @@ export const analyseImagesProcess = async (
     form.append('training_data', training_data);
   }
 
-  form.append('stream_data', stream_data.toString());
+  form.append('stream_data', stream.toString());
 
   try {
     debug(
@@ -112,7 +112,7 @@ export const analyseImagesProcess = async (
           ...form.getHeaders(),
           Authorization: 'Bearer ' + appConfiguration.apiKey,
         },
-        responseType: stream_data ? 'stream' : 'json',
+        responseType: stream ? 'stream' : 'json',
       },
     );
 
@@ -124,7 +124,7 @@ export const analyseImagesProcess = async (
       `Completed response from image analysis API`,
     );
 
-    if (stream_data) {
+    if (stream) {
       // handle stream data
       response.data.pipe(process.stdout);
       return response.data; // return the stream
