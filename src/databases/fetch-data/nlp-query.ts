@@ -13,6 +13,7 @@ import {
 export const fetchNlpQuery = async (
   name: string,
   query: string,
+  outputType: string,
   retries: number = 0,
 ): Promise<object> => {
   debug(
@@ -45,12 +46,14 @@ export const fetchNlpQuery = async (
       {
         collection: name,
         query: query,
+        outputType: outputType,
       },
       {
         headers: {
           Authorization: 'Bearer ' + appConfiguration.apiKey,
           'Content-Type': 'application/json',
         },
+        responseType: outputType === 'stream' ? 'stream' : 'json',
       },
     );
 
@@ -60,10 +63,16 @@ export const fetchNlpQuery = async (
       `Database Query`,
       `Running Language Query on collection ${name}`,
     );
-    return {
-      code: 200,
-      ...response.data,
-    };
+    if (outputType === 'stream') {
+      // handle stream data
+      response.data.pipe(process.stdout);
+      return response.data; // return the stream
+    } else {
+      return {
+        code: 200,
+        ...response.data,
+      };
+    }
   } catch (error: any) {
     stopProcessingLog();
 
@@ -75,7 +84,7 @@ export const fetchNlpQuery = async (
           retries + 1
         })`,
       );
-      return fetchNlpQuery(name, query, retries + 1);
+      return fetchNlpQuery(name, query, outputType, retries + 1);
     } else {
       debug(
         LogStatus.ERROR,

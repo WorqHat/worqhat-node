@@ -30,7 +30,8 @@
     "prepack": "npm run build",
     "major": "npm version major",
     "minor": "npm version minor",
-    "patch": "npm version patch"
+    "patch": "npm version patch",
+    "dev": "npm run build && npm unlink worqhat && npm link"
   },
   "release": {
     "branches": [

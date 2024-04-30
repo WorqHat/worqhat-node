@@ -18,6 +18,7 @@ export const fetchWithCondition = async (
   order?: 'asc' | 'desc' | null,
   limit?: number | null,
   startAfter?: number | null,
+  outputType?: string | 'json',
   retries: number = 0,
 ): Promise<object> => {
   debug(
@@ -55,12 +56,14 @@ export const fetchWithCondition = async (
         orderBy: orderBy || null,
         limit: limit || null,
         startAfter: startAfter || null,
+        outputType: outputType || 'json',
       },
       {
         headers: {
           Authorization: 'Bearer ' + appConfiguration.apiKey,
           'Content-Type': 'application/json',
         },
+        responseType: outputType === 'stream' ? 'stream' : 'json',
       },
     );
 
@@ -70,10 +73,16 @@ export const fetchWithCondition = async (
       `Database Query`,
       `Retrieving data from collection ${name}`,
     );
-    return {
-      code: 200,
-      ...response.data,
-    };
+    if (outputType === 'stream') {
+      // handle stream data
+      response.data.pipe(process.stdout);
+      return response.data; // return the stream
+    } else {
+      return {
+        code: 200,
+        ...response.data,
+      };
+    }
   } catch (error: any) {
     stopProcessingLog();
 
@@ -84,6 +93,7 @@ export const fetchWithCondition = async (
         `Error retrieving data from collection ${name}, retrying (${
           retries + 1
         })`,
+        error.message,
       );
       return fetchWithCondition(
         name,
@@ -93,6 +103,7 @@ export const fetchWithCondition = async (
         order,
         limit,
         startAfter,
+        outputType,
         retries + 1,
       );
     } else {

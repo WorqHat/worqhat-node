@@ -6,7 +6,11 @@ import {
   largeContent,
 } from '../ai/content-generation';
 import { v2ImageGen, v3ImageGen } from '../ai/image-generation';
-import { deleteTrainedDatasets, viewTrainedDatasets } from '../ai/datasets';
+import {
+  deleteTrainedDatasets,
+  viewTrainedDatasets,
+  trainCustomDatasets,
+} from '../ai/datasets';
 import { v2Search, v3Search } from '../ai/search';
 import {
   webExtraction,
@@ -23,6 +27,13 @@ import {
   imageModificationV2,
   imageModificationV3,
   imageUpscaler,
+  removeBackgroundFromImage,
+  removeTextFromImage,
+  replaceImageBackground,
+  searchObjReplaceImage,
+  extendImageBoundaries,
+  sketchToImageV3,
+  reCreateImageV3,
 } from '../ai/img2img';
 
 export class AI {
@@ -60,8 +71,6 @@ export class AI {
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
-     *
-     *
      * ```
      */
     content: contentModeration,
@@ -114,6 +123,7 @@ export class AI {
      * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
      * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
      * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {string} response_type: A string representing the response type that can be text or JSON, expected from the function. Default is JSON.
      * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-textgen
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
@@ -130,12 +140,12 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.v2({
-     * conversation_history: [{ "previous": "Previous conversation history" }, { "current": "Current conversation history" }],
+     * conversation_history: [{ "previous question": "model answer" }, { "current question": "Current conversation answer" }],
      * preserve_history: true,
      * question: "Your question here",
-     * training_data: "your-training-data-id",
+     * training_data: "your-training-data",
      * randomness: 0.3,
-     * stream_data: true,
+     * stream: true,
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -150,6 +160,7 @@ export class AI {
      * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
      * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
      * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {string} response_type: A string representing the response type that can be text or JSON, expected from the function. Default is JSON.
      * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v3-textgen
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
@@ -166,11 +177,12 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.v3({
-     * conversation_history: [{ "previous": "Previous conversation history" }, { "current": "Current conversation history" }],
+     * conversation_history: [{ "previous question": "model answer" }, { "current question": "Current conversation answer" }],
      * preserve_history: true,
      * question: "Your question here",
-     * training_data: "your-training-data-id",
+     * training_data: "your-training-data",
      * randomness: 0.3,
+     * stream: true,
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -182,8 +194,12 @@ export class AI {
      * Alpha version Content Generation AI with data upto 2023 which can be used to generate Current Data based content. The Alpha Channel of AiCon V2 is mostly dependent on the Data upto May 2023 which makes it relatively upto date and more accurate than the previous versions of AiCon. Read more at https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
      * @param {string} question: A string representing the question to generate content for. Default is undefined.
      * @param {object} conversation_history: An object representing the history of the conversation. Default is undefined.
+     * @param {boolean} preserve_history: A boolean indicating whether to preserve the conversation history. Default is false.
      * @param {string} training_data: A string representing the training data to use for generating content. Default is undefined.
-     * @link https://docs.worqhat.com/ai-models/text-generation-ai/aicon-v2-2023-alpha
+     * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
+     * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {string} response_type: A string representing the response type that can be text or JSON, expected from the function. Default is JSON.
+     * @link https://docs.worqhat.com/api-reference/ai-models/text-generation-ai/aicon-v3-alpha
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
      * ```javascript
@@ -199,8 +215,12 @@ export class AI {
      * let ai = worqhat.ai();
      *
      * ai.contentGeneration.alpha({
+     * conversation_history: [{ "previous question": "model answer" }, { "current question": "Current conversation answer" }],
+     * preserve_history: true,
      * question: "Your question here",
-     * conversation_history: { "previous": "Previous conversation history" },
+     * training_data: "your-training-data",
+     * randomness: 0.3,
+     * stream: true,
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -218,6 +238,8 @@ export class AI {
      * @param {string} instructions: A string representing the instructions to use for generating content. Default is undefined.
      * @param {number} randomness: A number representing the level of randomness to use for generating content. Default is 0.2.
      * @param {boolean} stream_data: A boolean indicating whether to stream the data. Default is false.
+     * @param {string} response_type: A string representing the response type that can be text or JSON, expected from the function. Default is JSON.
+     * @link https://docs.worqhat.com/api-reference/ai-models/text-generation-ai/aicon-v3-alpha
      * @returns {Promise} A Promise that resolves to the generated content.
      * @example
      * ```javascript
@@ -258,7 +280,6 @@ export class AI {
    *@property {function} - v2: Search function for API v2. AI assisted Text Based Search Engine.
    *@property {function} - v3: Search function for API v3. Meaning and Context Based Search experience powered by AI
    */
-
   search = {
     /**
      * Search function for API v2. AI assisted Text Based Search Engine. Read more at https://docs.worqhat.com/ai-models/ai-for-search/search-v2
@@ -331,12 +352,14 @@ export class AI {
    * @namespace datasets
    * @property {function} delete - Function for deleting trained datasets.
    * @property {function} list - Function for viewing all trained datasets.
+   * @property {function} train - Function for training models with datasets.
    */
   datasets = {
     /**
      * Function for deleting trained datasets. It can access the Datasets API to delete a dataset that you have trained for both AI and Search Interfaces. However, you will only be able to delete datasets that you have created or have access to.
      *
      * @param {string} datasetId - The ID of the dataset to be deleted. This is a required parameter.
+     * @link https://docs.worqhat.com/api-reference/ai-models/model-training/delete-datasets
      * @returns {Promise} A Promise that resolves to the deletion result.
      * @example
      * ```javascript
@@ -364,6 +387,7 @@ export class AI {
      * Function for viewing all trained datasets. It can access the Datasets API to retrieve a list of all datasets that you have trained for both AI and Search Interfaces. However, you will only be able to view datasets that you have created or have access to.
      *
      * @function list
+     * @link https://docs.worqhat.com/api-reference/ai-models/model-training/view-datasets
      * @returns {Promise} A Promise that resolves to an array of dataset objects.
      * @example
      * ```javascript
@@ -385,6 +409,42 @@ export class AI {
      * ```
      */
     list: viewTrainedDatasets,
+    /**
+     * Function for training custom models using datasets. It can access the Datasets API to train a dataset that you have to train for both AI and Search Interfaces. However, you will only be able to train models with datasets that you have opted for.
+     *
+     * @param {string} datasetId - The ID of the Dataset that you want to train. This is optional. If you don't pass a Dataset ID, we will generate a random ID for you. Make sure this is unique. You can pass in a old id if you want to add in more data to your existing Trained Dataset.
+     * @param {string} dataset_name - The Name of the Dataset that you want to train.
+     * @param {string} dataset_type - The Type of the Training Dataset after Saving. It can be either self or org.
+     * @param {string} json_data - The JSON Data that you want to train. You can pass in the JSON Data in the form of a stringified JSON.
+     * @param {string | File} training_file - The Training File that you want to train. You can pass in the Training File in the form of a CSV or a PDF file.
+     * @link https://docs.worqhat.com/api-reference/ai-models/model-training/train-datasets
+     * @returns {Promise} A Promise that resolves to the training result.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai();
+     *
+     * ai.datasets.train({
+     * datasetId: "your-dataset-id"
+     * dataset_name: "your-dataset-name"
+     * dataset_type: "dataset-type"
+     * json_data: "training-json-data"
+     * training_file: "training-file"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    train: trainCustomDatasets,
   };
 
   /**
@@ -395,8 +455,8 @@ export class AI {
    * @property {function} web - Function for extracting text from web pages.
    * @property {function} pdf - Function for extracting text from PDF files.
    * @property {function} image - Function for extracting text from images.
+   * @property {function} speech - Function for extracting text from speech.
    */
-
   textExtraction = {
     /**
      * Function for extracting text from web pages. It sends a request to the Web Extraction AI Model and returns the extracted text. Key components such as headlines, paragraphs, images, and tables are identified, and the algorithm extracts them in a structured format like JSON. Additionally, the extracted data is cleaned and normalized to enhance its usability for analysis and processing purposes. Read more at: https://docs.worqhat.com/ai-models/text-extraction/web-extraction
@@ -404,6 +464,7 @@ export class AI {
      * @param {boolean} headline - A boolean indicating whether to extract headlines. Default is false.
      * @param {boolean} inline_code - A boolean indicating whether to extract inline code. Default is false.
      * @param {boolean} references - A boolean indicating whether to extract references. Default is false.
+     * @param {boolean} tables - Whether to extract the tables in the web page.
      * @param {string} url_path - A string representing the URL of the web page to extract text from. This is a required parameter.
      * @link https://docs.worqhat.com/ai-models/text-extraction/web-extraction
      * @returns {Promise} A Promise that resolves to the extracted text.
@@ -469,7 +530,7 @@ export class AI {
     /**
      * Function for extracting text from images. It sends a request to the Image Extraction AI Model and returns the extracted text. Read more about the Models and their use cases at: https://docs.worqhat.com/ai-models/text-extraction/image-extraction
      * @param {object} image - The image to extract text from. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
-     * @param {string} output_format - A string representing the output format of the extracted text. You can choose between ``text`` or ``json``. This is a required parameter. It defaults to ``json``.
+     * @param {string} output_type - The type of output to be generated. You can choose between json and text. json will return the text detection results as a JSON object with the scan words marked and positional information. text will return the text detection results as a plain text string.
      * @link https://docs.worqhat.com/ai-models/text-extraction/image-extraction
      * @returns {Promise} A Promise that resolves to the extracted text.
      * @example
@@ -492,7 +553,7 @@ export class AI {
      *
      * ai.textExtraction.image({
      * image: image,
-     * output_format: "json"
+     * output_type: "json"
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -522,7 +583,7 @@ export class AI {
      * }
      *
      * ai.textExtraction.speech({
-     * audio: audio
+     *  audio: audio
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -545,11 +606,14 @@ export class AI {
    * @property {function} compareFaces - Function for comparing faces in images.
    *
    **/
-
   analyseImages = {
     /**
      * Function for analysing images. It sends a request to the Image Analysis AI Model and returns the analysis results. they can detect a wide range of labels, numbering in the thousands. These labels encompass objects such as “Palm Tree,” scenes like “Beach,” actions such as “Running,” and concepts like “Outdoors”. Also analyze various image properties using computer vision techniques. These properties include foreground and background colors, sharpness, brightness, and contrast. By analyzing these properties, the models gain further insights into the visual characteristics and qualities of the image. Read more at https://docs.worqhat.com/ai-models/image-analysis/image-analysis-v2
-     * @param {object} image - The image to be analysed. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {string | File | string[]| object} image - The image to be analysed. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {string} output_type - The type of output to be generated. You can choose between json and text. json will return the text detection results as a JSON object with the scan words marked and positional information. text will return the text detection results as a plain text string with a proper description of the image and what it contains.
+     * @param {string} question - The question to be answered by the AI or any specific command you would like the Model to take into consideration while analysing the image. This is an optional parameter. If not provided, the AI will only send a description of the image and what it contains.
+     * @param {string} training_data - The training data to be used for the AI. This is an optional parameter. If not provided, the AI will use the default training data. It is only applicable for Image Analysis process with Text as output_type.
+     * @param {boolean} stream_data - Whether to stream the data as it is being generated. If set to true, the response will be streamed as the data is being generated. This is useful when you want to generate a lot of content and want to save the data as it is being generated. You need to handle Server Sent Events for this use case.
      * @link https://docs.worqhat.com/ai-models/image-analysis/image-analysis-v2
      * @returns {Promise} A Promise that resolves to the analysis results.
      * @example
@@ -571,7 +635,11 @@ export class AI {
      * }
      *
      * ai.analyseImages.analyse({
-     * image: image
+     * image: image,
+     * output_type: 'text' | 'json',
+     * question: "your-question",
+     * training_data: "training_data",
+     * stream: true | false
      * })
      * .then((result) => console.log(result))
      * .catch((error) => console.error(error));
@@ -658,14 +726,20 @@ export class AI {
    *@namespace imageVariations
    *@property {function} - v2: Function for modifying images using version 2 of the AI Image Model and it carries the inherent features of the model.
    *@property {function} - v3: Function for modifying images using version 3 of the API and it carries the inherent features of the model.
+   *@property {function} - removeText: Function removes all textual content from an image through a single API call, providing a clean and text-free version of the original image.
+   *@property {function} - removeBackground: Function removes background from images in a single API call, delivering a clear and focused foreground subject without the original backdrop.
+   *@property {function} - replaceBackground: Function replaces an image background with a new one in a single API call, seamlessly integrating the foreground subject with a new backdrop of your choice.
+   *@property {function} - searchReplaceImage: Function searches and replaces specific objects within an image with alternative imagery in a single API call. It facilitates creative and dynamic transformations, making it ideal for a variety of applications such as updating product images for e-commerce, altering elements in marketing materials, or personalizing photos.
+   *@property {function} - extendImage: Function extends the boundaries of an image by inserting additional content, minimizing artifacts and maintaining the quality of the original image.
+  // Search and Replace Objects in Image
+  // Extend Image Boundaries
    */
-
   imageVariations = {
     /**
      * Function for modifying images using version 2 of the API. It sends a request to the Image Modification V2 AI Model and returns the new image. Read more at https://docs.worqhat.com/ai-models/image-generation/image-image-v2
      * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
      * @param {string} modification - The modifications to be made to the image. This is a required parameter.
-     * @param {"url" | "blob"} outputType - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
      * @param {number} similarity - The similarity percentage for the image modification. This is a required parameter.
      * @link https://docs.worqhat.com/ai-models/image-generation/image-image-v2
      * @returns {Promise} A Promise that resolves to the modified image.
@@ -703,7 +777,7 @@ export class AI {
      * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image. Read more about the Model at https://docs.worqhat.com/ai-models/image-generation/image-image-v3
      * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
      * @param {string} modification - The modifications to be made to the image. This is a required parameter.
-     * @param {"url" | "blob"} outputType - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
      * @param {number} similarity - The similarity percentage for the image modification. This is a required parameter.
      * @link https://docs.worqhat.com/ai-models/image-generation/image-image-v3
      * @returns {Promise} A Promise that resolves to the modified image.
@@ -737,6 +811,266 @@ export class AI {
      * ```
      */
     v3: imageModificationV3,
+    /**
+     * Function for modifying images using version 2 of the API. It sends a request to the Image Modification V2 AI Model and returns the new image. Read more at https://docs.worqhat.com/ai-models/image-generation/image-image-v2
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/remove-text-image
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.removeText({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    removeText: removeTextFromImage,
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/remove-text-image
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.removeBackground({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    removeBackground: removeBackgroundFromImage,
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {string} modification - The description of the modification to be applied to the image. This can include instructions or desired outcomes for the image modification process.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/replace-image-background
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.replaceBackground({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * modification: "Change the image background with classic background"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    replaceBackground: replaceImageBackground,
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {string} modification - The description of the modification to be applied to the image. This can include instructions or desired outcomes for the image modification process.
+     * @param {string} search_object - The object or element you want to replace the searched object with.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/search-to-replace
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.searchReplaceImage({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * modification: "Replace the cat"
+     * search_object: "bag"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    searchReplaceImage: searchObjReplaceImage,
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {number} leftExtend - Percentage to extend the image on the left side. If the percentage value results in a number that is greater than 512px, it will default to 512px.
+     * @param {number} rightExtend - Percentage to extend the image on the right side. If the percentage value results in a number that is greater than 512px, it will default to 512px.
+     * @param {number} topExtend - Percentage to extend the image on the top. If the percentage value results in a number that is greater than 512px, it will default to 512px.
+     * @param {number} bottomExtend - Percentage to extend the image on the bottom. If the percentage value results in a number that is greater than 512px, it will default to 512px.
+     * @param {string} description - The description of the modification to be applied to the image. You can add in the modification parameters as a string based description.
+     * @link https://docs.worqhat.com/api-reference/ai-models/image-generation/extend-image
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.extendImage({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * leftExtend: 10,
+     * rightExtend: 10,
+     * topExtend: 10,
+     * bottomExtend: 10,
+     * description: "Create a scenic background",
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    extendImage: extendImageBoundaries,
+
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {string} description - The description of the sketch to be considered for generating the ourput image. This can include instructions or desired outcomes for the image modification process.
+     * @link {{baseUrl}}/api/ai/images/modify/v3/replace-background
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.replaceBackground({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * modification: "Change the image background with classic background"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    sketchToImage: sketchToImageV3,
+
+    /**
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
+     * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
+     * @param {string} description - The description of the sketch to be considered for generating the ourput image. This can include instructions or desired outcomes for the image modification process.
+     * @link {{baseUrl}}/api/ai/images/modify/v3/replace-background
+     * @returns {Promise} A Promise that resolves to the modified image.
+     * @example
+     * ```javascript
+     * const worqhat = require('worqhat');
+     *
+     * var config = new worqhat.Configuration({
+     *   apiKey: "your-api-key",
+     *   debug: true,
+     * });
+     *
+     * worqhat.initializeApp(config);
+     *
+     * let ai = worqhat.ai()
+     *
+     * var existing_image = {
+     * path: "./path-to-your-image.png",
+     * name: "your-image-name.png"
+     * }
+     *
+     * ai.imageVariations.replaceBackground({
+     * existing_image: existing_image,
+     * outputType: "url",
+     * description: "Change the image background with classic background"
+     * })
+     * .then((result) => console.log(result))
+     * .catch((error) => console.error(error));
+     *
+     * ```
+     */
+    reCreate: reCreateImageV3,
   };
 
   /**
@@ -747,7 +1081,6 @@ export class AI {
    *@property {function} - v3: 1344px Max Width Upscaled Image Models Version 3 Advanced Image Generation AI focused on more creative capabilities and complex realistic images.
    * Object containing different versions of Image Generation AI.
    */
-
   imageGeneration = {
     /**
      * Version 2 Image Generation AI focused on generating images based on provided parameters. It is the smaller image model with squares of max 512px and rectangles of max 768px on the longest side. It is faster and suitable for most use cases. Read more at https://docs.worqhat.com/ai-models/image-generation/imagecon-v2
@@ -815,11 +1148,18 @@ export class AI {
     v3: v3ImageGen,
   };
 
+  /**
+   * This function can be used to upscale images using AI model.
+   * It has access to the following function:
+   *@namespace upscaleImage
+   *@property {function} - v2: 768px Max Width Image Models Version 2 Image Upscale AI focused on upscaling images based on provided parameters.
+   */
   upscaleImage = {
     /**
-     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image. Read more about the Model at https://docs.worqhat.com/ai-models/image-generation/image-image-v3
+     * Function for modifying images using version 3 of the API. It sends a request to the Image Modification V3 AI Model and returns the new image.
      * @param {File | string} existing_image - The existing image to be modified. It can be a `File object` or a `URL` or `base64` encoded image data. This is a required parameter.
      * @param {number} scale - The scale percentage for the image upscaling. This is default to 2.
+     * @param {"url" | "blob"} output_type - The output type of the modified image. It can be either "url" or "blob". This is an optional parameter.
      * @link http://localhost:3000/node-js-sdk/ai-models/image-generation/image-upscale
      * @returns {Promise} A Promise that resolves to the modified image.
      * @example
@@ -840,7 +1180,7 @@ export class AI {
      * name: "your-image-name.png"
      * }
      *
-     * ai.upscale.v2({
+     * ai.upscaleImage.v2({
      * existing_image: existing_image,
      * scale: 3
      * })

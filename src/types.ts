@@ -12,12 +12,18 @@ export interface ContentGenerationParams {
   training_data?: string;
   randomness?: number;
   stream?: boolean;
+  response_type?: string;
+  retries?: number;
 }
 
 export interface AlphaParams {
   question: string;
   conversation_history?: object[];
   training_data?: string;
+  preserve_history?: boolean;
+  randomness?: number;
+  stream?: boolean;
+  response_type?: string;
   retries?: number;
 }
 
@@ -39,6 +45,7 @@ export interface ImageGenV3Params {
   image_style?: string;
   output_type?: 'url' | 'blob';
   prompt: any[];
+  retries?: number;
 }
 
 export interface ImageGenV2Params {
@@ -46,6 +53,7 @@ export interface ImageGenV2Params {
   image_style?: string;
   output_type?: 'url' | 'blob';
   prompt: any[];
+  retries?: number;
 }
 
 export interface ContentModerationParams {
@@ -60,6 +68,15 @@ export interface ImageModerationParams {
 
 export interface deleteDatasetParam {
   datasetId: string;
+  retries?: number;
+}
+
+export interface trainDatasetParam {
+  datasetId: string;
+  dataset_name: string;
+  dataset_type: string;
+  json_data: string;
+  training_file: string | File;
   retries?: number;
 }
 
@@ -100,9 +117,11 @@ export interface SpeechExtractionParams {
 }
 
 export interface ImageAnalysisParams {
-  image: File | string;
-  output_format: 'json' | 'text';
+  image: File | string | string[];
+  output_type: 'json' | 'text';
   question?: string;
+  training_data?: string;
+  stream?: boolean;
   retries?: number;
 }
 
@@ -120,8 +139,9 @@ export interface CompareFacesParams {
 export interface ImageModificationParams {
   existing_image: File | string;
   modification: string;
-  outputType?: 'url' | 'blob';
+  output_type?: 'url' | 'blob';
   similarity: number;
+  retries?: number;
 }
 
 export interface ImageUpscaleParams {
@@ -135,4 +155,44 @@ export interface getUniqueQuery {
   uniqueColumn: string;
   orderByColumn: string;
   orderDirection: 'asc' | 'desc' | null;
+  retries?: number;
+}
+
+export interface RemoveImageObjParams {
+  existing_image: string;
+  output_type: string;
+  retries?: number;
+}
+
+export interface ReplaceImageBgParams {
+  existing_image: string;
+  output_type: string;
+  modification: string;
+  retries?: number;
+}
+
+export interface SketchImageParams {
+  existing_image: string;
+  output_type: string;
+  description: string;
+  retries?: number;
+}
+
+export interface searchObjReplaceImageParams {
+  existing_image: string;
+  output_type: string;
+  modification: string;
+  search_object: string;
+  retries?: number;
+}
+
+export interface extendBoundariesParams {
+  existing_image: string;
+  output_type: string;
+  leftExtend: number;
+  rightExtend: number;
+  topExtend: number;
+  bottomExtend: number;
+  description: string;
+  retries?: number;
 }

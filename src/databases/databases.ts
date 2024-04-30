@@ -10,7 +10,10 @@ import { updateDataDb } from './data-mgmt/update-data';
 import { arrayUnionDb } from './db-functions/add-array';
 import { arrayRemoveDb } from './db-functions/remove-array';
 import { incrementFieldDb } from './db-functions/increment-data';
-import { fetchAllData } from './fetch-data/fetch-collection';
+import {
+  fetchAllData,
+  fetchAllCollections,
+} from './fetch-data/fetch-collection';
 import { fetchUniqueData } from './fetch-data/fetch-unique';
 import { fetchCountData } from './fetch-data/fetch-count';
 import { fetchRowData } from './fetch-data/fetch-row';
@@ -167,6 +170,7 @@ export class Document {
  */
 export class Collection {
   name: string;
+  outputType: string;
   data: any[];
   documents: { [key: string]: Document };
   private languageQuery: string;
@@ -179,8 +183,9 @@ export class Collection {
    * Creates a new Collection instance.
    * @param {string} name - The name of the collection.
    */
-  constructor(name: string) {
+  constructor(name: string, outputType: string) {
     this.name = name;
+    this.outputType = outputType || 'json';
     this.data = [];
     this.documents = {};
     this.languageQuery = '';
@@ -253,7 +258,7 @@ export class Collection {
    * @returns {Promise} A promise that resolves with the fetched data.
    */
   getAll() {
-    return fetchAllData(this.name);
+    return fetchAllData(this.name, this.outputType);
   }
 
   /**
@@ -272,6 +277,16 @@ export class Collection {
    */
   language(query: string) {
     this.languageQuery = query;
+    return this;
+  }
+
+  /**
+   * Sets the response type for current request.
+   * @param {string} outputType - The response type to be set.
+   * @returns {Collection} The current Collection instance.
+   */
+  response(outputType: string) {
+    this.outputType = outputType;
     return this;
   }
 
@@ -378,7 +393,7 @@ export class Collection {
    */
   async get() {
     if (this.languageQuery) {
-      return fetchNlpQuery(this.name, this.languageQuery);
+      return fetchNlpQuery(this.name, this.languageQuery, this.outputType);
     } else if (this.whereQuery.length > 0) {
       return fetchWithCondition(
         this.name,
@@ -388,9 +403,10 @@ export class Collection {
         this.getUniqueQuery.orderDirection,
         this.limitCount,
         this.startAtCount,
+        this.outputType,
       );
     } else {
-      return fetchAllData(this.name);
+      return fetchAllData(this.name, this.outputType);
     }
   }
 
@@ -462,11 +478,12 @@ export class Database {
    * Returns a Collection instance associated with the given name.
    * If the collection does not exist, it creates a new one.
    * @param {string} name - The name of the collection.
+   * @param {string} outputType - output type of the response
    * @returns {Collection} The Collection instance.
    */
-  collection(name: string) {
+  collection(name: string, outputType: string) {
     if (!this.collections[name]) {
-      this.collections[name] = new Collection(name);
+      this.collections[name] = new Collection(name, outputType);
     }
     return this.collections[name];
   }
@@ -505,5 +522,9 @@ export class Database {
       __op: 'increment',
       elements: elements,
     };
+  }
+
+  getAllCollections() {
+    return fetchAllCollections();
   }
 }

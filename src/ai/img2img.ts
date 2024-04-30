@@ -13,10 +13,19 @@ import {
   MAX_PIXEL_COUNT,
   MIN_UPSCALED_DIMENSION,
 } from '../core';
-import { ImageModificationParams, ImageUpscaleParams } from '../types';
+import {
+  ImageModificationParams,
+  ImageUpscaleParams,
+  RemoveImageObjParams,
+  ReplaceImageBgParams,
+  searchObjReplaceImageParams,
+  extendBoundariesParams,
+  SketchImageParams,
+} from '../types';
 import { getImageAsBase64 } from '../uploads';
 import { appConfiguration } from '../index';
 import { handleAxiosError } from '../error';
+import { version } from 'chai';
 
 const processImage = async (
   params: ImageModificationParams,
@@ -24,7 +33,7 @@ const processImage = async (
   validateDimensions: (metadata: any) => void,
   retries: number = 0,
 ): Promise<object> => {
-  const { existing_image, modification, outputType, similarity } = params;
+  const { existing_image, modification, output_type, similarity } = params;
 
   debug(
     LogStatus.INFO,
@@ -80,7 +89,7 @@ const processImage = async (
     contentType: 'image/jpeg',
   });
   form.append('modifications', modification);
-  form.append('outputType', outputType || 'url');
+  form.append('output_type', output_type || 'url');
   form.append('similarity', similarity.toString());
 
   try {
@@ -364,4 +373,659 @@ export const imageUpscaler = async (
       throw handleAxiosError(error);
     }
   }
+};
+
+const removeImageParts = async (
+  params: RemoveImageObjParams,
+  version: string,
+  validateDimensions: (metadata: any) => void,
+  retries: number = 0,
+): Promise<object> => {
+  const { existing_image, output_type } = params;
+
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Starting image modification process`,
+  );
+  if (!existing_image) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `Image data is missing`,
+    );
+    throw new Error('Image data is required');
+  }
+
+  if (!appConfiguration) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `App Configuration is null`,
+    );
+    throw new Error('App Configuration is null');
+  }
+
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Received Image data ${existing_image}`,
+  );
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Converting image to base64`,
+  );
+
+  let base64Data: string = await getImageAsBase64(existing_image);
+
+  let imageBuffer = Buffer.from(base64Data, 'base64');
+
+  // Get the dimensions of the image
+  const metadata = await sharp(imageBuffer).metadata();
+  validateDimensions(metadata);
+
+  const form = new FormData();
+  // Append the image as a file
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `AI Models processing image`,
+  );
+  form.append('existing_image', Buffer.from(base64Data, 'base64'), {
+    filename: 'image.jpg',
+    contentType: 'image/jpeg',
+  });
+
+  form.append('output_type', output_type || 'url');
+
+  try {
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Processing AI Model for Image Modification`,
+    );
+    startProcessingLog(`Image Modification ${version}`, 'Processing Image');
+
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/modify/v3/${version}`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    stopProcessingLog();
+
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Completed response from image modification API`,
+    );
+
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    stopProcessingLog();
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Image Modification ${version}`,
+        `Error occurred during image modification, retrying (${retries + 1})`,
+      );
+      return removeImageParts(params, version, validateDimensions, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Image Modification ${version}`,
+        `Error occurred during image modification after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
+  }
+};
+
+export const removeTextFromImage = async (params: RemoveImageObjParams) => {
+  return removeImageParts(params, 'remove-text', (metadata) => {
+    if (metadata.width === undefined) {
+      debug(
+        LogStatus.ERROR,
+        'Image Modification V3',
+        `Width metadata is missing from the image.`,
+      );
+      throw new Error('Width metadata is missing from the image.');
+    }
+
+    if (metadata.height === undefined) {
+      debug(
+        LogStatus.ERROR,
+        'Image Modification V3',
+        `Height metadata is missing from the image.`,
+      );
+      throw new Error('Height metadata is missing from the image.');
+    }
+  });
+};
+export const removeBackgroundFromImage = async (
+  params: RemoveImageObjParams,
+) => {
+  return removeImageParts(params, 'remove-background', (metadata) => {
+    if (metadata.width === undefined) {
+      debug(
+        LogStatus.ERROR,
+        'Image Modification V3',
+        `Width metadata is missing from the image.`,
+      );
+      throw new Error('Width metadata is missing from the image.');
+    }
+
+    if (metadata.height === undefined) {
+      debug(
+        LogStatus.ERROR,
+        'Image Modification V3',
+        `Height metadata is missing from the image.`,
+      );
+      throw new Error('Height metadata is missing from the image.');
+    }
+  });
+};
+
+export const sketchToImageV3 = async (
+  params: SketchImageParams,
+  retries: number = 0,
+): Promise<object> => {
+  const { existing_image, output_type, description } = params;
+  const version = 'sketch-image';
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Starting image modification process`,
+  );
+  if (!existing_image) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `Image data is missing`,
+    );
+    throw new Error('Image data is required');
+  }
+
+  if (!appConfiguration) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `App Configuration is null`,
+    );
+    throw new Error('App Configuration is null');
+  }
+
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Received Image data ${existing_image}`,
+  );
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Converting image to base64`,
+  );
+
+  let base64Data: string = await getImageAsBase64(existing_image);
+
+  let imageBuffer = Buffer.from(base64Data, 'base64');
+
+  // Get the dimensions of the image
+  const metadata = await sharp(imageBuffer).metadata();
+  // validateDimensions(metadata);
+
+  const form = new FormData();
+  // Append the image as a file
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `AI Models processing image`,
+  );
+  form.append('existing_image', Buffer.from(base64Data, 'base64'), {
+    filename: 'image.jpg',
+    contentType: 'image/jpeg',
+  });
+
+  form.append('output_type', output_type || 'url');
+  form.append('description', description);
+
+  try {
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Processing AI Model for Image Modification`,
+    );
+    startProcessingLog(`Image Modification ${version}`, 'Processing Image');
+
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/modify/v3/${version}`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    stopProcessingLog();
+
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Completed response from image modification API`,
+    );
+
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    stopProcessingLog();
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Image Modification ${version}`,
+        `Error occurred during image modification, retrying (${retries + 1})`,
+        error.message,
+      );
+      return sketchToImageV3(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Image Modification ${version}`,
+        `Error occurred during image modification after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
+  }
+};
+
+export const replaceImageBackground = async (
+  params: ReplaceImageBgParams,
+  retries: number = 0,
+): Promise<object> => {
+  const { existing_image, output_type, modification } = params;
+  const version = 'replace-background';
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Starting image modification process`,
+  );
+  if (!existing_image) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `Image data is missing`,
+    );
+    throw new Error('Image data is required');
+  }
+
+  if (!appConfiguration) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `App Configuration is null`,
+    );
+    throw new Error('App Configuration is null');
+  }
+
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Received Image data ${existing_image}`,
+  );
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Converting image to base64`,
+  );
+
+  let base64Data: string = await getImageAsBase64(existing_image);
+
+  let imageBuffer = Buffer.from(base64Data, 'base64');
+
+  // Get the dimensions of the image
+  const metadata = await sharp(imageBuffer).metadata();
+  // validateDimensions(metadata);
+
+  const form = new FormData();
+  // Append the image as a file
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `AI Models processing image`,
+  );
+  form.append('existing_image', Buffer.from(base64Data, 'base64'), {
+    filename: 'image.jpg',
+    contentType: 'image/jpeg',
+  });
+
+  form.append('output_type', output_type || 'url');
+  form.append('modification', modification);
+
+  try {
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Processing AI Model for Image Modification`,
+    );
+    startProcessingLog(`Image Modification ${version}`, 'Processing Image');
+
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/modify/v3/${version}`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    stopProcessingLog();
+
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Completed response from image modification API`,
+    );
+
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    stopProcessingLog();
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Image Modification ${version}`,
+        `Error occurred during image modification, retrying (${retries + 1})`,
+        error.message,
+      );
+      return replaceImageBackground(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Image Modification ${version}`,
+        `Error occurred during image modification after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
+  }
+};
+
+export const searchObjReplaceImage = async (
+  params: searchObjReplaceImageParams,
+  retries: number = 0,
+): Promise<object> => {
+  const { existing_image, output_type, modification, search_object } = params;
+  const version = 'search-replace-image';
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Starting image modification process`,
+  );
+  if (!existing_image) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `Image data is missing`,
+    );
+    throw new Error('Image data is required');
+  }
+
+  if (!appConfiguration) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `App Configuration is null`,
+    );
+    throw new Error('App Configuration is null');
+  }
+
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Received Image data ${existing_image}`,
+  );
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Converting image to base64`,
+  );
+
+  let base64Data: string = await getImageAsBase64(existing_image);
+
+  let imageBuffer = Buffer.from(base64Data, 'base64');
+
+  // Get the dimensions of the image
+  const metadata = await sharp(imageBuffer).metadata();
+  // validateDimensions(metadata);
+
+  const form = new FormData();
+  // Append the image as a file
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `AI Models processing image`,
+  );
+  form.append('existing_image', Buffer.from(base64Data, 'base64'), {
+    filename: 'image.jpg',
+    contentType: 'image/jpeg',
+  });
+
+  form.append('output_type', output_type || 'url');
+  form.append('modification', modification);
+  form.append('search_object', search_object);
+
+  try {
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Processing AI Model for Image Modification`,
+    );
+    startProcessingLog(`Image Modification ${version}`, 'Processing Image');
+
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/modify/v3/${version}`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    stopProcessingLog();
+
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Completed response from image modification API`,
+    );
+
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    stopProcessingLog();
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Image Modification ${version}`,
+        `Error occurred during image modification, retrying (${retries + 1})`,
+        error.message,
+      );
+      return searchObjReplaceImage(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Image Modification ${version}`,
+        `Error occurred during image modification after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
+  }
+};
+
+export const extendImageBoundaries = async (
+  params: extendBoundariesParams,
+  retries: number = 0,
+): Promise<object> => {
+  const {
+    existing_image,
+    output_type,
+    leftExtend,
+    rightExtend,
+    topExtend,
+    bottomExtend,
+    description,
+  } = params;
+  const version = 'extend-image';
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Starting image modification process`,
+  );
+  if (!existing_image) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `Image data is missing`,
+    );
+    throw new Error('Image data is required');
+  }
+
+  if (!appConfiguration) {
+    debug(
+      LogStatus.ERROR,
+      `Image Modification ${version}`,
+      `App Configuration is null`,
+    );
+    throw new Error('App Configuration is null');
+  }
+
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Received Image data ${existing_image}`,
+  );
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `Converting image to base64`,
+  );
+
+  let base64Data: string = await getImageAsBase64(existing_image);
+
+  let imageBuffer = Buffer.from(base64Data, 'base64');
+
+  // Get the dimensions of the image
+  const metadata = await sharp(imageBuffer).metadata();
+  // validateDimensions(metadata);
+
+  const form = new FormData();
+  // Append the image as a file
+  debug(
+    LogStatus.INFO,
+    `Image Modification ${version}`,
+    `AI Models processing image`,
+  );
+  form.append('existing_image', Buffer.from(base64Data, 'base64'), {
+    filename: 'image.jpg',
+    contentType: 'image/jpeg',
+  });
+
+  form.append('output_type', output_type || 'url');
+  form.append('leftExtend', leftExtend);
+  form.append('rightExtend', rightExtend);
+  form.append('topExtend', topExtend);
+  form.append('bottomExtend', bottomExtend);
+  form.append('description', description);
+
+  try {
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Processing AI Model for Image Modification`,
+    );
+    startProcessingLog(`Image Modification ${version}`, 'Processing Image');
+
+    const response = await axios.post(
+      `${baseUrl}/api/ai/images/modify/v3/${version}`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: 'Bearer ' + appConfiguration.apiKey,
+        },
+      },
+    );
+
+    stopProcessingLog();
+
+    debug(
+      LogStatus.INFO,
+      `Image Modification ${version}`,
+      `Completed response from image modification API`,
+    );
+
+    return {
+      code: 200,
+      ...response.data,
+    };
+  } catch (error: any) {
+    stopProcessingLog();
+    if (retries < appConfiguration.max_retries) {
+      debug(
+        LogStatus.INFO,
+        `Image Modification ${version}`,
+        `Error occurred during image modification, retrying (${retries + 1})`,
+        error.message,
+      );
+      return extendImageBoundaries(params, retries + 1);
+    } else {
+      debug(
+        LogStatus.ERROR,
+        `Image Modification ${version}`,
+        `Error occurred during image modification after maximum retries`,
+      );
+      throw handleAxiosError(error);
+    }
+  }
+};
+
+export const reCreateImageV3 = async (params: RemoveImageObjParams) => {
+  return removeImageParts(params, 'recreate', (metadata) => {
+    if (metadata.width === undefined) {
+      debug(
+        LogStatus.ERROR,
+        'Image Modification V3',
+        `Width metadata is missing from the image.`,
+      );
+      throw new Error('Width metadata is missing from the image.');
+    }
+
+    if (metadata.height === undefined) {
+      debug(
+        LogStatus.ERROR,
+        'Image Modification V3',
+        `Height metadata is missing from the image.`,
+      );
+      throw new Error('Height metadata is missing from the image.');
+    }
+  });
 };
